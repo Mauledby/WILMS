@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/userdashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/WILLOGO.png' %}">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/calendar.css' %}">
+    
+
+</head>
+
+<body>
+    <div class="content">
+        <div class="header">
+            <div>
+                <a href="{% url 'userprofile' %}">
+                    <img src="{% static 'images/profile.png' %}" alt="Profile Icon" class="profile-icon" style="width: 32px; height: 32px; margin-right:60px">
+                </a>
+                <img src="{% static 'images/WILLOGO.png' %}" alt="WIL LOGO" class="logo" style="margin-right:100px">
+            </div>
+            <div class="mobile-buttons">
+                <h2><u> WILDSPACE DASHBOARD </u></h2>
+            </div>
+        </div>
+        <div class="buttonContainer">
+            <div class="area-container">
+                <div class="button-overlay">
+                    <div class="mobile-buttons">
+                    </div>
+                    <div class="mobile-screen">
+                        <div class="mobile-buttons">
+                            <h2>FACILITY MAP</h2>
+                            <div class="small-calendar-button" id="expand-calendar-button">📅</div>
+                            <div id="expanded-calendar"></div>
+                        </div>
+                    </div>
+                    <div class="image-container" id="zoomable-container">
+                        
+                        <img src="{% static 'images/area.png' %}" alt="area" class="image-fit" id="zoomable-image">
+                        {% for area in areas %}
+                        <button class="area-button seat {% if area.area_id == 'A3' %}areaA3-button{% elif area.area_id == 'A4' %}areaA4-button{% elif area.area_id == 'A5' %}areaA5-button{% elif area.area_id == 'A6' %}areaA6-button{% endif %}" data-areaid="{{ area.area_id }}" data-availability="{{ area.booked_count }}/6" data-total="6">{{ area.booked_count }}/6</button>
+                        <button class="area-button seat {% if area.area_id == 'A1' %}areaA1-button{% elif area.area_id == 'A2' %}areaA2-button{% endif %}" data-areaid="{{ area.area_id }}" data-availability="{{ area.booked_count }}/1" data-total="1">{{ area.booked_count }}/1</button>
+                        <button class="areaA7-button" data-areaid="{{ area.area_id }}" data-availability="{{ area.booked_count }}/24" data-total="24">{{ area.booked_count }}/24</button>
+                        <button class="areaA8-button" data-areaid="{{ area.area_id }}" data-availability="{{ area.booked_count }}/6" data-total="6">{{ area.booked_count }}/6</button>
+                        <button class="areaA9-button" data-areaid="{{ area.area_id }}" data-availability="{{ area.booked_count }}/6" data-total="6">{{ area.booked_count }}/6</button>
+                        {% endfor %}
+                        
+                    </div>
+                    <br>
+                    <br>
+                    
+                    <a href="{% url 'map' %}">
+                        <button type="submit" class="button">WALK-IN BOOKING</button>
+                    </a>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <br>
+        </div>
+        
+    </div>
+    
+    <script src="{% static 'js/user_dashboard.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        
+
+
+
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const smallCalendarButton = document.getElementById('expand-calendar-button');
+            const expandedCalendar = document.getElementById('expanded-calendar');
+        
+            const calendar = new FullCalendar.Calendar(expandedCalendar, {
+                initialView: 'dayGridMonth',
+                events: '/get-calendar-data/',
+                eventClick: function (info) {
+                    const areaId = info.event.title;
+                    const date = info.event.start.toLocaleDateString();  
+                    
+                
+                    Swal.fire({
+                        title: `${date}`,
+                        html: `Area ID: ${areaId}`,
+                        icon: 'info',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                },
+                
+                
+                
+                customButtons: {
+                    myCustomButton: {
+                        text: '',
+                        click: function () {
+                            calendar.today();
+                        },
+                    },
+                },
+                headerToolbar: {
+                    start: 'title',
+                    center: '',
+                    end: 'prev,next,myCustomButton',
+                },
+                titleFormat: { month: 'short', year: 'numeric' },
+            });
+        
+            smallCalendarButton.addEventListener('click', function () {
+                if (expandedCalendar.style.display === 'none') {
+                    expandedCalendar.style.display = 'block';
+                    calendar.render();
+                } else {
+                    expandedCalendar.style.display = 'none';
+                }
+            });
+        
+            expandedCalendar.style.display = 'none';
+        });
+        
+        function formatTimeToAMPM(time) {
+            const [hours, minutes] = time.split(':');
+            const parsedHours = parseInt(hours, 10);
+            const ampm = parsedHours >= 12 ? 'PM' : 'AM';
+            const formattedHours = parsedHours % 12 || 12;
+            return `${formattedHours}:${minutes} ${ampm}`;
+        }
+    </script>
+    
+
+</body>
+</html>
+

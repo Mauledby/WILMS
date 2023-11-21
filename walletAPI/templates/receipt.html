@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Receipt</title>
+    <!-- Add Bootstrap 4.5.2 CSS (Replace with the correct version if needed) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Login-Form-Basic-icons-1.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Login-Form-Basic-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
+</head>
+<body class="bg-dark-subtle">
+    <div class="sticky-top bg-warning">
+        <h1 class="fw-normal text-center text-bg-warning shadow">SUCCESS</h1>
+    </div>
+    <div class="container mt-4">
+        <h1 class="text-center">Transaction Receipt</h1>
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text"><strong>Reference Code:</strong> {{ reference_code }}</p>
+                <p class="card-text"><strong>Transaction Date:</strong> {{ transaction_date }}</p>
+                <p class="card-text"><strong>Description:</strong> {{ description }}</p>
+                <p class="card-text"><strong>Transaction ID:</strong> {{ transaction_id }}</p>
+                <p class="card-text"><strong>Transaction Amount:</strong> {{ transaction_amount }}</p>
+                <p class="card-text"><strong>Currency:</strong> {{ currency }}</p>
+                <button id="logoutButton" class="btn btn-primary">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add a click event listener to the "Exit" button
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            // Perform a logout action, you can use Django's logout view or your custom logic
+            // Example using Django's built-in logout view:
+            fetch('/walletAPI/logout/')  // Replace with the URL for your logout view
+                .then(response => {
+                    // Redirect to the login page or any other desired destination
+                    window.location.href = '/walletAPI/login/';  // Replace with the desired URL
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                });
+        });
+    </script>
+
+    <!-- Add Bootstrap 4.5.2 JS (Replace with the correct version if needed) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

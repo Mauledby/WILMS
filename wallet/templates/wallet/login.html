@@ -1,0 +1,379 @@
+{% extends "wallet/index.html" %}{%load static%} {% block content %}
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    text-decoration: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .navbar {
+    position: fixed;
+    width: 100%;
+    z-index: 3;
+    padding: 30px 0;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  .navbar .max-width {
+    max-width: 1300px;
+    padding: 0 80px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .navbar .logo a {
+    font-size: 35px;
+    font-weight: 600;
+    color: #fff; /* color of the Name WALL in WALLET */
+  }
+  .navbar .logo a span {
+    color: #fecc04;
+    transition: all 0.3s ease;
+  }
+  .navbar .menu li {
+    list-style: none;
+    display: inline-block;
+  }
+  .navbar .menu li a {
+    color: #fff; /* here is the color for Login, Register, etc. in header */
+    display: block;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-left: 25px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+  }
+  .navbar .menu li a:hover {
+    color: #fac004;
+  }
+  .navbar.sticky {
+    /* padding: 15px 50px; */
+    position: fixed;
+    top: 0;
+    background: #9c7b16; /* Background color for the sticky navbar */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.9);
+  }
+
+  .menu-btn {
+    color: #fff;
+    /* //menu bar color  */
+    font-size: 30px;
+    cursor: pointer;
+    display: none;
+    /* removes the display of the bar  */
+  }
+
+  section {
+    padding: 100px;
+  }
+  .banner-container {
+    position: relative;
+    width: 100%;
+    height: 110vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4)),
+      url('{% static "img/canvabg.png" %}');
+    background-size: cover;
+    background-position: center;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1300px;
+    padding: 0 80px;
+    margin: auto;
+  }
+  .left-section {
+    flex: 1;
+    padding: 20px 0;
+    order: 1;
+    width: 100px;
+    align-self: flex-start;
+  }
+
+  .right-section {
+    flex: 1;
+    padding: 2 0px;
+    order: 2;
+    align-self: self-end;
+  }
+  .right-section form {
+    max-width: 300px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+  }
+
+  /* LOGIN TEXT???  */
+
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 5%;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+
+  /* LOGIN BUTTON IN FORM  */
+
+  input[type="submit"] {
+    background-color: #fecc04;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #9c7b16;
+  }
+
+  .banner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    top: 0%;
+    height: calc(
+      100vh - 400px
+    ); /* where i edited the alignment of the login form  */
+    color: aliceblue;
+  }
+  .banner h1 {
+    font-size: 50px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .banner p {
+    margin: 20px auto;
+    font-weight: 100;
+    line-height: 25px;
+  }
+  .btn {
+    width: 200px;
+    padding: 15px 0;
+    margin: 20px 10px;
+    background: #fecc04;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border: 3px solid #fecc04;
+    border-radius: 8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn:hover {
+    background-color: #9c7b16;
+    border-color: rgb(118, 91, 0);
+  }
+
+  /* responsive media query sheeesh */
+
+  @media (max-width: 991px) {
+    .navbar .max-width {
+      padding: 0 50px;
+    }
+  }
+  @media (max-width: 947px) {
+    .menu-btn {
+      display: block;
+      z-index: 999;
+    }
+    .banner {
+      max-width: 930px;
+    }
+    .banner h1 {
+      font-size: 70px;
+    }
+    .banner p {
+      font-size: 20px;
+    }
+    .banner .btn {
+      font-size: 20px;
+    }
+    menu-btn i.active::before {
+      content: "\f00d";
+    }
+    .navbar .menu {
+      position: fixed;
+      height: 100vh;
+      width: 100%;
+      left: -100%;
+      top: 0;
+      background: #0000;
+      text-align: center;
+      padding-top: 80px;
+      transition: all 0.3s ease;
+    }
+    .navbar .menu .active {
+      left: 0;
+    }
+    .navbar .menu li {
+      display: block;
+    }
+    .navbar .menu li a {
+      display: inline-block;
+      margin: 20px 0;
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 690px) {
+    .navbar .max-width {
+      padding: 0 23px;
+    }
+    .banner h1 {
+      font-size: 60px;
+    }
+    .banner .btn {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .banner h1 {
+      font-size: 20px;
+    }
+    .banner p {
+      font-size: 13px;
+      text-align: center;
+    }
+    .banner .btn {
+      font-size: 14px;
+      width: 150px;
+    }
+    .banner {
+      padding: 0 20px;
+    }
+  }
+  .All-Font {
+    font-family: "Poppins", sans-serif;
+  }
+
+  /* LOGIN FORM CSS  */
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    border: 1px solid #888;
+    width: 80%;
+    margin: 10% auto; /* Adjust the top margin to center the modal */
+    padding: 20px;
+  }
+  #email,
+  #password {
+    width: 80%; /* Adjust the width as per your preference */
+    padding: 8px; /* Adjust the padding for spacing inside the input */
+    margin: 8px 0; /* Adjust the margin for the input elements */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
+<head>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<!-- Modal for Login -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <form id="login-form" method="post" action="{% url 'wallet:user_login' %}">
+      <h3>Login</h3>
+      {% csrf_token %}
+      <input
+        type="text"
+        id="email"
+        name="email"
+        placeholder="Enter your email"
+        required
+      />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+      />
+      <br />
+      <input type="submit" value="LOGIN" />
+    </form>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $("#loginModal").show();
+
+    $(".modal-close").click(function () {
+      $("#loginModal").hide();
+    });
+
+    // Close modal on clicking outside the form
+    $(window).click(function (e) {
+      if (e.target.id === "loginModal") {
+        $("#loginModal").hide();
+      }
+    });
+
+    // Rest of your existing scripts...
+  });
+
+  function validateForm() {
+    var email = document.getElementById("id_email").value;
+    var password = document.getElementById("id_password").value;
+    var emailErrorElement = document.getElementById("email-error");
+    var passwordErrorElement = document.getElementById("password-error");
+    var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailPattern.test(email)) {
+      emailErrorElement.innerHTML = "Invalid email address";
+      return false;
+    } else {
+      emailErrorElement.innerHTML = "";
+    }
+
+    if (password === "") {
+      passwordErrorElement.innerHTML = "Password is required";
+      return false;
+    } else {
+      passwordErrorElement.innerHTML = "";
+    }
+
+    return true;
+  }
+</script>
+{% endblock %}

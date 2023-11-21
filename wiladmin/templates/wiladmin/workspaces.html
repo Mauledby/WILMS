@@ -1,0 +1,90 @@
+{% extends 'wiladmin/base.html' %} {% load static %} {% block body_block %}
+
+<link rel="stylesheet" href="{% static 'css/workspaces.css' %}" />
+
+<body>
+    <div class="content-container">
+        <div class="content">
+            <div id="facility-map" class="facility-map">
+                <img src="{% static 'images/area_remastered.png' %}" alt="areas" class="facility-areas">
+
+                {% for area_count in area_count %}
+
+                <form method="POST" action="workspaces/A1">
+                    {% csrf_token %}
+                <input type="submit" class="areaA1-button" value={{area_count.countA1}}/5>
+                </form> 
+
+                <form method="POST" action="workspaces/A2">
+                    {% csrf_token %}
+                <input type="submit" class="areaA2-button" value={{area_count.countA2}}/5>
+                </form>
+
+                <form method="POST" action="workspaces/A3">
+                    {% csrf_token %}
+                <input type="submit" class="areaA3-button" value={{area_count.countA3}}/6>
+                </form> 
+
+                <form method="POST" action="workspaces/A4">
+                    {% csrf_token %}
+                <input type="submit" class="areaA4-button" value={{area_count.countA4}}/6>
+                </form> 
+
+                <form method="POST" action="workspaces/A5">
+                    {% csrf_token %}
+                <input type="submit" class="areaA5-button" value={{area_count.countA5}}/6>
+                </form>
+
+                <form method="POST" action="workspaces/A6">
+                    {% csrf_token %}
+                <input type="submit" class="areaA6-button" value={{area_count.countA6}}/6>
+                </form>
+
+                <form method="POST" action="workspaces/A7">
+                    {% csrf_token %}
+                <input type="submit" class="areaA7-button" value={{area_count.countA7}}/24>
+                </form>
+
+                <form method="POST" action="workspaces/A8">
+                    {% csrf_token %}
+                <input type="submit" class="areaA8-button" value={{area_count.countA8}}/6>
+                </form>
+
+                <form method="POST" action="workspaces/A9">
+                    {% csrf_token %}
+                <input type="submit" class="areaA9-button" value={{area_count.countA9}}/6>
+                </form>
+
+                {% endfor %}
+            </div>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-bordered table-striped mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" colspan="3">Users</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if area != NONE %}
+                {% for area in area %}
+                <tr>
+                    <td>{{ area.userid }}</td>
+                    <td>{{ area.schedule }}</td>
+                    <td>{{ area.referenceid }}</td>
+                </tr>
+                {% endfor %}
+
+                {% else %}
+
+                <tr>
+                    <td> Select Area </td>
+                </tr>
+
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+    </div>
+</body>
+{% endblock %}

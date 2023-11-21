@@ -1,0 +1,338 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <title>WILMS | Facility Management</title>
+  <link rel="icon" href="{% static 'icon/favicon3.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'facility/general.css' %}">
+  <!-- <link rel="stylesheet" href="general.css">
+  <link rel="stylesheet" href="table.css"> -->
+  <style>
+  form.modal-dialog{
+  right: -12%;
+}
+button.cardevent:hover{
+  background:rgba(222, 220, 215, 0.3); 
+}
+            input {
+              font-size: 12px;
+  padding: 7px;
+  width: 100%  ;
+  background: #FFFFFF;
+  border: 1px solid #DCDCDC;
+  border-radius: 5px;
+          }
+
+#overflowTest {
+  margin-top: 1rem;
+  /* background: #4CAF50; */
+  /* color: white; */
+  /* padding: 3px; */
+  width: auto; 
+  height: 385px;
+  overflow-y: auto; /* Add a vertical scrollbar when the tbody overflows */
+  display: block;
+  /* border: 1px solid #ccc; */
+}
+.column {
+  float: left;
+  width: 70%;
+}
+.column2 {
+  float: left;
+  width: 30%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.btn.btn-facility:active {
+  background-color: #ded986;
+}
+
+.btn.btn-facility:active::after  {
+  opacity: 1;
+  background-color: #ded986;
+}
+  </style>
+</head>
+<body>
+  <div class="modal" id="staticBackdrop3" > 
+    <form method="POST" class="modal-dialog modal-dialog-centered" id="add_faci">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel2">{% block modal-title3 %}Type of Event{% endblock modal-title3 %}</h5>
+        </div>
+        <div class="modal-body">
+          {% csrf_token %}
+          <input type="text"placeholder="Input Type of Event" name="type_sched" value='{{ typesched.type_sched }}'><br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}">Cancel</a></button>
+          <button type="submit" class="btn btn-primary" data-bs-target="update_faci">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+<!-- ------------------------------------------------------------------------------------------------------------------ -->
+  <div class="modal fade" id="staticBackdrop1">
+    <form method="POST" class="modal-dialog modal-dialog-centered" id="add_faci">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel2">{% block modal-title2 %}EVENT{% endblock modal-title2 %}</h5>
+        </div>
+        <div class="modal-body">
+          {% csrf_token %}
+          <input type="text" name="id" id="eventIdInput" value="">
+          <input type="text" name="event_name" id="event_name_input" value="">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}">Cancel</a></button>
+          <button type="submit" class="btn btn-primary" data-bs-target="update_faci">Update Facility</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+<!-- -----------------------------------------------ADD EVENTS--------------------------------------------- -->
+<div class="modal fade" id="staticBackdrop2">
+  <form method="POST" class="modal-dialog modal-dialog-centered"  id="add_faci">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel2">{% block modal-title %}EVENT{% endblock modal-title %}</h5>
+          </div>
+          <div class="modal-body">
+            {% csrf_token %}
+            <label class="modalpopup">Type of Sched</label><button class="btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop3" data-bs-dismiss="modal" style="padding-inline: 10px; margin-left: 47%;">
+              + Add 
+             </button>
+            <input list="type_sched" name="type_sched" placeholder="Choose Type of Schedule"/>
+            <datalist id="type_sched">
+              <option value = "{{calform.type_sched}}">
+            </datalist>
+            <label class="modalpopup">Event Name</label><br>
+              {{calform.event_name}}
+            <label class="modalpopup">Start Date</label><br>
+            <input type="datetime-local"placeholder="Input Start Date" name="start_date" value='{{ calform.start_date }}'><br>
+            <label class="modalpopup">End Date</label><br>
+            <input type="datetime-local"placeholder="Input End Date" name="end_date" value='{{calform.end_date}}'><br>
+            <label class="modalpopup">Selected Dates</label><br>
+            <input list="selected_days" name="selected_days" placeholder=" Choose Day"/>
+            <datalist id="selected_days">
+              <option value = "{{calform.selected_days}}">
+            </datalist>
+            <label class="modalpopup">Facility</label><br>
+            <input list="calform.facility" name="facility" placeholder="Choose Day"/>
+            <datalist id="calform.facility">
+              <option value = "{{calform.facility}}">
+            </datalist>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}">Cancel</a></button>
+              <button class="btn-primary" data-bs-target="update_faci">Add Event</button>
+          </div>
+      </div>
+  </form>
+</div>
+<!-- ---------------------------------------------- Calendar ----------------------------------------------------------- -->
+{% for e in event %}
+<div class="modal fade" id="warning-{{ e.id }}">
+    <form method="POST" class="modal-dialog modal-dialog-centered" id="add_faci">
+      {% csrf_token %}
+        <div class="modal-content">
+            <label class="modalpopup">Are you sure you want to remove {{ e.event_name }}</label>
+            <div class="modal-footer">
+                <button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                <button class="btn-primary">
+                    <a href="{% url 'facility:delevent' e.id %}" style="padding: 2px;">YES</a>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endfor %}
+
+
+
+
+  <div class="label-page">Calendar</div>
+  <div class="table" style="padding:0; height: 550px;">
+    <div class="row">
+      <div class="column">
+        <br>
+        <div style="margin-left: 4%;">
+          <h5 style="margin: 0px; position: absolute; font-size: 40px; font-weight: bolder;">Events</h5>
+          <button type="submit" class="btn-primary" style="position: absolute; left: 41%;"><a href="{% url 'facility:calendarview' %}">📅 View Calendar</a></button>
+          <button type="submit" class="btn-primary" style="position: absolute; left: 56%;" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">+ Submit Event</button>
+        </div>
+        <br><br>
+        <div id="overflowTest" style="width: 800px; height: 425px; padding:0.5rem; margin-top:0rem; ">
+          {% for e in event %} 
+          <button id="eventid" data-bs-toggle="modal" data-bs-target="#warning-{{ e.id}}" data-event-name="{{ e.event_name }}"  data-event-id="{{ e.id }}" class="btndel" style="margin-left: 91%; position: relative; top: 2.3rem; z-index: 999;"> - </button>
+          <button class="cardevent" id="viewevent"data-bs-toggle="modal" data-bs-target="#staticBackdrop1" style="margin-left: 2rem;"
+            data-event-id="{{ e.id }}" data-event-name="{{ e.event_name }}">
+              <h3 class="titletxt">
+                
+                <div style="position: absolute;">{{ e.start_date|date:"l" }}</div>
+                <div style="margin-left: 80%;">{{ e.start_date.date }}</div>
+              </h3>
+              <ul class="content" style="text-align: left; height: 200px;">
+                <p>When: {{ e.start_date.date }} Time: {{ e.start_date.time }}</p>
+                <p>Until: {{ e.end_date.date }} Time: {{ e.start_date.time }}</p>
+                <p>What: {{ e.event_name }}</p>
+                <p>Where: {{e.facility}}</p>            
+              </ul>
+          </button>
+          {% empty %}
+          <h3 style="opacity: 0.3; margin-top: 5rem; margin-bottom: 2rem;">NO EVENTS CREATED</h3>
+          
+        {% endfor %}        
+        </div>
+      </div>
+      <div class="column2" style="border-left: 0.5px solid rgba(0, 0, 0, 0.20);">
+        <br>
+        <h3 class="titletxt" style="font-weight: bolder; font-size: 20px;font-weight: bolder;">FILTER</h3>
+        <div id="overflowTest" style="margin-left: 1%; padding:1px; margin-top:1rem; height: 470px;">
+          <div class="cardevent" style="width: 300px;">
+            <form method="get">
+                <h3 class="titletxt">TYPE OF EVENTS</h3><br>
+                <button type="submit" name="type" class="btn btn-facility" style="margin-left: 1px;" value="">All</button>
+                {% for s in typesched %}
+                <button type="submit" name="type" class="btn btn-facility" style="margin-left: 1px;" value="{{ s.type_sched }}">{{ s.type_sched }}
+                </button>
+                {% empty %}
+                <h3 style="opacity: 0.3; margin-bottom: 2rem;">No Type of Event</h3>
+                {% endfor %}
+            </form>
+        </div>
+          <div class="cardevent" style="width: 300px; overflow-y: auto;">
+            <form method="get">
+                  <h3 class="titletxt">FACILITIES</h3><br>
+                  <button type="submit" name="facility"class="btn btn-facility" style="margin-left: 1px;" value="">All</button>
+                  {% for f in facility %}
+                  <button type="submit" name="facility" class="btn btn-facility" style="margin-left: 1px;" value="{{f.id}}">{{f.facilityname}}</button>
+                  {% empty %}
+                  <h3 style="opacity: 0.3; margin-bottom: 2rem;">No Available Facility</h3>
+                  {% endfor %}
+                </form>
+                </div>           
+        </div>
+      </div>
+      <!-- <div class="cardevent" style="margin-left:73%; height: 180px; border-radius: 0px; width: 320px; background:#FFFFFF; border: 0.5px solid rgba(0, 0, 0, 0.20); padding:2px; margin-bottom: 1rem;">
+        <div style="background-color: #ffcc01; width: 4rem; height: 20px; width: 298px; height: 44px; text-align: left; padding: 10px;"><h3 class="titletxt">Holiday</h3></div>
+        <table class="" style=" border-radius: 5px; border-spacing: 2rem; width: 298px;">
+          <tbody class="tablerule">
+            
+            <tr>
+              <td>asdad</td>
+              <td style="width:20rem; font-weight: bold;">title</td>
+              <td style="width:5rem;"><a href="#">🗑️</a></td>
+            </tr>
+            <tr>
+              <td style="width:20rem; font-weight: bold;">title</td>
+              <td style="width:5rem;"><a href="#">🗑️</a></td>
+            </tr>
+            <tr>
+              <td style="width:20rem; font-weight: bold;">title</td>
+              <td style="width:5rem;"><a href="#">🗑️</a></td>
+            </tr>
+            
+          </tbody>
+          </table>
+      </div> -->
+    </div>
+  </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $(document).on("click", "#viewevent", function() {
+    var event_Id = $(this).data("event-id");
+    var event_name = $(this).data("event-name");
+    $("#eventIdInput").val(event_Id);
+    $("#event_name_input").val(event_name);
+    $("#staticBackdrop1").modal("show");
+  });
+</script>
+<!-- ----------------------------------------------FACILITY RULES----------------------------------------------------------- -->
+<nav class="vertical">
+  <div class="avatar">
+    <img src="{% static 'media/avatar1.png' %}" alt="Profile Picture">
+  </div>
+  <ul>
+    <li>
+      <ul>
+      </ul>
+    </li>
+    <li><a href="{% url 'facility:facility' %}" class="nav1" style=" background-color: #ffcc01; color: black;">Facility Management</a>
+
+      <ul class="drpdwn1">
+        <li><a href="{% url 'facility:facility' %}" class="drp1">Facility</a></li>
+        <li><a  href="{% url 'facility:usertable' %}" class="drp1" >User</a></li>
+        <li><a href="{% url 'facility:calendar' %}" class="drp1" style=" background-color: #ffcc01; color: black;">Calendar</a></li>
+      </ul>
+    </li>
+    <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2">Revenue</a>
+      <ul class="drpdwn2">
+        <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2">Dashboard</a></li>
+        <li><a href="{% url 'facility:revenuereport' %}" class="drp2">Reports</a></li>
+      </ul></li>
+    <li><a href="{% url 'facility:settingfacility' %}" class="nav3">Rules Summary</a></li>
+  </ul>
+</nav>
+<!-- horizontal pane for navbar -->
+<nav class="horizontal">
+  <ul class="left">
+    <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+  </ul>
+  <ul class="center" >
+
+    {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        
+          <div class="center" style="position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
+          justify-content: center; align-items: center; ">
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
+            </div>
+        {% elif message.tags == 'success' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% elif message.tags == 'warning' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% elif message.tags == 'info' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% endif %} 
+      {% endfor %}
+      {% endif %}
+
+<!-- <li>
+<input type="text" class="search-bar"placeholder="Search...">
+<button type="submit" class="search-btn">Search</button></li> -->
+<li></li>
+</ul>
+  <ul class="right">
+    <a href="#"><button class="adminlabel">admin</button></a>
+  </ul>
+  
+</nav> 
+</body>
+</html>

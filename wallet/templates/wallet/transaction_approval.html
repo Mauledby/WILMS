@@ -1,0 +1,324 @@
+{% extends 'wallet/base.html' %} {% load static %} {% block body_block %}
+
+<style>
+  .container-fluid {
+    background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  .custom-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .jumbotron {
+    padding: 30px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: rgba(254, 255, 255, 0.8); /* Darker background color */
+    color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .jumbotron h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  .jumbotron p {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+  }
+
+  table th,
+  table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+
+  .table-container {
+    height: 400px;
+    overflow-y: scroll;
+  }
+
+  /* Add color styles for status cells */
+  .status-pending {
+    color: yellow;
+  }
+
+  .status-completed {
+    color: green;
+  }
+
+  .status-denied {
+    color: red;
+  }
+  .list-group-item.active-link {
+    /* Define styles for active state */
+    background-color: #faca04;
+    color: #000000;
+  }
+  .list-group-item:hover {
+    /* Define styles for hover state */
+    background-color: #f0f0f0;
+    color: #000000;
+  }
+</style>
+
+<!-- Modal for transaction details -->
+<div class="container custom-container">
+  <div class="jumbotron">
+    <h1 style="color: black">Transaction Approval</h1>
+    <div class="form-group">
+      <label for="filter-select" style="color: black">Filter by Status:</label>
+      <select class="form-control" id="filter-select">
+        <option value="all">All</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="DENIED">Denied</option>
+        <option value="PENDING">Pending</option>
+      </select>
+    </div>
+    <div class="table-container" style="max-height: 450px; overflow-y: auto">
+      <table class="table table-bordered table-hover" id="transaction-table">
+        <thead
+          class="thead-dark"
+          style="position: sticky; top: 0; background-color: white"
+        >
+          <tr>
+            <th>Reference Code</th>
+            <th>Requestee</th>
+            <th>Amount</th>
+            <th>Date in Receipt</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for transaction in transactions %}
+          <tr
+            class="transaction-row {% if transaction.is_completed %}completed{% elif transaction.is_denied %}denied{% else %}pending{% endif %}"
+          >
+            <td>{{ transaction.reference_code }}</td>
+            <td>{{ transaction.requestee }}</td>
+            <td>{{ transaction.amount }}</td>
+            <td>{{ transaction.date_in_receipt }}</td>
+            <!-- prettier-ignore -->
+            <td class="{% if transaction.is_completed %}status-completed{% elif transaction.is_denied %}status-denied{% else %}status-pending{% endif %}">
+              {% if transaction.is_completed and not transaction.is_denied %}
+                  COMPLETED
+              {% elif transaction.is_denied and not transaction.is_completed %}
+                  DENIED
+              {% else %}
+                  PENDING
+              {% endif %}
+          </td>
+            > >
+            <td>
+              <!-- Button to trigger the modal -->
+              <button
+                type="button"
+                class="btn btn-primary view-details"
+                data-toggle="modal"
+                data-target="#transactionModal"
+                data-reference-code="{{ transaction.reference_code }}"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Transaction Modal -->
+  <div
+    class="modal fade"
+    id="transactionModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="transactionModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="transactionModalLabel">
+            Transaction Details
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Reference Code: <span id="modal-reference-code"></span></p>
+          <p>Requestee: <span id="modal-requestee"></span></p>
+          <p>Amount: <span id="modal-amount"></span></p>
+          <p>Date in Receipt: <span id="modal-date-in-receipt"></span></p>
+          <p>Status: <span id="modal-status"></span></p>
+          <img
+            src=""
+            alt="Receipt Image"
+            class="img-fluid"
+            id="modal-image-receipt"
+          />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-success" id="approve-button">
+            Approve
+          </button>
+          <button type="button" class="btn btn-danger" id="deny-button">
+            Deny
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your existing scripts here -->
+
+  <script>
+    // Get the CSRF token from the page's meta tag
+    var csrfToken = "{{ csrf_token }}";
+
+    function populateTransactionDetails(referenceCode) {
+      // Send an AJAX request to retrieve transaction details
+      $.ajax({
+        url: "get-transaction-details/", // Replace with the actual URL to fetch transaction details
+        method: "GET", // Use a GET request to retrieve data
+        data: {
+          reference_code: referenceCode,
+        },
+        success: function (data) {
+          // Update the modal content with transaction details
+          $("#modal-reference-code").text(data.reference_code);
+          $("#modal-requestee").text(data.requestee);
+          $("#modal-amount").text(data.amount);
+          $("#modal-date-in-receipt").text(data.date_in_receipt);
+          $("#modal-status").text(data.status);
+
+          $("#modal-image-receipt").attr(
+            "src",
+            "/wallet" + data.image_receipt_url
+          );
+        },
+        error: function (error) {
+          console.error("Failed to fetch transaction details:", error);
+        },
+      });
+    }
+
+    // Attach a click event listener to the "View Details" buttons
+    $(document).on("click", ".view-details", function () {
+      var referenceCode = $(this).data("reference-code");
+      populateTransactionDetails(referenceCode);
+    });
+
+    // Event listener for the "Approve" button
+    $("#approve-button").click(function () {
+      var referenceCode = $("#modal-reference-code").text();
+
+      // Send an AJAX request to approve the transaction
+      $.ajax({
+        url: "approve-transaction/", // Update with the actual URL of your view
+        method: "POST",
+        data: {
+          csrfmiddlewaretoken: csrfToken,
+          reference_code: referenceCode,
+        },
+        success: function (response) {
+          // Handle the success response, if needed
+          console.log("Transaction approved successfully.");
+          // You can update the modal or the table here
+          $("#transactionModal").modal("hide");
+          location.reload();
+        },
+        error: function (error) {
+          // Handle the error response, if needed
+          console.error("Transaction approval failed:", error);
+        },
+      });
+    });
+
+    // Event listener for the "Deny" button
+    $("#deny-button").click(function () {
+      var referenceCode = $("#modal-reference-code").text();
+
+      // Send an AJAX request to deny the transaction
+      $.ajax({
+        url: "deny-transaction/", // Update with the actual URL of your view
+        method: "POST",
+        data: {
+          csrfmiddlewaretoken: csrfToken,
+          reference_code: referenceCode,
+        },
+        success: function (response) {
+          // Handle the success response, if needed
+          console.log("Transaction denied successfully.");
+          // You can update the modal or the table here
+          $("#transactionModal").modal("hide");
+          location.reload();
+        },
+        error: function (error) {
+          // Handle the error response, if needed
+          console.error("Transaction denial failed:", error);
+        },
+      });
+    });
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      // Assuming your table has an ID of "transaction-table"
+      const table = document.querySelector("#transaction-table");
+      const statusFilter = document.querySelector("#filter-select"); // Use the correct ID here
+
+      // Set the default filter value to "Pending"
+      statusFilter.value = "PENDING";
+
+      // Function to filter transactions based on the selected status
+      function filterTransactions() {
+        const status = statusFilter.value;
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          const statusCell = row.querySelector("td:nth-child(5)");
+          if (status === "all" || statusCell.textContent.trim() === status) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      }
+
+      // Trigger the filtering function on page load
+      filterTransactions();
+
+      // Add an event listener to respond to changes in the status filter dropdown
+      statusFilter.addEventListener("change", filterTransactions);
+    });
+  </script>
+
+  {% endblock %}
+</div>

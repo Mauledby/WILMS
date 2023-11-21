@@ -1,0 +1,393 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <title>WILMS | Facility Management</title>
+  <link rel="icon" href="{% static 'icon/favicon3.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'facility/general.css' %}">
+  <!-- <link rel="stylesheet" href="general.css">
+  <link rel="stylesheet" href="table.css"> -->
+  <style>
+  form.modal-dialog{
+  right: -12%;
+}
+.columns {
+  display: flex;
+}
+
+.columni {
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.column1 {
+  flex: 30%;
+}
+
+.column2 {
+  flex: 70%;
+}
+
+.two-column-in {
+    display: flex;
+    height: 400px;
+}
+
+.column {
+    flex: 1;
+    width: 0px; /* Add padding for spacing */
+}
+
+select#inputGroupSelect01 {
+    padding: 1px; /* Adjust the padding to change the text box's width */
+    font-size: 16px; /* Adjust the font size */
+    width: fit-content;
+    height: 39px;
+    fill: #FFF;
+    border: 0.5px solid rgba(0, 0, 0, 0.50);
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+  }
+
+  select{
+    border-radius: 4px 4px 4px 4px;
+    border: 0.5px solid rgba(0, 0, 0, 0.80);
+
+
+  }
+  select.custom-select-filter{
+    margin-top: 2rem; 
+    margin-left: 10px;
+    height: 42px;
+  }
+
+
+  select#inputGroupSelect01::-ms-value::-arrow {
+    color: #ffcc01;
+  }
+  input[type=datetime-local]{
+  /* box-sizing: border-box; */
+  width: 236px;
+  height: 39px;
+  fill: #FFF; 
+  stroke-width: 1px; 
+  stroke: #E0E0E0;
+  margin-top: 2rem;
+}
+    button.trans{
+        background-color: #FFF; 
+        height: 41px; 
+        font-size: larger;
+    }
+
+    button.dashboardrevenue{
+        background-color: #FFFFFF; 
+        text-align: left; 
+        border-radius: 0; 
+        height: 28%; 
+        padding-top: 4px; 
+        width: 20%; 
+        padding-left: 2rem;
+        margin-left:-0.39%; 
+    }
+    button.dashboardrevenue:hover{
+        border-bottom: 2px solid #ffcc01;  
+        border-color: #ffcc01;
+    }
+    p.label{
+        font-size: 13px;
+    }
+
+    p.dif{
+        font-size: 9px; margin-top: -2%;
+    }
+    div.menugroup:hover{
+        border-bottom: 2px solid #ffcc01; 
+        border-color: #ffcc01;
+    }
+    select#inputGroupSelect01 {
+    padding: 10px; /* Adjust the padding to change the text box's width */
+    font-size: 16px; /* Adjust the font size */
+    width: 236px;
+    height: 39px;
+    fill: #FFF;
+    border: 0.5px solid rgba(0, 0, 0, 0.50);
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+  }
+
+  select{
+    border-radius: 4px 4px 4px 4px;
+    border: 0.5px solid rgba(0, 0, 0, 0.80);
+
+
+  }
+
+
+  select#inputGroupSelect01::-ms-value::-arrow {
+    color: #ffcc01;
+  }
+  input[type=date]{
+  /* box-sizing: border-box; */
+  width: 236px;
+  height: 39px;
+  fill: #FFF; 
+  stroke-width: 1px; 
+  stroke: #E0E0E0;
+  margin-top: 2rem;
+}
+  </style>
+</head>
+<body>
+<!-- -----------------------------------------------ADD RULES--------------------------------------------- -->
+
+<!-- ---------------------------------------------- Calendar ----------------------------------------------------------- -->
+
+    <div class="label-page" >Revenue Dashboard</div>
+    <div class="table">
+      <form method="get">
+        <div class="menu">
+          <select name="facility" class="custom-select" id="inputGroupSelect01" style="margin-top: 2rem; padding: 2px;">
+            <option name="facility" type="submit" value="">All</option>
+            {% for f in facilityt %}
+            <option name="facility" type="submit" value="{{ f.id }}">{{ f.facilityname }}</option>
+            {% endfor %}
+            <!-- <input type="hidden" name="facility" value="87"> -->
+          </select>
+      
+          <label style="margin-left: 3%; color: #606060; font-size: 20px; font-weight: 700; line-height: normal;">From:</label>
+          <input name="start_date" type="date" style="margin-left: 5px">
+          
+          <label style="margin-left: 2%; color: #606060; font-size: 20px; font-weight: 700; line-height: normal;">To:</label>
+          <input name="end_date" type="date" style="margin-left: 5px">
+          
+          <button type="submit" style="margin-left: 2%;">Proceed</button>
+        </div>
+        </form>
+        <br>
+        <a href="#" style="margin-left: 80%; text-decoration: underline; color: #3C3C3C; opacity: 0.8;">🖨️Statement of Revenue</a>
+        <div style="margin-top: -3%; margin-bottom: 2rem; width: 100%; height: fit-content; background: #FFF; border: 0.5px solid rgba(0, 0, 0, 0.20); filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));">
+            <div class="menugroup" style="margin-left: 5px; margin-top: 5px; padding-top: 5px; border-bottom: 2px solid #CFCFCF;">
+                <button class="dashboardrevenue">
+                <p class="label">Total Revenue</p>
+                  <h5 style="margin-top:-8%">₱{{ total_revenue|floatformat:2 }}</h5>
+                  {% if empty %}
+                  <h5 style="margin-top:-8%">₱ 000,000.00</h5>
+                  {%  endif %}
+                </button>
+                <button class="dashboardrevenue">
+                  <p class="label">Total Charge Payments</p>
+                  <h5 style="margin-top:-8%">₱{{ total_charge_payments|floatformat:2 }}</h5>
+                  {% if empty %}
+                  <h5 style="margin-top:-8%">₱ 000,000.00</h5>
+                  {%  endif %}
+
+              </button>
+                <button class="dashboardrevenue">
+                    <p class="label">Total Usage Hours</p>
+                    <h5 style="margin-top:-8%">{{ total_hours_all|floatformat:2 }}</h5>
+                    {% if empty %}
+                    <h5 style="margin-top:-8%">00.00</h5>
+                    {%  endif %}
+  
+                </button>
+                <button class="dashboardrevenue">
+                  <p class="label">Total Reservations</p>
+                  <h5 style="margin-top:-8%">{{ total_reservation}}</h5>
+                  {% if empty %}
+                  <h5 style="margin-top:-8%">None</h5>
+                  {%  endif %}
+  
+                </button>
+                <button class="dashboardrevenue">
+                    <p class="label">Total Facilities</p>
+                    <h5 style="margin-top:-8%">{{ number_facility}}</h5>
+                    {% if empty %}
+                    <h5 style="margin-top:-8%">None</h5>
+                    {%  endif %}
+  
+                </button>
+            </div>
+            <form method="get" hidden>
+              {{ chart_type_form }}
+              <button type="submit">Update Chart</button>
+          </form>
+            <div style="padding:2px; width: 100%;">
+              <canvas id="myChart" height="300px"></canvas>
+          </div>
+          <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            
+    
+            var data = {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'Revenue',
+                    data: {{ data_values|safe }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: {{ border_colors|safe }},
+                    borderWidth: 1
+                }]
+            };
+    
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+        </div>
+        <br>
+        
+        <div class="columns" style="margin-top: 0rem;height: 400px; background: #FFF; border: 0.5px solid rgba(0, 0, 0, 0.20); filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));">
+              <div class="columni column1" >
+                <div class="two-column-in">
+                  <div class="column">
+                      <p>WIL Facilities</p>
+                        {% for facility_name, stats in facility_stats.items %}
+                      <p>{{ stats.facility.facilityname }}</p>
+                        {% empty %}
+                      <p style="opacity: 0.3; margin-left: 20%; font-size: 12px;">No available Facility</p>
+                        {% endfor %}
+                  </div>
+                  <div class="column">
+                      <p style="padding-bottom: 2px;">Net Sales</p>
+                        {% for facility_name, stats in facility_stats.items %}
+                      <p style="font-size: 12px; padding-bottom: 7px;">{{ stats.facility_revenue }}</p>
+                        {% empty %}
+                      <p style="margin-left: 20%; font-size: 12px;"> -- </p>
+                        {% endfor %}
+                  </div>
+                </div>
+            </div>
+                <div class="columni column2">
+                
+                  <form method="get" hidden>
+                      {{ chart_type_form }}
+                      <button type="submit">Update Chart</button>
+                  </form>
+                  <canvas id="revenueChart" height="200px"></canvas>
+
+            </div>
+
+
+                <script>
+                  var ctx = document.getElementById('revenueChart').getContext('2d');
+                  var chartType = '{{ chart_type|default:"bar" }}';
+          
+                  var data = {
+                      labels: {{ labels|safe }},
+                      datasets: [{
+                          label: 'Revenue',
+                          data: {{ data_values|safe }},
+                          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                          borderColor: 'rgba(75, 192, 192, 1)',
+                          borderWidth: 1
+                      }]
+                  };
+          
+                  var revenueChart = new Chart(ctx, {
+                      type: chartType,
+                      data: data,
+                      options: {
+                          scales: {
+                              yAxes: [{
+                                  ticks: {
+                                      beginAtZero: true
+                                  }
+                              }]
+                          }
+                      }
+                  });
+              </script>
+            
+        </div>
+    </div>
+
+<!-- ----------------------------------------------FACILITY RULES----------------------------------------------------------- -->
+<nav class="vertical">
+  <div class="avatar">
+    <img src="{% static 'media/avatar1.png' %}" alt="Profile Picture">
+  </div>
+  <ul>
+    <li>
+      <ul>
+      </ul>
+    </li>
+    <li><a href="{% url 'facility:facility' %}" class="nav1">Facility Management</a>
+
+      <ul class="drpdwn1">
+        <li><a href="{% url 'facility:facility' %}" class="drp1" >Facility</a></li>
+        <li><a  href="{% url 'facility:usertable' %}" class="drp1" >User</a></li>
+        <li><a href="{% url 'facility:calendar' %}" class="drp1">Calendar</a></li>
+      </ul>
+    </li>
+    <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2" style=" background-color: #ffcc01; color: black;">Revenue</a>
+      <ul class="drpdwn2">
+        <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2" style=" background-color: #ffcc01; color: black;">Dashboard</a></li>
+        <li><a href="{% url 'facility:revenuereport' %}" class="drp2">Reports</a></li>
+      </ul></li>
+    <li><a href="{% url 'facility:settingfacility' %}" class="nav3">Rules Summary</a></li>
+  </ul>
+</nav>
+<!-- horizontal pane for navbar -->
+<nav class="horizontal">
+  <ul class="left">
+    <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+  </ul>
+  <ul class="center" >
+
+    {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        
+          <div class="center" style="position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
+          justify-content: center; align-items: center; ">
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
+            </div>
+        {% elif message.tags == 'success' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% elif message.tags == 'warning' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% elif message.tags == 'info' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% endif %} 
+      {% endfor %}
+      {% endif %}
+
+<!-- <li>
+<input type="text" class="search-bar"placeholder="Search...">
+<button type="submit" class="search-btn">Search</button></li> -->
+<li></li>
+</ul>
+  <ul class="right">
+    <a href="#"><button class="adminlabel">admin</button></a>
+  </ul>
+  
+</nav> 
+</body>
+</html>

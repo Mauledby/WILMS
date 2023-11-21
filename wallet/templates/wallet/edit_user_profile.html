@@ -1,0 +1,324 @@
+{% extends 'wallet/userbase.html' %} {% load static %} {% block body_block %}
+<link
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<style>
+  #page-content-wrapper {
+    background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+    background-size: cover;
+    /* Add any other styles you need for #page-content-wrapper */
+  }
+  .jumbotron {
+    background-color: rgba(254, 255, 255, 0.8); /* Darker background color */
+    border: 2px solid #333; /* Add a border */
+    color: #ffffff; /* Light text color */
+    /* Other styles for the jumbotron */
+
+    margin: 0 auto;
+
+    /* Styles */
+  }
+  .nav-tabs .nav-link {
+    margin-right: 5px;
+    color: #555;
+    background-color: #e9ecef;
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #ffff;
+    background-color: #9c7b16;
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .line-divider {
+    border-top: 1px solid #333;
+    margin: 20px 0;
+  }
+
+  .All-Font {
+    font-family: "Poppins", sans-serif;
+  }
+  /* .arrow-right {
+    position: absolute;
+    top: 50%;
+    right: -15px; 
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent; 
+    border-bottom: 10px solid transparent; 
+    border-left: 15px solid #9c7b16; 
+    transform: translateY(-50%);
+} */
+
+  .box {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+    border: 0px solid #333;
+    border-radius: 30px;
+    padding: 25px;
+  }
+  .box1 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 300px;
+    height: 60px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Add box shadow for a subtle shadow effect */
+    opacity: 1;
+    /* margin-right: 10px; */
+  }
+  .box2 {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    flex-direction: column;
+    width: fit-content; /* Set the width of the box */
+    height: fit-content; /* Set the height of the box */
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px; /* Add padding inside the box */
+  }
+  .custom-button {
+    width: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-align: center;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    border: solid #9c7b16;
+    cursor: pointer;
+    margin-bottom: 10px;
+    -webkit-text-stroke: 1px black;
+  }
+  .btn-bg-1 {
+    background-image: url('{% static "img/technoBg.jpg" %}');
+  }
+
+  .btn-bg-2 {
+    background-image: url('{% static "img/coffee.png" %}');
+  }
+</style>
+
+<!-- FILEPATH: /c:/Users/kirkm/Documents/CAPSTONE/Wallet/facility_reservation/wallet/templates/wallet/edit_user_profile.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit User Profile</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+        background-size: cover;
+      }
+
+      .jumbotron {
+        background-color: rgba(254, 255, 255, 0.8);
+        border: 2px solid #333;
+        color: #ffffff;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .nav-tabs .nav-link {
+        color: #555;
+        background-color: #e9ecef;
+        font-size: 12px;
+        margin-right: 5px;
+        padding: 10px 20px;
+      }
+
+      .nav-tabs .nav-link.active {
+        background-color: #9c7b16;
+        color: #ffff;
+        font-size: 12px;
+        padding: 10px 20px;
+      }
+
+      .line-divider {
+        border-top: 1px solid #333;
+        margin: 20px 0;
+      }
+
+      .font-poppins {
+        font-family: "Poppins", sans-serif;
+      }
+
+      .box {
+        align-self: center;
+        border: 0px solid #333;
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 25px;
+        height: fit-content;
+        width: fit-content;
+      }
+
+      .box1 {
+        align-self: center;
+        background-color: #ffffff;
+        border: 1px solid #333;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 60px;
+        opacity: 1;
+        padding: 20px;
+        width: 300px;
+      }
+
+      .box2 {
+        align-self: center;
+        border: 2px solid #333;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+        height: fit-content;
+        width: fit-content;
+      }
+
+      .custom-button {
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        border: solid #9c7b16;
+        color: white;
+        cursor: pointer;
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        padding: 20px;
+        text-align: center;
+        -webkit-text-stroke: 1px black;
+        width: 300px;
+      }
+
+      .btn-bg-1 {
+        background-image: url('{% static "img/technoBg.jpg" %}');
+      }
+
+      .btn-bg-2 {
+        background-image: url('{% static "img/coffee.png" %}');
+      }
+
+      .list-group-item.active-link {
+        /* Define styles for active state */
+        background-color: #faca04;
+        color: #000000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <br />
+      <div class="card mb-4">
+        <div class="card-body">
+          <h1 class="my-4">Edit Your Profile</h1>
+          <p class="card-text">
+            <strong>First Name:</strong> <span>{{ first_name }}</span>
+          </p>
+          <p class="card-text">
+            <strong>Last Name:</strong> <span>{{ last_name }}</span>
+          </p>
+          <p class="card-text">
+            <strong>Picture:</strong>
+            <img
+              src="/wallet{{ profile_picture.url}}"
+              class="img-fluid"
+              style="max-height: 1in; max-width: 1in"
+            />
+          </p>
+
+          <!-- Button to trigger the modal -->
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#editProfileModal"
+          >
+            Edit Profile
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="editProfileModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editProfileModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProfileModalLabel">
+              Edit Your Profile
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">{{ form.as_p }}</div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <a href="{% url 'wallet:usrdashboard' %}" class="btn btn-secondary"
+        >Back to Dashboard</a
+      >
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
+{% endblock %}

@@ -1,0 +1,31 @@
+
+
+/*--------------------REPORT NAV BUTTONS---------------------------*/
+    div.btn-report-nav{
+        border-radius: 8px 8px 0px 0px;
+        background: gray;
+        padding: 20px;
+        margin:10px 5px 0px 0px;
+        width: 200px;
+        height: 30px;
+        text-align:center;
+        font-weight:bold;
+        font-size:20px;
+        color:white;
+    }
+    .btn-report-nav.active{
+        background:yellow;
+        color:black;
+        margin-top:0px;
+        padding:25px;
+    }
+    a.link-report-nav{
+        text-decoration:none;
+    }
+/*----------------------------EXPORT BUTTON-----------------------------------*/
+    .btn-export{
+        background-color:black;
+        color:yellow;
+        border:none;
+        padding:5px 10px 5px 10px;
+    }

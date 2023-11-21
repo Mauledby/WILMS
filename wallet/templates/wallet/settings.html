@@ -1,0 +1,294 @@
+{% extends 'wallet/userbase.html' %}
+
+{% block headerinclude %}
+    {% load static %}
+{% endblock %}
+
+{% block body_block %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  #page-content-wrapper {
+        background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+        background-size: cover;
+    }
+
+    
+
+    .jumbotron {
+        background-color: rgba(254, 255, 255, 0.8);
+        border: 2px solid #333;
+        color: #ffffff;
+        margin: 0 auto;
+    }
+
+
+    .nav-tabs .nav-link {
+        margin-right: 5px;
+        color: #555;
+        background-color: #e9ecef;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #ffff;
+        background-color: #9c7b16;
+    }
+
+    .box {
+        display: flex;
+        justify-content: center;
+        align-self: center;
+        flex-direction: column;
+        width: fit-content;
+        height: fit-content;
+        border: 2px solid #e33030;
+        border-radius: 20px;
+        padding: 20px;
+    }
+
+    .box1 {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        width: 344px;
+        height: 246px;
+        border: 2px solid #333;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .box2 {
+        display: flex;
+        align-self: center;
+        justify-content: center;
+        flex-direction: column;
+        width: fit-content;
+        height: fit-content;
+        border: 2px solid #333;
+        border-radius: 20px;
+        padding: 20px;
+        margin-top: 10px;
+    }
+    /* text for top up to add more coins */
+    .centered-text {
+    text-align: center;
+    margin-top: 20px; 
+}
+        .custom-text-color {
+            color: #000000; /* desired text color for top up message */
+        }
+
+        .centered-button {
+            display: flex;
+            justify-content: center;
+        }
+
+    .custom-button {
+            width: 300px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            text-align: center;
+            padding: 20px;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            border:solid #9c7b16;
+            cursor: pointer;
+            margin-bottom: 10px;
+            -webkit-text-stroke: 1px black;
+    }
+    .body {
+    margin: 0;
+    padding: 0;
+}
+
+    .line-divider {
+    border-top: 1px solid #333;
+    margin: 20px 0;
+}
+
+ 
+
+
+.form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    font-weight: bold;
+  }
+  .form-control {
+    width: 70%;
+    height: 50px;
+    border-radius: 10px;
+  }
+
+label {
+    font-weight: bold;
+    color: #333;
+}
+
+
+
+
+button[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Add this to your existing style tag or create a new style tag in your HTML */
+
+.centered-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Adjust as needed for spacing */
+}
+
+/* Additional styling for the button */
+.centered-button a {
+    width: 200px; /* Adjust width as needed */
+    text-align: center;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background-color: #333; /* Primary button color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    -webkit-text-stroke: 1px black;
+    text-decoration: none; /* Remove underlines */
+}
+
+.centered-button a:hover {
+    background-color: #9c7b16; /* Change color on hover */
+}
+
+.All-Font{
+    font-family: 'Poppins', sans-serif;
+}
+.list-group-item.active-link {
+        /* Define styles for active state */
+        background-color: #faca04;
+        color: #000000;
+    }
+
+
+</style>
+
+
+    <!-- Tab content -->
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="coinsdash">
+            <div class="jumbotron">
+                <h3 class="All-Font" style="color: #000;"> PASSWORD <img src="{% static 'img/password.png' %}" alt="Star Icon" style="width: 40x; height: 40px; margin-right: 5px;"> </h3>
+
+                <h5 class="All-Font" style="color: #7c7c7b;"> Please enter your current password to change your password. </h5>
+
+                
+                
+
+                <div class="line-divider"></div>
+                <br>    
+
+                <br> 
+                <!-- <div class="form-group"> -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label All-Font" for="current_password">Current Password<span class="required-field">:</span>*</label>
+                        <div class="col-sm-9">
+                            <input class="form-control All-Font" type="password" name="current_password" id="current_password" placeholder="Enter your current password"> 
+                        </div>
+
+                    </div>
+                    <div class="line-divider"></div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label All-Font" for="new_password">New Password <span class="required-field">:</span>*</label>
+                        <div class="col-sm-9">
+                            <input class="form-control All-Font" type="password" name="new_password" id="new_password" placeholder="Enter your new password"> 
+                        </div>
+
+                    </div>
+                    <div class="line-divider"></div>
+
+                    <div class="form-group row" >
+                        <label class="col-sm-3 col-form-label All-Font" for="confirm_password">Confirm Password <span class="required-field">:</span>*</label>
+                        <div class="col-sm-9">
+                            <input class="form-control All-Font" type="password" name="confirm_password" id="confirm_password" placeholder="Confirm your new password">
+                            <div id="password_match_error" class="text-danger"></div> <!-- Error message placeholder -->
+                        </div>
+                    </div>
+                    <div class="line-divider"></div>
+                    
+
+                    
+
+                    <button type="submit" class="btn btn-primary All-Font">Submit</button>
+
+                        
+                                
+                            </div>
+                        </div>
+                    </div>
+                        
+                </div>
+
+                <br>
+                <br>
+                <br>
+
+                
+                        <br> 
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+                </form>
+            </div>
+        </div>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const newPasswordInput = document.getElementById("new_password");
+        const confirmPasswordInput = document.getElementById("confirm_password");
+        const passwordMatchError = document.getElementById("password_match_error");
+        const submitButton = document.querySelector("button[type='submit']");
+
+        // Function to validate password match
+        function validatePasswordMatch() {
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (newPassword !== confirmPassword) {
+                passwordMatchError.textContent = "Passwords do not match.";
+                submitButton.disabled = true;
+            } else {
+                passwordMatchError.textContent = "";
+                submitButton.disabled = false;
+            }
+        }
+
+        // Add event listeners to the password fields
+        newPasswordInput.addEventListener("input", validatePasswordMatch);
+        confirmPasswordInput.addEventListener("input", validatePasswordMatch);
+    });
+</script>
+
+{% endblock %}

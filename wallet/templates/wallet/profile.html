@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scan and Display RFID</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <form method="post" id="rfidForm">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="rfid_value">RFID Value:</label>
+        <input
+          type="text"
+          class="form-control"
+          name="rfid_value"
+          id="rfid_value"
+          placeholder="Enter RFID value"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Scan RFID</button>
+    </form>
+
+    {% if error_message %}
+    <div class="alert alert-danger" role="alert">
+      {{ error_message }}
+    </div>
+    {% endif %}
+
+    {% if user_info %}
+    <div class="mt-4">
+      <h2>User Information</h2>
+      <p>
+        <strong>First Name:</strong> <span>{{ user_info.first_name }}</span>
+      </p>
+      <p>
+        <strong>Last Name:</strong> <span>{{ user_info.last_name }}</span>
+      </p>
+      <p>
+        <strong>Picture:</strong>
+        <img
+          src="/wallet{{ user_info.profile_picture.url }}"
+          class="img-fluid"
+          style="max-height: 1in; max-width: 1in"
+        />
+      </p>
+    </div>
+    {% endif %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    // JavaScript to set the focus on the input field when the window loads
+    window.onload = function () {
+      var rfidInput = document.getElementById('rfid_value');
+      rfidInput.focus(); // Set the focus on the input field
+    };
+  </script>
+  </body>
+</html>

@@ -1,0 +1,452 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WILMS</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap"
+    />
+    <link rel="icon" href="{% static 'img/title.PNG' %}" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+      #loginBtn {
+        width: 70px;
+        height: 30px;
+        margin-left: 15px;
+        font-size: 15px;
+        padding-top: 1px;
+        margin: 0;
+        border-color: black;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+        text-decoration: none;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: url("{% static 'img/wilms.JPG' %}");
+        background-size: cover;
+      }
+
+      .navbar {
+        position: fixed;
+        width: 100%;
+        z-index: 3;
+        padding: 30px 0;
+        font-family: "Poppins", sans-serif;
+        transition: all 0.3s ease;
+      }
+
+      .navbar .max-width {
+        max-width: 1300px;
+        padding: 0 80px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .navbar .logo a {
+        font-size: 35px;
+        font-weight: 600;
+        color: #fff; /* color of the Name WALL in WALLET */
+      }
+      .navbar .logo a span {
+        color: #fecc04;
+        transition: all 0.3s ease;
+      }
+      .navbar .menu li {
+        list-style: none;
+        display: inline-block;
+      }
+      .navbar .menu li a {
+        color: #fff; /* here is the color for Login, Register, etc. in header */
+        display: block;
+        font-size: 16px;
+        letter-spacing: 1px;
+        margin-left: 25px;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+      }
+      .navbar .menu li a:hover {
+        color: #967301;
+      }
+      .navbar.sticky {
+        /* padding: 15px 50px; */
+        position: fixed;
+        top: 0;
+        background: #fac004; /* Background color for the sticky navbar */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.9);
+        height: fit-content;
+        color: #0000;
+        text-emphasis-color: #0000;
+      }
+
+      .menu-btn {
+        color: #fff;
+        /* //menu bar color  */
+        font-size: 30px;
+        cursor: pointer;
+        display: none;
+        /* removes the display of the bar  */
+      }
+
+      section {
+        padding: 100px;
+      }
+      .banner-container {
+        position: relative;
+        width: 100%;
+        height: 110vh;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4)),
+          url('{% static "img/canvabg.png" %}');
+        background-size: cover;
+        background-position: center;
+      }
+      .banner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 60%;
+        height: calc(100vh - 60px);
+        color: aliceblue;
+      }
+      .banner h1 {
+        font-size: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .banner p {
+        margin: 20px auto;
+        font-weight: 100;
+        line-height: 25px;
+      }
+      .btn {
+        width: 200px;
+        padding: 15px 0;
+        margin: 20px 10px;
+        background: #fecc04;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: 3px solid #fecc04;
+        border-radius: 8px;
+        text-transform: uppercase;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        background-color: #9c7b16;
+        border-color: rgb(118, 91, 0);
+      }
+      .left-section {
+        flex: 1;
+        padding: 20px 0;
+        order: 1;
+        width: 100px;
+        align-self: flex-start;
+      }
+
+      /* responsive media query sheeesh */
+
+      @media (max-width: 991px) {
+        .navbar .max-width {
+          padding: 0 50px;
+        }
+      }
+      @media (max-width: 947px) {
+        .menu-btn {
+          display: block;
+          z-index: 999;
+        }
+        .banner {
+          max-width: 930px;
+        }
+        .banner h1 {
+          font-size: 70px;
+        }
+        .banner p {
+          font-size: 20px;
+        }
+        .banner .btn {
+          font-size: 20px;
+        }
+        menu-btn i.active::before {
+          content: "\f00d";
+        }
+        .navbar .menu {
+          position: fixed;
+          height: 100vh;
+          width: 100%;
+          left: -100%;
+          top: 0;
+          background: #0000;
+          text-align: center;
+          padding-top: 80px;
+          transition: all 0.3s ease;
+        }
+        .navbar .menu .active {
+          left: 0;
+        }
+        .navbar .menu li {
+          display: block;
+        }
+        .navbar .menu li a {
+          display: inline-block;
+          margin: 20px 0;
+          font-size: 20px;
+        }
+      }
+      @media (max-width: 690px) {
+        .navbar .max-width {
+          padding: 0 23px;
+        }
+        .banner h1 {
+          font-size: 60px;
+        }
+        .banner .btn {
+          font-size: 20px;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .banner h1 {
+          font-size: 20px;
+        }
+        .banner p {
+          font-size: 13px;
+          text-align: center;
+        }
+        .banner .btn {
+          font-size: 14px;
+          width: 150px;
+        }
+        .banner {
+          padding: 0 20px;
+        }
+      }
+
+      /* LOGIN FORM CSS  */
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: auto;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        border: 1px solid #888;
+        width: 80%;
+        margin: 10% auto; /* Adjust the top margin to center the modal */
+        padding: 20px;
+      }
+      #email,
+      #password {
+        width: 80%; /* Adjust the width as per your preference */
+        padding: 8px; /* Adjust the padding for spacing inside the input */
+        margin: 8px 0; /* Adjust the margin for the input elements */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .modal-content form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="max-width">
+        <div>
+          <img
+            src="{% static 'img/w1_yellow.png' %}"
+            alt=""
+            style="
+              height: 30%;
+              width: 30%;
+              margin-bottom: -20px;
+              margin-top: -10px;
+            "
+          />
+        </div>
+        <ul class="menu">
+          {% if not request.user.is_authenticated %}
+          <li><a href="/wallet/register" class="menu-btn">REGISTER</a></li>
+          <li style="margin-left: 10px">
+            <button class="btn btn-outline-success" type="button" id="loginBtn">
+              LOGIN
+            </button>
+          </li>
+          <!-- prettier-ignore -->
+          {% endif %} 
+            {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
+          <li>
+            <a href="{% url 'wallet:dashboard' %}" class="menu-btn">Wallet</a>
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'wallet:usrdashboard' %}" class="menu-btn"
+              >Wallet</a
+            >
+          </li>
+          <li>
+            <a href="{% url 'facility:facility' %}" class="menu-btn"
+              >Facility</a
+            >
+          </li>
+          <li>
+            <a href="#" class="menu-btn">Check Facilities</a>
+          </li>
+          {% endif %} {% endif %}
+          <!-- Login button in the navbar -->
+        </ul>
+        <i class="fas fa-bars menu-btn"></i>
+      </div>
+    </nav>
+
+    <section class="banner-container">
+      <div class="banner">
+        <h1>Innovative, Streamlined, Organized</h1>
+        <p style="text-align: center">
+          Wildcats Innovation Labs offers a versatile platform with a built-in
+          wallet for seamless transactions, a reservation system for easy lab
+          access, clear rules for a structured environment, and crowd control
+          functions ensuring optimal user flow. Join us for a streamlined
+          innovation experience.
+        </p>
+        <button class="btn">Discover Now</button>
+      </div>
+    </section>
+
+    <div
+      class="modal fade"
+      id="loginModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div
+            class="modal-header"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h2 class="modal-title" id="exampleModalLabel">LOGIN</h2>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              style="width: 30px"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form
+              id="login-form"
+              method="post"
+              action="{% url 'wallet:user_login' %}"
+            >
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="email" class="col-form-label"
+                  >Enter your email:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="password" class="col-form-label"
+                  >Enter your password:</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  required
+                />
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $(window).scroll(function () {
+          if ($(this).scrollTop() > 30) {
+            // Adjust the scroll position where the navbar becomes sticky
+            $(".navbar").addClass("sticky");
+          } else {
+            $(".navbar").removeClass("sticky");
+          }
+        });
+      });
+
+      //toggle menu
+      $(".menu-btn").click(function () {
+        $(".navbar .menu").toggleClass("active");
+        $(".menu-btn i").toggleClass("active");
+      });
+
+      $("#loginBannerBtn").click(function () {
+        $("#loginModal").show();
+      });
+
+      $("#loginBtn").click(function () {
+        $("#loginModal").show();
+      });
+
+      $(".close").click(function () {
+        $("#loginModal").hide();
+      });
+    </script>
+  </body>
+</html>

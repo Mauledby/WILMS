@@ -1,0 +1,68 @@
+@font-face {
+  font-family: 'NavBar';
+  src: url('../fonts/Roboto-Bold.ttf') format('truetype');
+}
+#page-content-wrapper{ background: url("../img/basebg.PNG")}
+#sidebar-wrapper{background-color:#fff200 !important; font-family:"NavBar" !important; border: 0px !important}
+#sidebar-wrapper .sidebar-heading{padding: 0px !important; width:15rem}
+.sidebar-heading img{width:100% !important}
+
+.list-group-item{color: #000 !important; background-color:#fff200 !important; padding-bottom: 1rem; padding-top: 1rem; border: 0 !important}
+a.list-group-item:hover, a.list-group-item.selected{background-color:#000 !important;color:#fff200 !important; background: url("../img/right.PNG") top right no-repeat !important; background-size: auto 100% !important}
+a.list-group-item:hover > #icon_d { content: url("../img/icons/dashboard_black.png"); }
+a.list-group-item:hover > #icon_m { content: url("../img/icons/manage_black.png"); }
+a.list-group-item:hover > #icon_r { content: url("../img/icons/reports_black.png"); }
+a.list-group-item:hover > #icon_a { content: url("../img/icons/accounts_black.png"); }
+
+
+a.bg-light:focus > #icon_d, #icon_d.selected { content: url("../img/icons/dashboard_black.png"); }
+a.bg-light:focus > #icon_m, #icon_m.selected { content: url("../img/icons/manage_black.png"); }
+a.bg-light:focus > #icon_r, #icon_r.selected { content: url("../img/icons/reports_black.png"); }
+a.bg-light:focus > #icon_a, #icon_a.selected { content: url("../img/icons/accounts_black.png"); }
+
+a.list-group-item:active{background-color:#000 !important;color:#fff200 !important}
+a.bg-light:focus, a.bg-light.selected{background-color:#000 !important;color:#fff200 !important; background: url("../img/right.PNG") #000 top right no-repeat !important; background-size: auto 100% !important}
+a.list-group-item-action:hover{background-color:#000 !important;color:#fff200 !important}
+a.list-group-item-action:active{background-color:#000 !important;color:#fff200 !important}
+
+.ml-auto, .mx-auto{margin-left: 20px !important; margin-right: auto !important}
+.mt-lg-0, .my-lg-0{margin-top: 0 !important; margin-bottom: 0 !important}
+.navbar-expand-lg .navbar-collapse{height: 100px; background-color:#000}
+.navbar{padding: 0px !important}
+
+.navbar-expand-lg .navbar-nav .nav-link{padding-left:.75rem !important;padding-right:.75rem !important; color:#fff; font-family:"NavBar"; font-size: 18px}
+
+.nav-link:hover, .navbar-light .navbar-nav .active>.nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show>.nav-link{border-bottom: 3px solid #fff000; color: #fff000 !important}
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover{border-bottom: 3px solid #fff000; color: #fff000 !important}
+.nav-link.selected{border-bottom: 3px solid #fff000; color: #fff000 !important}
+
+.container-fluid h4{font-family:"NavBar"; color:#fff000 !important}
+.dataTables_wrapper.dt-bootstrap4{font-family:"NavBar"; font-size:11px;}
+div.dataTables_wrapper div.dataTables_paginate ul.pagination{justify-content:center !important}
+.dataTables_wrapper .dt-bootstrap4 div:nth-child(3) div{max-width: 100% !important; flex: 0 0 100% !important}
+#example_info{text-align: center}
+.page-link{border:0px}
+.page-item.active .page-link{color:#000 !important; background-color:#fff000 !important; border-color:#fff000 !important}
+.dataTables_wrapper.dt-bootstrap4 .row{ padding:1rem;}
+.dataTables_wrapper.dt-bootstrap4 .row:first-child{margin: 0px !important; background-color:#fff000; padding-top:2rem; margin-bottom: -10px !important}
+.dataTables_wrapper.dt-bootstrap4 .row:nth-child(2){padding: 0px}
+.dataTables_wrapper.dt-bootstrap4 .row:last-child{padding-bottom:2rem}
+.dataTables_wrapper.dt-bootstrap4 table{border:0px}
+.dataTables_wrapper.dt-bootstrap4 thead{background-color: #fff000;}
+
+.nav-tabs .nav-link{background-color:#444 !important; color:#ddd; margin: 2px; margin-bottom: 0px; padding: .25rem; padding-left:1.25rem; padding-right:1.25rem; margin-top:1rem}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{background-color:#fff000 !important; border: solid 1px #000; border-bottom: solid 2px #fff000;border-top-left-radius: .5rem !important; border-top-right-radius: .5rem !important; color:#000 !important; ; margin-top:0px; padding-top: .75rem}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover{border: solid 1px #373737; border-bottom:0px; background-color:#1b1a1a ;}
+.nav-tabs .nav-item.show .nav-link:hover, .nav-tabs .nav-link.active:hover{color:#000 !important; }
+.nav-tabs{border-bottom:0px; font-family:"NavBar"!important}
+.tab-content{background-color:#fefefe; border: 0px; font-family:"NavBar"!important}
+.tabheaher{background-color:#fff000; padding:1rem; text-align:center; font-size: 1.2rem !important; font-weight: 900; }
+.headerTitle {background-color:#fff000; color:#fff; margin-top: -.5rem; height: 1rem; height:2rem; text-align: center; padding-top: .2rem; font-size: 1.6rem; font-weight: 700; }
+.tab-pane{padding: 1rem}
+.form-control.datetimepicker-input{font-size:12px !important}
+body{font-size: .75rem !important}
+.nav-tabs .nav-item-inner{padding-bottom:1rem !important;font-size: 1.2rem !important; border:none !important; background:none !important; color: #fff !important;}
+.nav-tabs .nav-item-inner:focus, .nav-tabs .nav-item-inner:hover, .nav-tabs .nav-item-inner.active{background:url("../img/arrow_down.png") center bottom no-repeat !important; background-color:none !important;}
+.inner-nav{background:url("../img/bg-nav.png") !important; background-size: auto 100% !important}
+
+

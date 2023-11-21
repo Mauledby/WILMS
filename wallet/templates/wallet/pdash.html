@@ -1,0 +1,346 @@
+<!-- user_list.html -->
+{% extends 'wallet/userbase.html' %} {% load static %} {% block body_block %}
+
+<link
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<style>
+  #page-content-wrapper {
+    background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+    background-size: cover;
+    /* Add any other styles you need for #page-content-wrapper */
+  }
+  .jumbotron {
+    background-color: rgba(254, 255, 255, 0.8); /* Darker background color */
+    border: 2px solid #333; /* Add a border */
+    color: #ffffff; /* Light text color */
+    /* Other styles for the jumbotron */
+
+    margin: 0 auto;
+
+    /* Styles */
+  }
+  .nav-tabs .nav-link {
+    margin-right: 5px;
+    color: #555;
+    background-color: #e9ecef;
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #ffff;
+    background-color: #9c7b16;
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .line-divider {
+    border-top: 1px solid #333;
+    margin: 20px 0;
+  }
+
+  .All-Font {
+    font-family: "Poppins", sans-serif;
+  }
+  /* .arrow-right {
+    position: absolute;
+    top: 50%;
+    right: -15px; 
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent; 
+    border-bottom: 10px solid transparent; 
+    border-left: 15px solid #9c7b16; 
+    transform: translateY(-50%);
+} */
+
+  .box {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+    border: 0px solid #333;
+    border-radius: 30px;
+    padding: 25px;
+  }
+  .box1 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 300px;
+    height: 60px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Add box shadow for a subtle shadow effect */
+    opacity: 1;
+    /* margin-right: 10px; */
+  }
+  .box2 {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    flex-direction: column;
+    width: fit-content; /* Set the width of the box */
+    height: fit-content; /* Set the height of the box */
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px; /* Add padding inside the box */
+  }
+  .custom-button {
+    width: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-align: center;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    border: solid #9c7b16;
+    cursor: pointer;
+    margin-bottom: 10px;
+    -webkit-text-stroke: 1px black;
+  }
+  .btn-bg-1 {
+    background-image: url('{% static "img/technoBg.jpg" %}');
+  }
+
+  .btn-bg-2 {
+    background-image: url('{% static "img/coffee.png" %}');
+  }
+
+  .list-group-item.active-link {
+    /* Define styles for active state */
+    background-color: #faca04;
+    color: #000000;
+  }
+</style>
+
+<div
+  class="container custom-container"
+  style="margin-top: 20px; display: flexbox; align-self: center"
+>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link All-Font active" data-toggle="tab" href="#pointstab"
+        >POINTS</a
+      >
+    </li>
+    <li class="nav-item">
+      <a class="nav-link All-Font" data-toggle="tab" href="#transactionsTab"
+        >TRANSACTIONS</a
+      >
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#paymentsTab"
+        >Payments Made</a
+      >
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="pointstab">
+      <div class="jumbotron">
+        <h4 class="All-Font" style="color: #000">
+          POINTS
+          <img
+            src="{% static 'img/point.png' %}"
+            alt="Star Icon"
+            style="width: 40x; height: 40px; margin-right: 5px"
+          />
+        </h4>
+        <h6 class="All-Font" style="color: #7c7c7b">
+          Below are your existing points.
+        </h6>
+        <div class="line-divider"></div>
+
+        <div class="row">
+          <div class="col" style="margin-right: 10px"></div>
+          <div class="row" style="margin-right: 10px">
+            <!-- <h4 style="color: #000;">Coins</h4> -->
+            <div
+              class="box1"
+              style="
+                background-color: #ffffff;
+                padding: 20px;
+                opacity: 1;
+                position: relative;
+              "
+            >
+              <div
+                class="icon"
+                style="position: absolute; left: 10px; top: 10px"
+              >
+                <img
+                  src="{% static 'img/coin.png' %}"
+                  alt="Point Icon"
+                  style="width: 30px; height: 30px"
+                />
+              </div>
+              <div class="text-container" style="text-align: center">
+                <h5
+                  class="All-Font"
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  CURRENT POINTS
+                </h5>
+                <h6
+                  class="All-Font"
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  {{ point_balance }}
+                </h6>
+              </div>
+            </div>
+          </div>
+
+          <div class="col" style="margin-right: 10px">
+            <!-- <h4 style="color: #000;">Pending Requests</h4> -->
+            <div style="padding: 20px; opacity: 1; position: relative"></div>
+          </div>
+          <br />
+        </div>
+
+        <br />
+        <div class="main-scroll-div">
+          <div></div>
+          <div class="scroll-images">
+            <div class="child">
+              <img
+                class="child-img"
+                src="{% static 'img/facility/coffeeshop.jpg' %}"
+                alt="image1"
+              />
+            </div>
+            <div class="child">
+              <img
+                class="child-img"
+                src="{% static 'img/facility/conferencerooms.jpg' %}"
+                alt="image2"
+              />
+            </div>
+            <div class="child">
+              <img
+                class="child-img"
+                src="{% static 'img/facility/coworking2.jpg' %}"
+                alt="image3"
+              />
+            </div>
+            <div class="child">
+              <img
+                class="child-img"
+                src="{% static 'img/facility/kiosk.jpg' %}"
+                alt="image4"
+              />
+            </div>
+            <div class="child">
+              <img
+                class="child-img"
+                src="{% static 'img/facility/coworking3.jpg' %}"
+                alt="image5"
+              />
+            </div>
+            <div class="child">
+              <img
+                class="child-img"
+                src="{% static 'img/facility/coffeeshop2.jpg' %}"
+                alt="image6"
+              />
+            </div>
+          </div>
+          <div></div>
+        </div>
+
+        <br />
+        <br />
+        <br />
+        <div class="line-divider"></div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="transactionsTab">
+      <div class="jumbotron">
+        <h1 style="color: #000">Transactions</h1>
+        <table id="transactions" class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Transaction ID</th>
+              <th>Recipient</th>
+              <th>Sender</th>
+              <th>Points</th>
+              <th>Date</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for transaction in transactions %}
+            <tr>
+              <td>{{ transaction.transactionID }}</td>
+              <td>{{ transaction.recipient }}</td>
+              <td>{{ transaction.sender }}</td>
+              <td>{{ transaction.points }}</td>
+              <td>{{ transaction.date }}</td>
+              <td>{{ transaction.time }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="paymentsTab">
+      <div class="jumbotron">
+        <h1 style="color: #000">Payments</h1>
+        <div
+          class="table-container"
+          style="max-height: 450px; overflow-y: auto"
+        >
+          <table id="payments" class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Reference Code</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Transaction Date</th>
+                <th>Transaction ID</th>
+                <th>Transaction Amount</th>
+                <th>Customer ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for vendor_transaction in vendor_transactions %}
+              <tr>
+                <td>{{ vendor_transaction.reference_code }}</td>
+                <td>{{ vendor_transaction.date }}</td>
+                <td>{{ vendor_transaction.description }}</td>
+                <td>{{ vendor_transaction.transaction_date }}</td>
+                <td>{{ vendor_transaction.transaction_id }}</td>
+                <td>{{ vendor_transaction.transaction_amount }}</td>
+                <td>{{ vendor_transaction.customer_id }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+      {% endblock %}
+    </div>
+  </div>
+</div>

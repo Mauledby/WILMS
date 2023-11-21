@@ -1,0 +1,578 @@
+{% extends 'wallet/userbase.html' %} {% load static %} {% block body_block %}
+<style>
+  #page-content-wrapper {
+    background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+    background-size: cover;
+    /* Add any other styles you need for #page-content-wrapper */
+  }
+  .jumbotron {
+    background-color: rgba(254, 255, 255, 0.8); /* Darker background color */
+    border: 2px solid #333;
+    color: #ffffff; 
+    margin: 0 auto;
+  }
+
+  .jumbotron-fluid {
+    width: 200px;
+    height: 50px;
+    color: #000;
+    text-size-adjust: 10px;
+    border-style: solid;
+    margin-bottom: 10px;
+  }
+  .nav-tabs .nav-link {
+    margin-right: 5px;
+    color: #555; /* Default text color for inactive links */
+    background-color: #e9ecef; /* Default background color for inactive links */
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #ffff; /* Text color for active link (darker) */
+    background-color: #9c7b16; /* Background color for active link */
+  }
+
+  /* added for increment 4 */
+  .chart-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around; /* Adjust this as needed */
+    margin-top: 30px;
+}
+
+.chart {
+    text-align: center;
+    background-color: #e9ecef;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: fit-content;
+    margin: 10px;
+}
+    /* CSS for active and hover states */
+    .list-group-item {
+        /* Define the default styles for the list items */
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .list-group-item:hover {
+        /* Define styles for hover state */
+        background-color: #f0f0f0;
+        color: #000000;
+    }
+
+    .list-group-item.active-link {
+        /* Define styles for active state */
+        background-color: #faca04;
+        color: #000000;
+    }
+    .All-Font {
+    font-family: "Poppins";
+  }
+</style>
+
+<div class="container custom-container All-Font" style="margin-top: 20px">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#dashboardTab"
+        >Dashboard</a
+      >
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#userListTab"
+        >User List</a
+      >
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#transactionsTab"
+        >Point Transactions</a
+      >
+    </li>
+  </ul>
+  
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="dashboardTab">
+      <div class="jumbotron" style="color: #000; padding: 20px; border-radius: 10px; text-align: center;">
+        <h1 style="font-size: 32px;">Dashboard</h1>
+        <div style="background-color: #e9ecef; color: #000; padding: 10px; border-radius: 5px; display: inline-block;">
+          <p style="font-size: 18px; margin: 0; color: #000;">Total Points Awarded:</p>
+          <p style="font-size: 32px; margin: 0; color: #000;" id="totalPointsText"><strong>0</strong></p>
+        </div>
+        <div style="background-color: #e9ecef; color: #000; padding: 10px; border-radius: 5px; display: inline-block;">
+          <p style="font-size: 18px; margin: 0; color: #000;">Points to give:</p>
+          <p style="font-size: 32px; margin: 0; color: #000;" id="pointstogive"><strong>{{points_to_give}}</strong></p>
+        </div>
+        <div class="chart-container" style="max-height: 400px; overflow: auto;">
+          <div class="chart">
+            <h2 style="font-size: 24px;">Points Awarded Chart</h2>
+            <canvas id="pointsPerSenderChart" style="max-width: 400px;"></canvas>
+          </div>
+          <div class="chart">
+            <h2 style="font-size: 24px;">Transactions Over Time</h2>
+            <canvas id="transactionsOverTimeChart" style="max-width: 600px;"></canvas>
+          </div>
+          <div class="chart">
+            <h2 style="font-size: 24px;">Teacher Transactions by Recipient</h2>
+            <canvas id="teacherTransactionsByRecipientChart" style="max-width: 600px;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+  
+    <div class="tab-pane fade" id="userListTab">
+      <div class="jumbotron">
+        <h1 style="color: #000">User List</h1>
+        <p style="font-size: 18px; margin: 0; color: #000;">Points to give:</p>
+        <p style="font-size: 32px; margin: 0; color: #000;" id="pointstogive"><strong>{{points_to_give}}</strong></p>
+        <form id="userSearchForm" class="form-inline" style="padding-bottom: 30px;">
+          <div class="form-group">
+              <label for="userSearch" class="mr-2" style="color: black;">Search for a User:</label>
+              <input type="text" class="form-control mr-2" id="userSearch" placeholder="Enter Email/first name/last name" style="max-width: 300px;">
+              <button type="button" class="btn btn-primary" id="searchButton">Search</button>
+          </div>
+      </form>      
+        <div
+          class="table-container"
+          style="max-height: 450px; overflow-y: auto"
+        >
+          <table id="users" class="table table-striped table-bordered">
+            <thead
+              class="thead-dark"
+              style="position: sticky; top: 0; background-color: white"
+            >
+              <tr>
+                <!-- <th>ID No.</th> -->
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Point Balance</th>
+                <th>Award Points</th>
+                <th>UserType</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users %}
+              <tr>
+                <!-- <td>{{ user.profile_id }}</td> -->
+                <td>{{ user.user.email }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.point_balance }}</td>
+                <td>
+                  <button
+                    class="btn btn-primary awardPointsButton"
+                    style="background-color: #9c7b16"
+                    data-id="{{ user.user.id }}"
+                    data-recipient="{{ user.user.id }}"
+                    data-firstname="{{user.first_name}}"
+                    data-lastname="{{user.last_name}}"
+                    data-pbal="{{user.point_balance}}"
+                    data-acctype="{% if user.user.is_superuser %}Superuser{% elif user.user.is_staff %}Teacher User{% else %}Regular User{% endif %}"
+                  >
+                    Award Points
+                  </button>
+                </td>
+                <td>
+                    {% if user.user.is_superuser %}Superuser{% elif user.user.is_staff %}Teacher User{% else %}Regular User{% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="transactionsTab">
+      <div class="jumbotron">
+        <h1 style="color: #000">Point Transactions</h1>
+        <div
+          class="table-container"
+          style="max-height: 450px; overflow-y: auto"
+        >
+          <table id="transactions" class="table table-striped table-bordered">
+            <thead
+              class="thead-dark"
+              style="position: sticky; top: 0; background-color: white"
+            >
+              <tr>
+                <th>Transaction ID</th>
+                <th>Recipient</th>
+                <th>Sender</th>
+                <th>Points</th>
+                <th>Date</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for transaction in transactions %}
+              <tr>
+                <td>{{ transaction.transactionID }}</td>
+                <td>{{ transaction.recipient }}</td>
+                <td>{{ transaction.sender }}</td>
+                <td>{{ transaction.points }}</td>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.time }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="awardPointsModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title">Award Points</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <!-- Award Points modal content as it is -->
+                  <form id="awardPointsForm" method="post" action="">
+                      {% csrf_token %}
+                      <!-- Form fields for awarding points go here -->
+                      <div class="form-group">
+                          <label for="recipient">Target User:</label>
+                          <input type="text" class="form-control" id="recipient" name="recipient" readonly/>
+                      </div>
+                      <div class="form-group">
+                          <label for="points">Points to add:</label>
+                          <input type="number" class="form-control" id="points" name="points"/>
+                      </div>
+                      <div class="form-group">
+                          <label for="date">Date:</label>
+                          <input type="text" class="form-control" id="date" name="date" readonly/>
+                      </div>
+                      <div class="form-group">
+                          <label for="time">Time:</label>
+                          <input type="text" class="form-control" id="time" name="time" readonly/>
+                      </div>
+                      <div class="form-group">
+                          <input type="hidden" name="sender" id="sender" value="{{ request.user.id }}"/>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+              </div>
+          </div>
+      </div>
+      </div>
+    </div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        // Function to update the total points
+      function updateTotalPoints() {
+            var totalPoints = 0;
+            var transactionRows = $("#transactions tbody tr");
+
+            transactionRows.each(function () {
+                var points = parseFloat($(this).find("td:nth-child(4)").text()); // Change to the correct column number
+                totalPoints += points;
+            });
+            $("#totalPointsText").text(totalPoints);
+        }
+        updateTotalPoints();
+        // Update the total points every 5 seconds (adjust the interval as needed)
+        setInterval(updateTotalPoints, 5000);
+
+        // Search Function
+        $("#searchButton").click(function () {
+            var searchText = $("#userSearch").val().toLowerCase();
+            if (searchText) {
+                $("#users tbody tr").each(function () {
+                    var email = $(this).find("td:eq(0)").text().toLowerCase();
+                    var firstName = $(this).find("td:eq(1)").text().toLowerCase();
+                    var lastName = $(this).find("td:eq(2)").text().toLowerCase();
+                    var fullName = firstName + ' ' + lastName;
+
+                    if (email.includes(searchText) || firstName.includes(searchText) || lastName.includes(searchText) || fullName.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            } else {
+                $("#users tbody tr").show();
+            }
+        });
+
+
+        // Function to handle form submission
+        $(document).on("click", ".actionsButton", function () {
+            var recipient = $(this).data("recipient");
+
+            var id = $(this).data("id"); // Get user ID from data attribute
+            var firstName = $(this).data("firstname"); // Get first name from data attribute
+            var lastName = $(this).data("lastname"); // Get last name from data attribute
+            var pbal = $(this).data("pbal"); // get point balance from data attribute
+            var acctype = $(this).data("acctype");
+
+            // Skip "Actions" modal, directly show "Award Points" modal
+            $("#awardPointsModal .modal-title").text(firstName + " " + lastName);
+            $("#awardPointsModal .pbal").text(pbal);
+            $("#awardPointsModal .acctype").text(acctype);
+            $("#awardPointsModal .id").text(id);
+            $("#awardPointsModal .awardPointsButton").data("recipient", recipient);
+
+            // Auto-fill date and time fields with current date and time
+            var currentDate = new Date();
+            var dateString = currentDate.toLocaleDateString();
+            var timeString = currentDate.toLocaleTimeString();
+            $("#awardPointsModal #date").val(dateString);
+            $("#awardPointsModal #time").val(timeString);
+
+            $("#awardPointsModal").modal("show");
+        });
+
+
+        // Function to handle "Award Points" button click
+        $(document).on("click", ".awardPointsButton", function () {
+          $("#actionsModal").modal("hide");
+          var recipient = $(this).data("recipient");
+          $("#recipient").val(recipient);
+          var acctype = $(this).data("acctype");
+          console.log(acctype);
+          if (acctype === "Teacher User" || acctype === "Superuser") {
+            // Display an error message or perform the desired action to prevent awarding points to teachers
+            alert("You cannot award points to Teacher Users or Superusers.");
+            return; 
+            }
+
+            if (parseFloat($("#pointstogive strong").text()) === 0) {
+            // If the available points are 0, disable the "Award Points" button
+            alert("You have no points to award at the moment.");
+            return;
+  }
+
+          // Auto-fill date and time fields with current date and time
+          var currentDate = new Date();
+          var dateString = currentDate.toLocaleDateString();
+          var timeString = currentDate.toLocaleTimeString();
+          $("#date").val(dateString);
+          $("#time").val(timeString);
+
+          $("#awardPointsModal").modal("show");
+        });
+      });
+
+
+        $("#awardPointsForm").submit(function (event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          // Retrieve the form data
+          var formData = new FormData(this);
+          formData.set("recipient", $("#recipient").val());
+          formData.set("sender", $("#sender").val());
+
+          // Perform the points transaction
+          $.ajax({
+            url: "/wallet/teacher_user_list/",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              var awardedPoints = parseFloat($("#points").val());
+              var recipientID = $("#recipient").val();
+              var senderID = $("#sender").val();
+              var recipientName = response.recipient_name; // Access the concatenated name from the JSON response
+              var senderName = response.sender_name; // Access the concatenated name from the JSON response
+              var recipientPointBalanceCell = $(
+                'table#users td:contains("' + recipientID + '")'
+              ).siblings(":nth-child(4)");
+              console.log(recipientPointBalanceCell); // Check the selected cell
+              console.log(recipientPointBalanceCell.length); // Check the length of the selected cell
+              var currentPointBalance = parseFloat(
+                recipientPointBalanceCell.text()
+              );
+              var newPointBalance = currentPointBalance + awardedPoints;
+              recipientPointBalanceCell.text(newPointBalance.toFixed(2)); // Update the point balance in the table
+              console.log(awardedPoints); // Log the response for debugging purposes
+              // Update the point balance in the table or perform any other necessary actions
+
+              $("#awardPointsModal").modal("hide"); // Hide the modal
+              window.alert(
+                "\nYOU HAVE SUCCESSFULLY COMPLETED THE TRANSACTION.\n"
+              );
+              window.location.reload();
+            },
+            error: function (xhr, status, error) {
+              window.alert(
+                "\nYOU HAVE INSUFFICIENT BALANCE FOR THE TRANSACTION.\n"
+              );
+              // Handle the error response
+              console.error(error); // Log the error for debugging purposes
+              // Display an error message or perform any other necessary actions
+            },
+          });
+          
+        });
+    </script>
+
+    
+<script>
+  // Extract data from the transaction table and format it
+  var senders = [];
+  var totalPointsPerSender = [];
+  var dates = [];
+  var totalPointsOverTime = [];
+  var teachers = [];
+  var teacherTransactionCounts = [];
+  var teacherTransactionsByRecipient = {};
+
+  $("#transactions tbody tr").each(function () {
+    var sender = $(this).find("td:nth-child(3)").text();
+    var recipient = $(this).find("td:nth-child(2)").text();
+    var points = parseFloat($(this).find("td:nth-child(4)").text());
+    var date = $(this).find("td:nth-child(5)").text();
+
+    if (!senders.includes(sender)) {
+      senders.push(sender);
+      totalPointsPerSender.push(points);
+    } else {
+      var index = senders.indexOf(sender);
+      totalPointsPerSender[index] += points;
+    }
+
+    // Corrected the condition here to check if the sender is a teacher
+    if (sender === "Teacher") {
+      var teacherName = $(this).find("td:nth-child(3)").text();
+
+      if (!teacherName) {
+        teacherName = "Teacher";
+      }
+
+      if (teachers.includes(teacherName)) {
+        var index = teachers.indexOf(teacherName);
+        teacherTransactionCounts[index]++;
+      } else {
+        teachers.push(teacherName);
+        teacherTransactionCounts.push(1);
+      }
+    }
+
+    // Update teacher transactions by recipient data
+    if (!teacherTransactionsByRecipient[recipient]) {
+      teacherTransactionsByRecipient[recipient] = 1;
+    } else {
+      teacherTransactionsByRecipient[recipient]++;
+    }
+
+    dates.push(date);
+    totalPointsOverTime.push(points);
+  });
+
+  // Declare these variables outside of the loop
+  var teacherRecipients = Object.keys(teacherTransactionsByRecipient);
+  var teacherTransactionCounts = Object.values(teacherTransactionsByRecipient);
+
+  var ctx = document.getElementById("pointsPerSenderChart").getContext("2d");
+  var ctx1 = document.getElementById("transactionsOverTimeChart").getContext("2d");
+  var ctx4 = document.getElementById("teacherTransactionsByRecipientChart").getContext("2d");
+
+  var pointsChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: senders,
+      datasets: [{
+        label: 'Total Points Awarded',
+        data: totalPointsPerSender,
+        backgroundColor: 'rgba(65, 179, 163, 0.6)',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+          }
+        }]
+      }
+    }
+  });
+
+  var transactionsChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Point Transactions Over Time',
+        data: totalPointsOverTime,
+        borderColor: 'rgba(65, 179, 163, 0.8)',
+        backgroundColor: 'rgba(65, 179, 163, 0.2)',
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            unit: 'day',
+            unitStepSize: 1,
+            displayFormats: {
+              day: 'MMM D',
+            },
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Date',
+          },
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Points',
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+        }],
+      },
+    }
+  });
+
+  var teacherTransactionsByRecipientChart = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+      labels: teacherRecipients,
+      datasets: [{
+        label: 'Teacher Transactions by Recipient',
+        data: teacherTransactionCounts,
+        backgroundColor: 'rgba(65, 179, 163, 0.6)',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+          }
+        }]
+      }
+    }
+  });
+</script>
+
+
+
+    {% endblock %}
+  </div>
+</div>

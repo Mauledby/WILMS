@@ -1,0 +1,69 @@
+.df {
+	color: #fff200;
+}
+
+.util {
+	font-size: 2em;
+}
+
+
+.card-header {
+	background-color: #fff200;
+}
+
+.trhead {
+	background-color: #fff200;
+}
+
+.act {
+	font-size: 2em; 
+	font-weight: 700;
+	color: #000;
+}
+
+.gr {
+	font-weight: 700;
+}
+
+.gr:hover {
+  color: #fff200;  
+}
+
+.btnExp {
+  background-color: #000; 
+  border: 2px solid #000;
+  color: #fff200 !important;
+  text-align: center;
+  display: inline-block;
+  margin-left: 280px;
+  margin-top: 10px;
+
+}
+
+.btnExp:hover {
+  background-color: transparent;
+  border: 2px solid #000;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+/*.buttonblack {
+  background-color: #000;
+  border: none;
+  color: #fff000;
+  padding: .5rem .5rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: .8rem;
+  transition-duration: 0.1s;
+  cursor: pointer;
+}
+*/
+
+
+hr.new1 {
+  border-top: 2px solid black;
+  width: 100%;
+  margin-bottom: -10px;
+}

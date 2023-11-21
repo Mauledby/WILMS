@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <title>WILMS | Facility Management</title>
+  <link rel="icon" href="{% static 'icon/favicon3.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'facility/general.css' %}">
+  <!-- <link rel="stylesheet" href="general.css">
+  <link rel="stylesheet" href="table.css"> -->
+  <style>
+  form.modal-dialog{
+  right: -12%;
+}
+select#inputGroupSelect01 {
+    padding: 10px; /* Adjust the padding to change the text box's width */
+    font-size: 16px; /* Adjust the font size */
+    width: 236px;
+    height: 39px;
+    fill: #FFF;
+    border: 0.5px solid rgba(0, 0, 0, 0.50);
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+  }
+
+  select{
+    border-radius: 4px 4px 4px 4px;
+    border: 0.5px solid rgba(0, 0, 0, 0.80);
+
+
+  }
+
+
+  select#inputGroupSelect01::-ms-value::-arrow {
+    color: #ffcc01;
+  }
+  input[type=date]{
+  /* box-sizing: border-box; */
+  width: 236px;
+  height: 39px;
+  fill: #FFF; 
+  stroke-width: 1px; 
+  stroke: #E0E0E0;
+  margin-top: 2rem;
+}
+  </style>
+</head>
+<body>
+
+
+
+    <div class="label-page" >Revenue Reports</div>
+    <div class="table" style="height: 550px;">
+      <form method="get">
+        <div class="menu">
+          <select name="facility" class="custom-select" id="inputGroupSelect01" style="margin-top: 2rem; padding: 2px;">
+            <option name="facility" type="submit" value="">All</option>
+            {% for f in facilityt %}
+            <option name="facility" type="submit" value="{{ f.id }}">{{ f.facilityname }}</option>
+            {% endfor %}
+            <!-- <input type="hidden" name="facility" value="87"> -->
+          </select>
+      
+          <label style="margin-left: 3%; color: #606060; font-size: 20px; font-weight: 700; line-height: normal;">From:</label>
+          <input name="start_date" type="date" style="margin-left: 5px">
+          
+          <label style="margin-left: 2%; color: #606060; font-size: 20px; font-weight: 700; line-height: normal;">To:</label>
+          <input name="end_date" type="date" style="margin-left: 5px">
+          
+          <button class="btn-primary" type="submit" style="margin-left: 2%;">Proceed</button>
+        </div>
+        <br>
+        <a type="submit" href="{% url 'facility:generate_pdf' %}" style="margin-left: 80%; text-decoration: underline; color: #3C3C3C; opacity: 0.8;">🖨️Statement of Revenue</a>
+      </form>
+        <div style="margin-top: -3%; margin-bottom: 3rem;">
+            <table class="center" cellspacing="2" style="margin-top: 3rem; width: max-width; height: 150px; overflow-y: auto;">
+              <thead>
+                <tr>
+                    <th style="font-size: 17px;">Facility Name</th>
+                    <th style="font-size: 17px;">Facility Rate</th>
+                    <th style="font-size: 17px;">Number of Reservations</th>
+                    <th style="font-size: 17px;">Total Hours</th>
+                    <th style="font-size: 17px;">Facility Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for facility_name, stats in facility_stats.items %}
+                <tr>
+                    <td>{{ stats.facility.facilityname }}</td>
+                    <td>{{ stats.facility.rateperhour }}</td>
+                    <td>{{ stats.num_reservations }}</td>
+                    <td>{{ stats.total_hours }}</td>
+                    <td>{{ stats.facility_revenue|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <br>
+        
+        <div style="margin-top: -3rem;">
+            <h5 style="font-weight: bolder;">TRANSACTION HISTORY</h5>
+            <table class="center" cellspacing="2" style="margin-top: 0rem; width: max-width; height: 200px; overflow-y: auto;">
+                <thead>
+                  <tr>
+                    <th style="font-size: 12px;">TRANSACTION NUMBER</th>
+                    <th style="font-size: 12px;">TRANSACTION DATE</th>
+                    <th style="font-size: 12px;">FACILITY</th>
+                    <th style="font-size: 12px;">FACILITY FEE</th>
+                    <th style="font-size: 12px;">CUSTOMER</th>
+                    <th style="font-size: 12px;">TOTAL USAGE HOURS</th>
+                    <th style="font-size: 12px;">PAYMENT CHARGE</th>
+                    <th style="font-size: 12px;">ADDITIONAL PAYMENTS</th>
+                    <th style="font-size: 12px;">PAYMENT</th>
+                    <th style="font-size: 12px;">BOOKED DURATION</th>
+                    <th style="font-size: 12px;">TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody style="height: 1px;">
+                    {% for r in revenue_trans %}
+                    <tr>
+                        <td style="font-size: 12px;">{{ r.id }}</td>
+                        <td style="font-size: 12px;">{{ r.transaction_datetime }}</td>
+                        <td style="font-size: 12px;">{{ r.facility }}</td>
+                        <td style="font-size: 12px;">{{ r.facility_fee}}</td>
+                        <td style="font-size: 12px;">{{ r.customer_name }}</td>
+                        <td style="font-size: 12px;">{{ r.duration }} hours</td>
+                        <td style="font-size: 12px;">{{ r.charge_payment }}</td>
+                        <td style="font-size: 12px;">{{ r.add_payment }}</td>
+                        <td style="font-size: 12px;">{{ r.payment }}</td>
+                        <td style="font-size: 12px;">{{ r.duration_booking }} hours</td>
+                        <td style="font-size: 12px;">{{ r.total }}</td>
+                    </tr>
+                    {% empty %}
+                    <h3 style="position: absolute; margin-top: 20%; margin-left: 32%; opacity: 0.3;">NO TRANSACTION AT ALL</h3>
+                    {% endfor %}
+                </tbody>
+                </table>
+        </div>
+    </div>
+
+<!-- ----------------------------------------------FACILITY RULES----------------------------------------------------------- -->
+<nav class="vertical">
+  <div class="avatar">
+    <img src="{% static 'media/avatar1.png' %}" alt="Profile Picture">
+  </div>
+  <ul>
+    <li>
+      <ul>
+      </ul>
+    </li>
+    <li><a href="{% url 'facility:facility' %}" class="nav1">Facility Management</a>
+
+      <ul class="drpdwn1">
+        <li><a href="{% url 'facility:facility' %}" class="drp1">Facility</a></li>
+        <li><a  href="{% url 'facility:usertable' %}" class="drp1" >User</a></li>
+        <li><a href="{% url 'facility:calendar' %}" class="drp1">Calendar</a></li>
+      </ul>
+    </li>
+    <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2" style=" background-color: #ffcc01; color: black;">Revenue</a>
+      <ul class="drpdwn2">
+        <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2">Dashboard</a></li>
+        <li><a href="{% url 'facility:revenuereport' %}" class="drp2"  style=" background-color: #ffcc01; color: black;">Reports</a></li>
+      </ul></li>
+    <li><a href="{% url 'facility:settingfacility' %}" class="nav3">Rules Summary</a></li>
+  </ul>
+</nav>
+<!-- horizontal pane for navbar -->
+<nav class="horizontal">
+  <ul class="left">
+    <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+  </ul>
+  <ul class="center" >
+
+    {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        
+          <div class="center" style="position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
+          justify-content: center; align-items: center; ">
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
+            </div>
+        {% elif message.tags == 'success' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% elif message.tags == 'warning' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% elif message.tags == 'info' %}
+        <div style="position: fixed; z-index: 999; width: 100%;" >
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</div>
+        {% endif %} 
+      {% endfor %}
+      {% endif %}
+
+<!-- <li>
+<input type="text" class="search-bar"placeholder="Search...">
+<button type="submit" class="search-btn">Search</button></li> -->
+<li></li>
+</ul>
+  <ul class="right">
+    <a href="#"><button class="adminlabel">admin</button></a>
+  </ul>
+  
+</nav> 
+</body>
+</html>

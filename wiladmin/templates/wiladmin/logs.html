@@ -1,0 +1,61 @@
+{% extends 'wiladmin/base.html' %} {% load static %} {% block body_block %}
+
+<link rel="stylesheet" href="{% static 'css/logs.css' %}" />
+
+<body>
+  <div class="content-container">
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table class="table table-bordered table-striped mb-0">
+        <caption>
+          Booking List
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Reference ID</th>
+            <th scope="col">User ID</th>
+            <th scope="col">Date and Time</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for logs in logs %}
+          <tr>
+            <td>{{ logs.referenceid }}</td>
+            <td>{{ logs.userid }}</td>
+            <td>
+              <font color="green">Start:</font>{{ logs.starttime }} ||
+
+              {% if logs.endtime == ""%} End:
+              <font color="red">N/A</font>
+              {% else %}
+              <font color="red">End:</font> {{logs.endtime}}
+              {% endif %}
+            </td>
+
+            {% if logs.status == 'Logged Out' %}
+
+            <td style="color: red">{{ logs.status }}</td>
+
+            {% else %}
+
+            <td style="color: green">{{ logs.status }}</td>
+
+            {% endif %}
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <input
+        type="submit"
+        value="Export Logs"
+        class="export"
+        onClick="refreshPage()"
+      />
+    </form>
+  </div>
+</body>
+{% endblock %}

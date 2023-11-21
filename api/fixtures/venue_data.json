@@ -1,0 +1,29 @@
+[	
+	{
+		"model":"api.Venue",
+		"pk":1,
+		"fields":{
+			"name":"Coworking Space",
+			"computers":8,
+			"hasComputers":1
+		}
+	},
+	{
+		"model":"api.Venue",
+		"pk":2,
+		"fields":{
+			"name":"Conference Room A",
+			"computers":0,
+			"hasComputers":0
+		}
+	},
+	{
+		"model":"api.Venue",
+		"pk":3,
+		"fields":{
+			"name":"Conference Room B",
+			"computers":0,
+			"hasComputers":0
+		}
+	}
+]

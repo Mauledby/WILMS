@@ -1,0 +1,362 @@
+<!-- user_list.html -->
+{% extends 'wallet/userbase.html' %} {% load static %} {% block body_block %}
+
+<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
+
+<style>
+  #page-content-wrapper {
+    background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+    background-size: cover;
+    /* Add any other styles you need for #page-content-wrapper */
+  }
+  .jumbotron {
+    background-color: rgba(254, 255, 255, 0.8); /* Darker background color */
+    border: 2px solid #333; /* Add a border */
+    color: #ffffff; /* Light text color */
+    /* Other styles for the jumbotron */
+
+    margin: 0 auto;
+
+    /* Styles */
+  }
+  .nav-tabs .nav-link {
+    margin-right: 5px;
+    color: #555; /* Default text color for inactive links */
+    background-color: #ffffff; /* Default background color for inactive links */
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #ffff; /* Text color for active link (darker) */
+    background-color: #9c7b16; /* Background color for active link */
+  }
+
+  .line-divider {
+    border-top: 1px solid #333;
+    margin: 20px 0;
+  }
+
+  .All-Font {
+    font-family: "Poppins", sans-serif;
+  }
+
+  .box {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+    border: 0px solid #333;
+    border-radius: 30px;
+    padding: 25px;
+  }
+  .box1 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 300px;
+    height: 60px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Add box shadow for a subtle shadow effect */
+    opacity: 1;
+    /* margin-right: 10px; */
+  }
+  .box2 {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    flex-direction: column;
+    width: fit-content; /* Set the width of the box */
+    height: fit-content; /* Set the height of the box */
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px; /* Add padding inside the box */
+  }
+  .custom-button {
+    width: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-align: center;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    border: solid #9c7b16;
+    cursor: pointer;
+    margin-bottom: 10px;
+    -webkit-text-stroke: 1px black;
+  }
+  .btn-bg-1 {
+    background-image: url('{% static "img/technoBg.jpg" %}');
+  }
+
+  .btn-bg-2 {
+    background-image: url('{% static "img/coffee.png" %}');
+  }
+
+      /* CSS for active and hover states */
+      .list-group-item {
+        /* Define the default styles for the list items */
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .list-group-item:hover {
+        /* Define styles for hover state */
+        background-color: #f0f0f0;
+        color: #000000;
+    }
+
+    .list-group-item.active-link {
+        /* Define styles for active state */
+        background-color: #faca04;
+        color: #000000;
+    }
+</style>
+
+<div
+  class="container custom-container"
+  style="margin-top: 20px; display: flexbox; align-self: center"
+>
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="pointstab">
+      <div class="jumbotron">
+        <h4 style="color: #000; font-family: 'Poppins', sans-serif">
+          DASHBOARD
+        </h4>
+        <h6 style="color: #7c7c7b; font-family: 'Poppins', sans-serif">
+          Hello, {{first_name}}!
+        </h6>
+        <div class="line-divider" style="margin-bottom: -30px;"></div>
+        <br />
+        <br />
+
+        <div class="row">
+          <div class="col" style="margin-right: 10px">
+            <div
+              class="box1"
+              style="
+                background-color: #ffffff;
+                padding: 20px;
+                opacity: 1;
+                position: relative;
+              "
+            >
+              <div
+                class="icon"
+                style="position: absolute; left: 10px; top: 10px"
+              >
+                <img
+                  src="{% static 'img/point.png' %}"
+                  alt="Point Icon"
+                  style="width: 30px; height: 30px"
+                />
+              </div>
+              <div class="text-container" style="text-align: right">
+                <h5
+                  class="All-Font"
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  CURRENT POINTS
+                </h5>
+                <h6
+                  class="All-Font"
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  {{ point_balance }}
+                </h6>
+              </div>
+            </div>
+          </div>
+          <div class="col" style="margin-right: 10px">
+            <!-- <h4 style="color: #000;">Coins</h4> -->
+            <div
+              class="box1"
+              style="
+                background-color: #ffffff;
+                padding: 20px;
+                opacity: 1;
+                position: relative;
+              "
+            >
+              <div
+                class="icon"
+                style="position: absolute; left: 10px; top: 10px"
+              >
+                <img
+                  src="{% static 'img/coin.png' %}"
+                  alt="Point Icon"
+                  style="width: 30px; height: 30px"
+                />
+              </div>
+              <div class="text-container" style="text-align: right">
+                <h5
+                  class="All-Font"
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  CURRENT COINS
+                </h5>
+                <h6
+                  class="All-Font"
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  {{ coin_balance }}
+                </h6>
+              </div>
+            </div>
+          </div>
+
+          <div class="col" style="margin-right: 10px; margin-top: 1px;">
+            <!-- <h4 style="color: #000;">Pending Requests</h4> -->
+            <div
+              class="box1"
+              style="
+                background-color: #ffffff;
+                padding: 20px;
+                opacity: 1;
+                position: relative;
+              "
+            >
+              <div
+                class="icon"
+                style="position: absolute; left: 10px; top: 10px"
+              >
+                <img
+                  src="{% static 'img/pending.png' %}"
+                  alt="Point Icon"
+                  style="width: 30px; height: 30px"
+                />
+              </div>
+              <div class="text-container" style="text-align: right">
+                <h5
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  PENDING REQUESTS
+                </h5>
+                <h6
+                  style="
+                    color: #000000;
+                    -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                    margin: 0;
+                  "
+                >
+                  {{ coin_balance }}
+                </h6>
+              </div>
+            </div>
+            <br />
+          </div>
+
+          <br />
+          <div class="main-scroll-div">
+            <div></div>
+            <div class="scroll-images">
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coffeeshop.jpg' %}"
+                  alt="image1"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/conferencerooms.jpg' %}"
+                  alt="image2"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coworking2.jpg' %}"
+                  alt="image3"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/kiosk.jpg' %}"
+                  alt="image4"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coworking3.jpg' %}"
+                  alt="image5"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coffeeshop2.jpg' %}"
+                  alt="image6"
+                />
+              </div>
+            </div>
+            <div></div>
+          </div>
+          <!-- </div> -->
+          <!-- <div class="col">
+                            <div class="box" style="align-items: center; background-color: #333;">
+                                <button class="btn custom-button btn-lg btn-bg-1">Make Reservation</button>
+                                <button class="btn custom-button btn-lg btn-bg-2">Buy Coffee</button>
+                            </div>
+                            
+                </div>  -->
+          <!-- <div class="col">
+                    <div class="box" style="align-items: center; position: relative;">
+                        <div class="image-container" style="position: relative;">
+                            <img src="{% static 'img/facility/coffeeshop.jpg' %}" alt="Image 1" class="image active">
+                            <img src="{% static 'img/facility/coworking.jpg' %}" alt="Image 2" class="image">
+                            <img src="{% static 'img/facility/office.jpg' %}" alt="Image 3" class="image">
+                            
+                            <button class="prev-btn" onclick="changeImage(-1)">Previous</button>
+                            <button class="next-btn" onclick="changeImage(1)">Next</button>
+                        </div> -->
+
+          <br />
+          <br />
+          <br />
+          <div class="line-divider"></div>
+        </div>
+      </div>
+      </div>
+
+      <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+
+      {% endblock %}
+    </div>
+  </div>
+</div>

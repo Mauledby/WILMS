@@ -1,0 +1,521 @@
+{% extends 'wallet/userbase.html' %} {% load static %} {%block body_block %}
+<link
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css"
+/>
+<style>
+  #page-content-wrapper {
+    background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+    background-size: cover;
+  }
+
+  .jumbotron {
+    background-color: rgba(254, 255, 255, 0.8);
+    border: 2px solid #333;
+    color: #ffffff;
+    margin: 0 auto;
+  }
+
+  .nav-tabs .nav-link {
+    margin-right: 5px;
+    color: #555;
+    background-color: #e9ecef;
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #ffff;
+    background-color: #9c7b16;
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .box {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+    border: 0px solid #333;
+    border-radius: 30px;
+    padding: 25px;
+  }
+  .box1 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 300px;
+    height: 60px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Add box shadow for a subtle shadow effect */
+    opacity: 1;
+    /* margin-right: 10px; */
+  }
+  .box2 {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    flex-direction: column;
+    width: fit-content; /* Set the width of the box */
+    height: fit-content; /* Set the height of the box */
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px; /* Add padding inside the box */
+  }
+  /* text for top up to add more coins */
+  .centered-text {
+    text-align: center;
+    margin-top: 20px;
+  }
+  .custom-text-color {
+    color: #000000; /* desired text color for top up message */
+  }
+
+  .centered-button {
+    display: flex;
+    justify-content: center;
+  }
+
+  .custom-button {
+    width: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-align: center;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    border: solid #9c7b16;
+    cursor: pointer;
+    margin-bottom: 10px;
+    -webkit-text-stroke: 1px black;
+  }
+
+  .line-divider {
+    border-top: 1px solid #333;
+    margin: 20px 0;
+  }
+  .btn-bg-1 {
+    background-image: url('{% static "img/technoBg.jpg" %}');
+  }
+
+  .btn-bg-2 {
+    background-image: url('{% static "img/coffee.png" %}');
+  }
+
+  /* label{
+        color: #c91313;
+    } */
+
+  /* for form */
+  .coin-transaction-form {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-weight: bold;
+    color: #333;
+  }
+
+  input[type="number"] {
+    max-width: 100px;
+  }
+  input[type="date"],
+  input[type="file"] {
+    max-width: 250px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    background: url("{% static 'img/calendar.png' %}");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    padding: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+
+  button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  /* Add this to your existing style tag or create a new style tag in your HTML */
+
+  .centered-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Adjust as needed for spacing */
+  }
+
+  /* Additional styling for the button */
+  .centered-button a {
+    width: 200px; /* Adjust width as needed */
+    text-align: center;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background-color: #333; /* Primary button color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    -webkit-text-stroke: 1px black;
+    text-decoration: none; /* Remove underlines */
+  }
+
+  .centered-button a:hover {
+    background-color: #9c7b16; /* Change color on hover */
+  }
+  .All-Font {
+    font-family: "Poppins";
+  }
+
+  /* CSS for active and hover states */
+  .list-group-item {
+    /* Define the default styles for the list items */
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  .list-group-item:hover {
+    /* Define styles for hover state */
+    background-color: #f0f0f0;
+    color: #000000;
+  }
+
+  .list-group-item.active-link {
+    /* Define styles for active state */
+    background-color: #faca04;
+    color: #000000;
+  }
+</style>
+<div class="container custom-container All-Font" style="margin-top: 20px">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active All-Font" data-toggle="tab" href="#coinsdash"
+        >DASHBOARD</a
+      >
+    </li>
+    <li class="nav-item">
+      <a class="nav-link All-Font" data-toggle="tab" href="#top-up">TOP-UP</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link All-Font" data-toggle="tab" href="#myrequests"
+        >MY REQUESTS</a
+      >
+    </li>
+    <li>
+      <a class="nav-link" data-toggle="tab" href="#paymentsTab"
+        >PAYMENTS MADE</a
+      >
+    </li>
+  </ul>
+
+  <!-- Tab content -->
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="coinsdash">
+      <div class="jumbotron">
+        <h4 class="All-Font" style="color: #000">
+          COINS
+          <img
+            src="{% static 'img/coin.png' %}"
+            alt="Star Icon"
+            style="width: 40x; height: 40px; margin-right: 5px"
+          />
+        </h4>
+
+        <h6 class="All-Font" style="color: #7c7c7b">
+          Below are your existing coins.
+        </h6>
+
+        <div class="line-divider"></div>
+
+        <div class="mx-auto">
+          <div class="row">
+            <div class="col" style="margin-right: 10px"></div>
+            <div class="row" style="margin-right: 10px">
+              <!-- <h4 style="color: #000;">Coins</h4> -->
+              <div
+                class="box1"
+                style="
+                  background-color: #ffffff;
+                  padding: 20px;
+                  opacity: 1;
+                  position: relative;
+                "
+              >
+                <div
+                  class="icon"
+                  style="position: absolute; left: 10px; top: 10px"
+                >
+                  <img
+                    src="{% static 'img/coin.png' %}"
+                    alt="Point Icon"
+                    style="width: 30px; height: 30px"
+                  />
+                </div>
+                <div class="text-container" style="text-align: center">
+                  <h5
+                    class="All-Font"
+                    style="
+                      color: #000000;
+                      -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                      margin: 0;
+                    "
+                  >
+                    CURRENT COINS
+                  </h5>
+                  <h6
+                    class="All-Font"
+                    style="
+                      color: #000000;
+                      -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+                      margin: 0;
+                    "
+                  >
+                    {{ coin_balance }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col" style="margin-right: 10px">
+              <!-- <h4 style="color: #000;">Pending Requests</h4> -->
+              <div style="padding: 20px; opacity: 1; position: relative"></div>
+            </div>
+            <br />
+          </div>
+
+          <br />
+          <div class="main-scroll-div">
+            <div></div>
+            <div class="scroll-images">
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coffeeshop.jpg' %}"
+                  alt="image1"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/conferencerooms.jpg' %}"
+                  alt="image2"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coworking2.jpg' %}"
+                  alt="image3"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/kiosk.jpg' %}"
+                  alt="image4"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coworking3.jpg' %}"
+                  alt="image5"
+                />
+              </div>
+              <div class="child">
+                <img
+                  class="child-img"
+                  src="{% static 'img/facility/coffeeshop2.jpg' %}"
+                  alt="image6"
+                />
+              </div>
+            </div>
+            <div></div>
+          </div>
+        </div>
+
+        <br />
+        <br />
+        <br />
+
+        <div class="line-divider"></div>
+
+        <div class="centered-text">
+          <!-- <h5 class="custom-text-color">You can add more coins by topping up</h5>
+                    <div class="centered-button">
+                   
+                            
+    
+                        <a class="nav-link" href="#top-up" data-toggle="tab" id="top=up">Top up now</a>
+                    </div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="top-up">
+      <div class="jumbotron">
+        <h4 class="All-Font" style="color: #000">TOP-UP</h4>
+        <h6 class="All-Font" style="color: #7c7c7b">
+          Add more coins to your account.
+        </h6>
+        <div class="line-divider"></div>
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %} {{ form.as_p }}
+
+          <button type="submit" class="btn btn-primary All-Font">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="myrequests">
+      <div class="jumbotron">
+        <h4 class="All-Font" style="color: #000">My Requests</h4>
+        <h6 class="All-Font" style="color: #7c7c7b">
+          Below are all your requests.
+        </h6>
+
+        <table class="table table-bordered All-Font">
+          <thead>
+            <tr>
+              <th>Unique Code</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for transaction in coin_transactions %}
+            <tr>
+              <td>{{ transaction.reference_code }}</td>
+              <td>{{ transaction.amount }}</td>
+              <td>
+                {% if transaction.is_completed and not transaction.is_denied %}
+                <span style="color: green"><strong>Approved</strong></span>
+                {% elif not transaction.is_completed and transaction.is_denied%}
+                <span style="color: red"><strong>Denied</strong></span>
+                {% else %}
+                <span style="color: yellow"><strong>Pending</strong></span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="2">No requests found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="paymentsTab">
+      <div class="jumbotron">
+        <h1 style="color: #000">Payments</h1>
+        <div
+          class="table-container"
+          style="max-height: 450px; overflow-y: auto"
+        >
+          <table id="payments" class="table table-striped table-bordered">
+            <thead
+              class="thead-dark"
+              style="position: sticky; top: 0; background-color: white"
+            >
+              <tr>
+                <th>Reference Code</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Transaction Date</th>
+                <th>Transaction ID</th>
+                <th>Transaction Amount</th>
+                <th>Customer ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for vendor_transaction in vendor_transactions %}
+              <tr>
+                <td>{{ vendor_transaction.reference_code }}</td>
+                <td>{{ vendor_transaction.date }}</td>
+                <td>{{ vendor_transaction.description }}</td>
+                <td>{{ vendor_transaction.transaction_date }}</td>
+                <td>{{ vendor_transaction.transaction_id }}</td>
+                <td>{{ vendor_transaction.transaction_amount }}</td>
+                <td>{{ vendor_transaction.customer_id }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
+
+  <script>
+    $("#id_date_in_receipt").datepicker({
+      format: "mm/dd/yyyy", // You can customize the date format
+      autoclose: true, // Close the date picker when a date is selected
+    });
+    // Assuming your form has an ID of "topup"
+    const form = document.querySelector("#topup");
+
+    form.addEventListener("submit", (event) => {
+      // Prevent the form from submitting normally
+      event.preventDefault();
+
+      // Get the form data
+      const formData = new FormData(form);
+
+      // Send an AJAX request to the server
+      fetch(".", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          // Display an alert if the form is successfully saved
+          if (response.ok) {
+            alert("Top-up request sent!");
+            form.reset();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  </script>
+
+  {% endblock %}
+</div>
