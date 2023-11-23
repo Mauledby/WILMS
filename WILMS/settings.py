@@ -65,8 +65,7 @@ INSTALLED_APPS = [
     'wiladmin',
     'api',
     'facility',
-
-
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'WILMS.urls'
@@ -190,7 +190,8 @@ EMAIL_HOST_PASSWORD = 'vbbh nvxm vtcp yois'
 
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
+    "http://localhost:3000",  # Assuming your frontend runs on localhost:3000
+    "http://127.0.0.1:3000",  # If you use 127.0.0.1 instead of localhost
 ]
 
 # jwt setting
