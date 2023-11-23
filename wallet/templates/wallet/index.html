@@ -6,10 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WILMS</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
+    <link href={% static "icon/favicon3.ico" %} rel="shortcut icon">
+    <!-- <link href={% static "facility/general.css" %} rel="stylesheet" > -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap"
@@ -19,7 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <style>
-      #loginBtn {
+      /* #loginBtn {
         width: 70px;
         height: 30px;
         margin-left: 15px;
@@ -27,14 +25,14 @@
         padding-top: 1px;
         margin: 0;
         border-color: black;
-      }
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-        text-decoration: none;
-      }
+      } */
+      
+*{
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
       html {
         scroll-behavior: smooth;
@@ -114,7 +112,7 @@
         position: relative;
         width: 100%;
         height: 110vh;
-        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4)),
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)),
           url('{% static "img/canvabg.png" %}');
         background-size: cover;
         background-position: center;
@@ -140,7 +138,7 @@
       }
       .btn {
         width: 200px;
-        padding: 15px 0;
+        padding: 15px;
         margin: 20px 10px;
         background: #fecc04;
         color: #fff;
@@ -251,22 +249,22 @@
       .modal {
         display: none;
         position: fixed;
-        z-index: 1;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: auto;
-        height: auto;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
+          justify-content: center; align-items: center; 
       }
 
       .modal-content {
         background-color: #fefefe;
         border: 1px solid #888;
-        width: 80%;
-        margin: 10% auto; /* Adjust the top margin to center the modal */
+        width: 30%;
+        margin: 15% auto; /* Adjust the top margin to center the modal */
         padding: 20px;
+        border-radius: 5px;
+        align-items: center;
       }
       #email,
       #password {
@@ -280,59 +278,162 @@
       .modal-content form {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        border-radius: 5px;
       }
+
+
+
+nav.horizontal {
+    position: fixed;
+    display:block;
+    width: 100%;
+    /* background-color: #fecc00; */
+    height:100px;
+    overflow: hidden;
+    top: 0px;
+    left: 0;
+    transition: all 0.3s ease;
+  }
+  nav.horizontal.sticky {
+        /* padding: 15px 50px; */
+        position: fixed;
+        top: 0;
+        background: #fac004; /* Background color for the sticky navbar */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.9);
+        height: fit-content;
+        color: #0000;
+        text-emphasis-color: #0000;
+      }
+  
+
+  nav.horizontal ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav.horizontal li {
+    float: left;
+  }
+
+  nav.horizontal li a {
+    display: block;
+    color: #333;
+    text-align: center;
+    padding: 14px 16px;
+    height: 100px;
+    text-decoration: none;
+  }
+
+  nav.horizontal li a:hover {
+    color: #333;
+  }
+  
+  nav.horizontal ul.right {
+    float: right;
+  }
+  nav.horizontal ul.left{
+    float: left;
+  }
+  nav.horizontal ul.center{
+    float: center;
+  }
+  nav.horizontal li a img {
+    top: 0rem;
+    align-items: center;
+    width: 200px;
+    height: flex;
+    margin-right: 10px;
+    right: 20rem;
+    align-items: center;
+  }
+
+  button.adminlabel{
+    position: fixed;
+    display: block;
+    right: 2%;
+    width: fit-content;
+    height: 100px;
+    background: #ffcc0100;
+    top: 0rem;
+    align-items: center;
+    border: none;
+    font-weight: bolder;
+    font-size: 22px;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+  }
+  a.menugroup {
+  /* Other styles for .menugroup */
+  /* ... */
+  color:#fff;
+  padding-bottom: 10px;
+  filter: drop-shadow(0px 4px 2px rgba(0, 0, 0, 0.25));
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0);
+  transition: border-bottom 0.3s ease; /* Change expand to ease */
+  }
+
+  a.menugroup:hover {
+  color: white;
+  border-bottom: 3px solid rgba(64, 45, 0, 0.8);
+
+  }
+  a{
+      text-decoration: none;
+      color: #000000;
+  }
+  a:hover{
+    text-decoration: none;
+    color: #000000;
+  }
+  button{
+  width: auto;
+  align-items: center;
+  height: 30px;
+  background: #FFCC01;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  border: none;
+  text-decoration: none;
+  padding: 20px;
+}
+
+button.btn-primary{
+    width: fit-content;
+    height: 36.41px;
+    color: #000000;
+    font-weight: 500;
+    font-size: 14px;
+    
+    background-color: #ffcc01;
+    border: none;
+    border-radius: 5px;
+  }
+  button.btn-primary:hover{
+    color: #FFCD02;
+    background: #FFFFFF;
+  }
+  button:hover{
+    cursor: pointer;
+  }
+  *::-webkit-scrollbar-thumb {
+  background-color: #ffcc0186; /* Change the color of the scrollbar thumb */
+  border-radius: 5px; /* Add rounded corners to the scrollbar thumb */
+}
+
+/* Optional: Style the scrollbar track */
+*::-webkit-scrollbar-track {
+  background-color: #e8e1ae; /* Change the color of the scrollbar track */
+}
+
+/* Optional: Style the scrollbar itself */
+*::-webkit-scrollbar {
+  margin-left: 0%;
+  width: 5px; /* Adjust the width of the scrollbar */
+}
+
     </style>
   </head>
   <body>
-    <nav class="navbar">
-      <div class="max-width">
-        <div>
-          <img
-            src="{% static 'img/w1_yellow.png' %}"
-            alt=""
-            style="
-              height: 30%;
-              width: 30%;
-              margin-bottom: -20px;
-              margin-top: -10px;
-            "
-          />
-        </div>
-        <ul class="menu">
-          {% if not request.user.is_authenticated %}
-          <li><a href="/wallet/register" class="menu-btn">REGISTER</a></li>
-          <li style="margin-left: 10px">
-            <button class="btn btn-outline-success" type="button" id="loginBtn">
-              LOGIN
-            </button>
-          </li>
-          <!-- prettier-ignore -->
-          {% endif %} 
-            {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
-          <li>
-            <a href="{% url 'wallet:dashboard' %}" class="menu-btn">Wallet</a>
-          </li>
-          {% else %}
-          <li>
-            <a href="{% url 'wallet:usrdashboard' %}" class="menu-btn"
-              >Wallet</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'facility:facility' %}" class="menu-btn"
-              >Facility</a
-            >
-          </li>
-          <li>
-            <a href="#" class="menu-btn">Check Facilities</a>
-          </li>
-          {% endif %} {% endif %}
-          <!-- Login button in the navbar -->
-        </ul>
-        <i class="fas fa-bars menu-btn"></i>
-      </div>
-    </nav>
 
     <section class="banner-container">
       <div class="banner">
@@ -344,10 +445,9 @@
           functions ensuring optimal user flow. Join us for a streamlined
           innovation experience.
         </p>
-        <button class="btn">Discover Now</button>
+        <button class="btn" style="padding-bottom: 2rem;">Discover Now</button>
       </div>
     </section>
-
     <div
       class="modal fade"
       id="loginModal"
@@ -355,6 +455,8 @@
       role="dialog"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
+      
+      
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -370,11 +472,10 @@
             <button
               type="button"
               class="close"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
               aria-label="Close"
-              style="width: 30px"
-            >
-              <span aria-hidden="true">&times;</span>
+              style="margin-left: 0rem; width: 30px; padding: 1px;"
+            >✖️
             </button>
           </div>
 
@@ -394,6 +495,7 @@
                   class="form-control"
                   id="email"
                   name="email"
+                  placeholder="emal.@cit.edu"
                   required
                 />
               </div>
@@ -406,33 +508,90 @@
                   class="form-control"
                   id="password"
                   name="password"
+                  placeholder="*****************"
                   required
                 />
               </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Login</button>
+              <div class="modal-footer" style="margin-left: 15%;">
+                <button type="submit" class="btn btn-primary" style="padding: 2px; width: 70%;">Login</button>
               </div>
             </form>
           </div>
         </div>
       </div>
     </div>
-
+    <nav class="horizontal">
+      <ul class="left" style="margin-left: 5rem;">
+        <li>
+        <a href="{% url 'wallet:index' %}"><img style="background-color: #fac004; padding: 5px; border-radius: 5px;" src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+      </ul>
+      <ul class="center" >
+    
+        {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+            
+              <div class="center" style="position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
+              justify-content: center; align-items: center; ">
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
+                </div>
+            {% elif message.tags == 'success' %}
+            <div style="position: fixed; z-index: 999; width: 100%;" >
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</div>
+            {% elif message.tags == 'warning' %}
+            <div style="position: fixed; z-index: 999; width: 100%;" >
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</div>
+            {% elif message.tags == 'info' %}
+            <div style="position: fixed; z-index: 999; width: 100%;" >
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</div>
+            {% endif %} 
+          {% endfor %}
+          {% endif %}
+    
+    </ul>
+    <ul class="right">
+      {% if not request.user.is_authenticated %}
+      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="/wallet/register">Register</a></button>
+      <button class="adminlabel" id="loginBtn" style="width: fit-content; left:85%;" ><a class="menugroup" href="#">Login</a></button>
+      {% endif %} 
+      {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
+      <button class="adminlabel" style="left:49%;"><a class="menugroup" href="{% url 'wallet:index' %}">Home</a></button>
+      <button class="adminlabel" style="left:55%;"><a class="menugroup" href="{% url 'facility:facility' %}">Facility</a></button>
+      <button class="adminlabel" style="left:62%; border: 0px;"><a class="menugroup" href="#">Booking</a></button>
+      <button class="adminlabel" style="left:70%;"><a class="menugroup" href="{% url 'wallet:dashboard' %}">Wallet</a></button>
+      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="#">Crowd Control</a></button>
+      <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
+      {% else %}
+      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="{% url 'wallet:dashboard' %}">Wallet</a></button>
+      <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
+      {% endif %} {% endif %}
+    </ul>
+      
+    </nav> 
     <script>
       $(document).ready(function () {
         $(window).scroll(function () {
           if ($(this).scrollTop() > 30) {
             // Adjust the scroll position where the navbar becomes sticky
-            $(".navbar").addClass("sticky");
+            $(".horizontal").addClass("sticky");
           } else {
-            $(".navbar").removeClass("sticky");
+            $(".horizontal").removeClass("sticky");
           }
         });
       });
 
       //toggle menu
       $(".menu-btn").click(function () {
-        $(".navbar .menu").toggleClass("active");
+        $(".horizontal .menu").toggleClass("active");
         $(".menu-btn i").toggleClass("active");
       });
 
@@ -448,5 +607,6 @@
         $("#loginModal").hide();
       });
     </script>
+
   </body>
 </html>
