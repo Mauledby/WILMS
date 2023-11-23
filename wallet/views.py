@@ -227,10 +227,12 @@ class UserDashboardView(View):
     def get(self, request):
         try:
             profile = UserProfileInfo.objects.get(user_id=request.user)
+            user=User.objects.get(email=request.user)
             first_name=profile.first_name
             email=User.objects.get(email=request.user)
             coin_balance = profile.coin_balance
             point_balance = profile.point_balance
+            email=user.email
         except UserProfileInfo.DoesNotExist:
             coin_balance = 0.0
             point_balance = 0.0

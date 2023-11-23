@@ -108,6 +108,9 @@ def generate_pdf_content(facility_stats, revenue_trans):
     buffer.seek(0)
     return buffer
 
+@csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def generate_pdf(request):
     # Retrieve filter parameters from the request
     facility_filter = request.GET.get('facility')
@@ -269,6 +272,8 @@ def display_facility(request):
 
     return render(request, 'facility.html', {'facility': facility, 'upform': upform, 'mform': mform})
 
+
+
 def calculate_transaction_values(transaction):
     # Get the rate per hour from the selected facility
     rateperhour = Decimal(transaction.facility.rateperhour) if transaction.facility else Decimal('0.0')
@@ -302,6 +307,8 @@ def calculate_transaction_values(transaction):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def process_transaction(request):
     if request.method == 'POST':
         transaction_datetime = request.POST.get('transaction_datetime')
@@ -336,6 +343,8 @@ def process_transaction(request):
         return HttpResponse("This view only handles POST requests for processing transactions.")
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def rules_facility(request):
     if request.method == 'POST':
         forms = TransactionForm(request.POST)
@@ -358,6 +367,8 @@ def rules_facility(request):
     return render(request, 'add_facility.html', {'forms': forms})
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_facility(request, id):
 
     f_id = request.POST.get('id')
@@ -371,10 +382,14 @@ def delete_facility(request, id):
     return redirect(reverse('facility:facility'))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_calendar(request):
      return render(request, 'calendar.html')
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_setting_facility(request):
     facility = Facility.objects.filter(isdeleted=0).order_by('id')
     setting_facility = Setting_Facility.objects.all().order_by('id')
@@ -391,6 +406,8 @@ def display_setting_facility(request):
         })
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def displayall_setting_facility(request):
     setting_facility = Setting_Facility.objects.all().order_by('id')
     nfacility = request.POST.get('facility')
@@ -418,6 +435,8 @@ def displayall_setting_facility(request):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def set_facility_session(request, facility_id):
     # Set the 'facility_id' session variable to the clicked facility's ID
     request.session['facility_id'] = facility_id
@@ -425,6 +444,8 @@ def set_facility_session(request, facility_id):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def update_facility(request, id):
     facility = get_object_or_404(Facility, pk=id)
     request.session['faci_id'] = facility.pk
@@ -460,6 +481,8 @@ def update_facility(request, id):
 # changed
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def update_setting_facility(request, id):
     s_facility = get_object_or_404(Setting_Facility, pk=id)
     
@@ -499,6 +522,8 @@ def is_capacity_within_limit(capacity):
 #         forms = TransactionForm()  
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def user_create(request):
     template = 'user.html'
 
@@ -518,6 +543,8 @@ def user_create(request):
     return render(request, template,{'user':user,'user_type':user_type, 'user_list':user_list})
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_fmrules(request, id):
     facility = get_object_or_404(Setting_Facility, pk=id)
     if request.method == 'POST':
@@ -546,6 +573,8 @@ def display_fmrules(request, id):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_facility_mainrules(request, id):
     sfacility = get_object_or_404(Setting_Facility, pk=id)
     request.session['faci_id'] = sfacility.pk
@@ -576,6 +605,8 @@ def display_facility_mainrules(request, id):
 # usertypemainrules_back
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def usertypemainrules_back(request):
     user_id = request.session.get('user_type_id')
     user_type = request.session.get('user_type')
@@ -629,6 +660,8 @@ def usertypemainrules_back(request):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def facilitymainrules_back(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
@@ -680,6 +713,8 @@ def facilitymainrules_back(request):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def facilitysubrules_back(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
@@ -705,6 +740,8 @@ def facilitysubrules_back(request):
         return HttpResponseRedirect(reverse('facility_subrules.html'))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def facilitymainrules_set(request, id):
     mainrules = get_object_or_404(Facility_MainRules, pk=id)
     faci_id = request.session.get('faci_id')
@@ -760,6 +797,8 @@ def facilitymainrules_set(request, id):
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def is_setfacilitymainrules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
@@ -814,6 +853,8 @@ def is_setfacilitymainrules_status(request):
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def is_setfacilitymainrules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
@@ -868,6 +909,8 @@ def is_setfacilitymainrules_status(request):
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_setfacilitymainrules_status(request, id):
     mainrules = get_object_or_404(Facility_MainRules_set, pk=id)
     faci_id = request.session.get('faci_id')
@@ -882,6 +925,8 @@ def delete_setfacilitymainrules_status(request, id):
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_facilitymainrules(request, id):
     facility = Facility_MainRules.objects.get(pk=int(id))
     faci_id = request.session.get('faci_id')
@@ -896,6 +941,8 @@ def delete_facilitymainrules(request, id):
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_facilitysubrules(request, id):
     facility = Facility_SubRules.objects.get(pk=int(id))
     faci_id = request.session.get('faci_id')
@@ -910,6 +957,8 @@ def delete_facilitysubrules(request, id):
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_facilitypromorules(request, id):
     facility = Facility_PromoRules.objects.get(pk=int(id))
     faci_id = request.session.get('faci_id')
@@ -926,6 +975,8 @@ def delete_facilitypromorules(request, id):
 
 # -----------------------------------------SUB RULES-----------------------------------------
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_facility_subrules(request, id):
     sfacility = get_object_or_404(Setting_Facility, pk=id)
     request.session['faci_id'] = sfacility.pk
@@ -956,6 +1007,8 @@ def display_facility_subrules(request, id):
 
 # is_setfacilitysubrules_status
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def is_setfacilitysubrules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
@@ -1010,6 +1063,8 @@ def is_setfacilitysubrules_status(request):
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def facilitysubrules_set(request, id):
     subrules = get_object_or_404(Facility_SubRules, pk=id)
     faci_id = request.session.get('faci_id')
@@ -1058,6 +1113,8 @@ def facilitysubrules_set(request, id):
     
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_setfacilitysubrules_status(request, id):
     subrules = get_object_or_404(Facility_SubRules_set, pk=id)
     faci_id = request.session.get('faci_id')
@@ -1074,6 +1131,8 @@ def delete_setfacilitysubrules_status(request, id):
 
 # -------------------------------promo rules----------------------------------------------------
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_facility_promorules(request, id):
     sfacility = get_object_or_404(Setting_Facility, pk=id)
     request.session['faci_id'] = sfacility.pk
@@ -1104,6 +1163,8 @@ def display_facility_promorules(request, id):
 
 # is_setfacilitysubrules_status
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def is_setfacilitypromorules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
@@ -1122,6 +1183,8 @@ def is_setfacilitypromorules_status(request):
         return HttpResponseRedirect(reverse('facility_promorules.html'))
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def facilitypromorules_set(request, id):
     promorules = get_object_or_404(Facility_PromoRules, pk=id)
     faci_id = request.session.get('faci_id')
@@ -1174,6 +1237,8 @@ def facilitypromorules_set(request, id):
     
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_setfacilitypromorules_status(request, id):
     promorules = get_object_or_404(Facility_PromoRules_set, pk=id)
     faci_id = request.session.get('faci_id')
@@ -1190,6 +1255,8 @@ def delete_setfacilitypromorules_status(request, id):
         return HttpResponseRedirect(reverse('facility_promorules.html'))
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_facility_promo(request, id):
     sfacility = get_object_or_404(Setting_Facility, pk=id)
     faci_id = request.session.get('faci_id')
@@ -1211,6 +1278,8 @@ def display_facility_promo(request, id):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def revenue_dashboard(request):
     transactions = Transaction.objects.all()
     chart_type_form = ChartTypeForm(request.GET or None)
@@ -1315,6 +1384,8 @@ def revenue_dashboard(request):
         })
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def revenue_report(request):
     facilityt = Facility.objects.all().order_by('isdeleted')
     facility_filter = request.GET.get('facility')
@@ -1447,6 +1518,8 @@ def revenue_report(request):
 #     })
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_calendar(request):
     event = CalendarEvent.objects.all().order_by('start_date')
     facility_filter = request.GET.get('facility')
@@ -1474,6 +1547,8 @@ def display_calendar(request):
 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def delete_event(request, id):
     event = get_object_or_404(CalendarEvent, pk=id)
     event.delete()
@@ -1482,6 +1557,8 @@ def delete_event(request, id):
     return redirect('facility:calendar') 
 
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_calendarview(request):
     if request.method == 'POST':
         # Handle the form submission here
@@ -1508,6 +1585,9 @@ def display_calendarview(request):
     }
     
     return render(request, 'calendarview.html', context)
+
+@login_required
+@user_passes_test(is_superuser)
 def get_events(request):
     # filter_facility = request.session.get('facility')
     events = CalendarEvent.objects.all().order_by('id')
@@ -1524,6 +1604,8 @@ def get_events(request):
     
     return JsonResponse(event_data, safe=False)
 
+@login_required
+@user_passes_test(is_superuser)
 def transaction(request):
     if request.method == 'POST':
         transform = TransactionForm(request.POST)
@@ -1545,6 +1627,8 @@ def transaction(request):
 
 # ---------------------------------------------------------------------------------------------------------------------
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def display_usertype_mainrules(request, id):
     suser = get_object_or_404(Setting_UserType, pk=id)
     request.session['user_type_id'] = suser.pk
@@ -1575,7 +1659,8 @@ def display_usertype_mainrules(request, id):
 # from django.http import HttpResponseRedirect
 # from django.urls import reverse
 
-
+@login_required
+@user_passes_test(is_superuser)
 def usertypemainrules_set(request, id):
     mainrules = get_object_or_404(UserType_MainRules, pk=id)
     user_id = request.session.get('user_type_id')
@@ -1624,6 +1709,8 @@ def usertypemainrules_set(request, id):
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('usertype_mainrules.html'))
 
+@login_required
+@user_passes_test(is_superuser)
 def is_setusermainrules_status(request):
     user_id = request.session.get('user_type_id')
     user_type = request.session.get('user_type')
@@ -1674,6 +1761,8 @@ def is_setusermainrules_status(request):
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('usertype_mainrules.html'))
 
+@login_required
+@user_passes_test(is_superuser)
 def delete_setusermainrules_status(request, id):
     mainrules = get_object_or_404(UserType_MainRules_set, pk=id)
     user_id = request.session.get('user_type_id')
@@ -1688,6 +1777,8 @@ def delete_setusermainrules_status(request, id):
         return HttpResponseRedirect(reverse('usertype_mainrules.html'))
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 
+@login_required
+@user_passes_test(is_superuser)
 def delete_usermainrules(request, id):
     user_type = UserType_MainRules.objects.get(pk=int(id))
     user_id = request.session.get('user_type_id')
@@ -1703,7 +1794,8 @@ def delete_usermainrules(request, id):
 
 # ---------------------------------------------------Sub Rules--------------------------------
 
-
+@login_required
+@user_passes_test(is_superuser)
 def display_usertype_subrules(request, id):
     suser = get_object_or_404(Setting_UserType, pk=id)
     request.session['user_type_id'] = suser.pk
@@ -1732,7 +1824,8 @@ def display_usertype_subrules(request, id):
         
         })
 
-
+@login_required
+@user_passes_test(is_superuser)
 def usertypesubrules_set(request, id):
     subrules = get_object_or_404(UserType_SubRules, pk=id)
     user_id = request.session.get('user_type_id')
@@ -1775,6 +1868,8 @@ def usertypesubrules_set(request, id):
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('usertype_subrules.html'))
 
+@login_required
+@user_passes_test(is_superuser)
 def is_setusersubrules_status(request):
     user_id = request.session.get('user_type_id')
     user_type = request.session.get('user_type')
@@ -1792,6 +1887,8 @@ def is_setusersubrules_status(request):
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('usertype_subrules.html'))
 
+@login_required
+@user_passes_test(is_superuser)
 def delete_setusersubrules_status(request, id):
     subrules = get_object_or_404(UserType_SubRules_set, pk=id)
     user_id = request.session.get('user_type_id')
@@ -1806,6 +1903,8 @@ def delete_setusersubrules_status(request, id):
         return HttpResponseRedirect(reverse('usertype_subrules.html'))
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 
+@login_required
+@user_passes_test(is_superuser)
 def delete_usersubrules(request, id):
     user_type = get_object_or_404(UserType_SubRules, pk=id)
     user_id = request.session.get('user_type_id')
@@ -1821,6 +1920,8 @@ def delete_usersubrules(request, id):
 
 # ---------------------------------------User PROMO RULES ---------------------------------
 
+@login_required
+@user_passes_test(is_superuser)
 def display_usertype_promorules(request, id):
     suser = get_object_or_404(Setting_UserType, pk=id)
     request.session['user_type_id'] = suser.pk
@@ -1853,7 +1954,8 @@ def display_usertype_promorules(request, id):
         'upromorules': upromorules,
     })
 
-
+@login_required
+@user_passes_test(is_superuser)
 def usertypepromorules_set(request, id):
     promorules = get_object_or_404(UserType_PromoRules, pk=id)
     user_id = request.session.get('user_type_id')
@@ -1902,6 +2004,8 @@ def usertypepromorules_set(request, id):
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('usertype_promorules.html'))
 
+@login_required
+@user_passes_test(is_superuser)
 def is_setuserpromorules_status(request):
     user_id = request.session.get('user_type_id')
     user_type = request.session.get('user_type')
@@ -1919,6 +2023,8 @@ def is_setuserpromorules_status(request):
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('usertype_promorules.html'))
 
+@login_required
+@user_passes_test(is_superuser)
 def delete_setuserpromorules_status(request, id):
     promorules = get_object_or_404(UserType_PromoRules_set, pk=id)
     user_id = request.session.get('user_type_id')
@@ -1933,6 +2039,8 @@ def delete_setuserpromorules_status(request, id):
         return HttpResponseRedirect(reverse('usertype_promorules.html'))
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 
+@login_required
+@user_passes_test(is_superuser)
 def delete_userpromorules(request, id):
     user_type = UserType_PromoRules.objects.get(pk=int(id))
     user_id = request.session.get('user_type_id')
@@ -1947,6 +2055,8 @@ def delete_userpromorules(request, id):
         # return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
 
 #--------------------------------update Main Rules------------------------------------------------
+@login_required
+@user_passes_test(is_superuser)
 def update_userMainRules(request, id):
     mainrules = get_object_or_404(UserType_MainRules, pk=id)
     request.session['user_type_id'] = mainrules.pk
@@ -1982,6 +2092,8 @@ def update_userMainRules(request, id):
 # changed
 
 #---------------------------------------------Update Sub Rules------------------------------------------
+@login_required
+@user_passes_test(is_superuser)
 def update_userSubRules(request, id):
     subrules = get_object_or_404(UserType_SubRules, pk=id)
     request.session['user_type_id'] = subrules.pk
@@ -2017,7 +2129,8 @@ def update_userSubRules(request, id):
 # changed
 
 #---------------------------------------------Update Promo Rules------------------------------------------
-
+@login_required
+@user_passes_test(is_superuser)
 def update_userPromoRules(request, id):
     promorules = get_object_or_404(UserType_PromoRules, pk=id)
     request.session['user_type_id'] = promorules.pk
@@ -2052,6 +2165,8 @@ def update_userPromoRules(request, id):
     # return render(request, 'facility.html',)
 # changed
 @csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def displayall_setting_usertype(request):
     setting_usertype = Setting_UserType.objects.all().order_by('id')    
 
@@ -2077,6 +2192,8 @@ def displayall_setting_usertype(request):
 
     return render(request, 'usertype_table.html', {'setting_usertype': setting_usertype, 'forms':forms})
 
+@login_required
+@user_passes_test(is_superuser)
 def set_user_session(request, user_id):
     # Set the 'facility_id' session variable to the clicked facility's ID
     request.session['user_id'] = user_id
