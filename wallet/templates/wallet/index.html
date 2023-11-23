@@ -282,6 +282,12 @@
         flex-direction: column;
         align-items: center;
       }
+      .menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+      }
     </style>
   </head>
   <body>
@@ -289,7 +295,7 @@
       <div class="max-width">
         <div>
           <img
-            src="{% static 'img/w1_yellow.png' %}"
+            src="{% static 'img/w4.png' %}"
             alt=""
             style="
               height: 30%;
@@ -301,17 +307,25 @@
         </div>
         <ul class="menu">
           {% if not request.user.is_authenticated %}
-          <li><a href="/wallet/register" class="menu-btn">REGISTER</a></li>
+          <li>
+            <a href="/wallet/register" class="menu-btn">REGISTER</a>
+          </li>
           <li style="margin-left: 10px">
             <button class="btn btn-outline-success" type="button" id="loginBtn">
               LOGIN
             </button>
           </li>
+
           <!-- prettier-ignore -->
           {% endif %} 
             {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
           <li>
             <a href="{% url 'wallet:dashboard' %}" class="menu-btn">Wallet</a>
+          </li>
+          <li>
+            <a href="{% url 'facility:facility' %}" class="menu-btn"
+              >Facility</a
+            >
           </li>
           {% else %}
           <li>
@@ -321,11 +335,11 @@
           </li>
           <li>
             <a href="{% url 'facility:facility' %}" class="menu-btn"
-              >Facility</a
+              >Book a facility</a
             >
           </li>
           <li>
-            <a href="#" class="menu-btn">Check Facilities</a>
+            <a href="#" class="menu-btn"></a>
           </li>
           {% endif %} {% endif %}
           <!-- Login button in the navbar -->

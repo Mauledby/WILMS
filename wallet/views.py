@@ -144,6 +144,7 @@ class DashboardView(View):
         if request.user.is_superuser:
             try:
                 profile = UserProfileInfo.objects.get(user_id=request.user)
+                email=User.objects.get(email=request.user)
                 coin_balance = profile.coin_balance
                 point_balance = profile.point_balance
             except UserProfileInfo.DoesNotExist:
@@ -152,7 +153,8 @@ class DashboardView(View):
 
             context = {
                 'coin_balance': coin_balance,
-                'point_balance': point_balance
+                'point_balance': point_balance,
+                'email':email,
             }
 
             return render(request, 'wallet/dashboard.html', context)
@@ -226,6 +228,7 @@ class UserDashboardView(View):
         try:
             profile = UserProfileInfo.objects.get(user_id=request.user)
             first_name=profile.first_name
+            email=User.objects.get(email=request.user)
             coin_balance = profile.coin_balance
             point_balance = profile.point_balance
         except UserProfileInfo.DoesNotExist:
@@ -235,7 +238,8 @@ class UserDashboardView(View):
         context = {
             'coin_balance': coin_balance,
             'point_balance': point_balance,
-            'first_name':first_name
+            'first_name':first_name,
+            'email':email,
         }
         return render(request, 'wallet/userDashboard.html',context)
     
@@ -252,6 +256,8 @@ class PointsDashboardView(View):
             last_name = profile.last_name
             user_profile = UserProfileInfo.objects.get(user=request.user)
             transactions = Transaction.objects.filter(recipient=user_profile.user)
+            user=User.objects.get(email=request.user)
+            email=user.email
             vendor_transactions = VendorTransaction.objects.filter(customer=user_profile.user, currency='Points')
         except UserProfileInfo.DoesNotExist:
             coin_balance = 0.0
@@ -266,6 +272,7 @@ class PointsDashboardView(View):
             'last_name':last_name,
             'transactions': transactions,
             'vendor_transactions': vendor_transactions,
+            'email':email,
         }
 
 
@@ -285,6 +292,9 @@ class CoinTransactionCreateAndDashboardView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             profile = UserProfileInfo.objects.get(user_id=request.user)
+            user=User.objects.get(email=request.user)
+            email=user.email
+            point_balance = profile.point_balance
             coin_balance = profile.coin_balance
             first_tname = profile.first_name
             last_name = profile.last_name
@@ -298,10 +308,12 @@ class CoinTransactionCreateAndDashboardView(LoginRequiredMixin, View):
         context = {
             'form': form,
             'coin_balance': coin_balance,
+            'point_balance': point_balance,
             'first_name': first_tname,
             'last_name': last_name,
             'coin_transactions': coin_transactions,
             'vendor_transactions': vendor_transactions,
+            'email':email,
         }
 
         return render(request, 'wallet/cointransaction_create_and_dashboard.html', context)
@@ -710,10 +722,15 @@ class EditUserProfileView(View):
             point_balance = profile.point_balance
             first_tname = profile.first_name
             last_name = profile.last_name
-            profile_picture = profile.profile_picture
+            profile_picture = profile.profile_picture if profile.profile_picture else 'user.png'
             user_profile = UserProfileInfo.objects.get(user=request.user)
         except UserProfileInfo.DoesNotExist:
-            user_profile=[]
+            # Handle the case when the user profile does not exist
+            coin_balance = 0
+            point_balance = 0
+            first_name = ""
+            last_name = ""
+            profile_picture = None  # Set a default or leave it as None
         
         form = UserProfileInfoUpdateForm(instance=user_profile)
 
@@ -731,7 +748,7 @@ class EditUserProfileView(View):
             form = UserProfileInfoUpdateForm(request.POST, request.FILES, instance=user_profile)
             if form.is_valid():
                 form.save()
-                return redirect('wallet:userdashboard')  # Redirect to the user's profile page
+                return redirect('wallet:usrdashboard')  # Redirect to the user's profile page
             return render(request, self.template_name, {'form': form, 'user_profile': user_profile})
 
 
