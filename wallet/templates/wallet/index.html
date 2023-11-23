@@ -495,7 +495,7 @@ button.btn-primary{
                   class="form-control"
                   id="email"
                   name="email"
-                  placeholder="emal.@cit.edu"
+                  placeholder="email.@cit.edu"
                   required
                 />
               </div>
@@ -571,7 +571,7 @@ button.btn-primary{
       <button class="adminlabel" style="left:77%;"><a class="menugroup" href="#">Crowd Control</a></button>
       <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
       {% else %}
-      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="{% url 'wallet:dashboard' %}">Wallet</a></button>
+      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="{% url 'wallet:usrdashboard' %}">Wallet</a></button>
       <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
       {% endif %} {% endif %}
     </ul>
