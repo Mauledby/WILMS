@@ -188,6 +188,7 @@ EMAIL_HOST_USER = 'wilms.wallet@gmail.com'
 EMAIL_HOST_PASSWORD = 'vbbh nvxm vtcp yois'    
 
 
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
@@ -240,3 +241,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+LOGIN_URL = 'wallet:user_login'
+

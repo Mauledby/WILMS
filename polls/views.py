@@ -47,12 +47,12 @@ def show_message_view(request):
     message = facility_controller.showMessage(request)
     return JsonResponse({'message': message})
 
-@login_required(redirect_field_name="userlogin")
+@login_required()
 def map(request):
 
-    username = request.user.username
+    email = request.user.email
     bookings = WalkinBookingModel.objects.all().count()
-    userbooks = WalkinBookingModel.objects.filter(userid=username).count()
+    userbooks = WalkinBookingModel.objects.filter(email=email).count()
     area_bookings = AssignedArea.objects.values('area_id').annotate(booked_count=models.Count('area_id'))
     
     areas = []
@@ -66,7 +66,7 @@ def map(request):
 
     
     if bookings != 0 and userbooks != 0:
-        user = WalkinBookingModel.objects.get(userid=username)
+        user = WalkinBookingModel.objects.get(email=email)
 
         if user.status=="Booked":
             return redirect('timer')

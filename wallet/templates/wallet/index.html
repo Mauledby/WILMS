@@ -304,6 +304,7 @@ nav.horizontal {
         color: #0000;
         text-emphasis-color: #0000;
       }
+
   
 
   nav.horizontal ul {
@@ -434,6 +435,73 @@ button.btn-primary{
     </style>
   </head>
   <body>
+
+      .menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="max-width">
+        <div>
+          <img
+            src="{% static 'img/w4.png' %}"
+            alt=""
+            style="
+              height: 30%;
+              width: 30%;
+              margin-bottom: -20px;
+              margin-top: -10px;
+            "
+          />
+        </div>
+        <ul class="menu">
+          {% if not request.user.is_authenticated %}
+          <li>
+            <a href="/wallet/register" class="menu-btn">REGISTER</a>
+          </li>
+          <li style="margin-left: 10px">
+            <button class="btn btn-outline-success" type="button" id="loginBtn">
+              LOGIN
+            </button>
+          </li>
+
+          <!-- prettier-ignore -->
+          {% endif %} 
+            {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
+          <li>
+            <a href="{% url 'wallet:dashboard' %}" class="menu-btn">Wallet</a>
+          </li>
+          <li>
+            <a href="{% url 'facility:facility' %}" class="menu-btn"
+              >Facility</a
+            >
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'wallet:usrdashboard' %}" class="menu-btn"
+              >Wallet</a
+            >
+          </li>
+          <li>
+            <a href="{% url 'facility:facility' %}" class="menu-btn"
+              >Book a facility</a
+            >
+          </li>
+          <li>
+            <a href="#" class="menu-btn"></a>
+          </li>
+          {% endif %} {% endif %}
+          <!-- Login button in the navbar -->
+        </ul>
+        <i class="fas fa-bars menu-btn"></i>
+      </div>
+    </nav>
+main
 
     <section class="banner-container">
       <div class="banner">
