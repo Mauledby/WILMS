@@ -1,6 +1,6 @@
 import jwt
 
-secret='django-insecure-yx0_es9okr6pcsa_xd-9@u3##kymq@_hga+aj1whai*9q%zsxt'
+secret='django-insecure-n9gx_l8!6tp*^ws9tov)vkt1djt+%pp=l(^d5^bdzrt16difxy'
 
 def decode_user(token: str):
     """

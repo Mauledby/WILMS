@@ -1,7 +1,7 @@
 import datetime
 from rest_framework import serializers
 from api.models import *
-
+from wallet.models import User as UserObject
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model=Booking
@@ -17,8 +17,8 @@ class AttendeeSerializer(serializers.ModelSerializer):
         fields=('__all__')
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model=User
-        fields=('username','id')
+        model=UserObject
+        fields=('email','id')
         
 class AttendanceResponseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,7 +28,7 @@ class BookingRequestSerializer(serializers.ModelSerializer):
     attendees=AttendeeSerializer(many=True)
     class Meta:
         model=Booking
-        fields=('purpose','description','venue','date','startTime','endTime','computers','coins','points','user','attendees','officeName','user_id')
+        fields=('purpose','description','venue','date','startTime','endTime','computers','coins','points','user','attendees','officeName',)
     def create(self, validated_data):
         attendees=validated_data.pop('attendees')
         booking=Booking(**validated_data)        

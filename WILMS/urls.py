@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('wallet/', include('wallet.urls', namespace='wallet')),  # Include app-specific URLs with the 'wallet' namespace
     path('walletAPI/', include(('walletAPI.urls', 'walletAPI'), namespace='walletAPI')),
-    path('polls/', include('polls.urls')),
+    path('polls/', include(('polls.urls', 'polls'), namespace='polls')),
     path('wiladmin/', include('wiladmin.urls')),
     path('api/',include('api.urls')),
     path('' , views.IndexView.as_view(), name='index'),

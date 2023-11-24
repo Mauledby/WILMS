@@ -8,6 +8,10 @@ from api.controllers.dashboardController import DashboardController
 from api.controllers.logsController import *
 from api.controllers.tapController import TapController
 from api.controllers.logsController import LogsController
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 urlpatterns = [
     # path('booking/',BookingDetail.as_view(),name='creation'),
     # path('currentBookings/',CurrentBookings.as_view(),name='currentBookings'),
@@ -34,7 +38,8 @@ urlpatterns = [
     path('getAllBookings/',ManagementController.getAllBooking,name="get all bookings"),
     path('getAllCancelledBookings/',ManagementController.getAllCancelledBooking,name="get all cancelled bookings"),
     path('getAllNoShowBookings/',ManagementController.getAllNoShowBooking,name="get all no show bookings"),
-    #for non admin or normal users
+    #for non admin or normal users  
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('getAllUserBookings/<user_id>/',ManagementController.getAllUserBookings,name="get booking of user"),
     path('getUpcomingUserBookings/<user_id>/',ManagementController.getUpcomingUserBookings,name="get upcoming bookings of user"),
     path('getHistoryUserBookings/<user_id>/',ManagementController.getHistoryUserBookings,name="get user bookings in the past"),

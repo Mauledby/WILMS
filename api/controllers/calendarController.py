@@ -1,5 +1,8 @@
 import json
+import random
+import string
 from rest_framework_simplejwt.authentication import JWTAuthentication
+import uuid
 
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -65,12 +68,31 @@ class CalendarController():
                 serializer._validated_data['duration']=hours_difference
                 # set status to booked
                 serializer._validated_data['status']='Booked'
+                #generate unique reference no.
+                
+                random = str(uuid.uuid4()) # Convert UUID format to a Python string.
+                random = random.upper() # Make all characters uppercase.
+                random = random.replace("-","") # Remove the UUID '-'.
+                refNo= random[0:8]
+            
+                while Booking.objects.filter(referenceNo=refNo).count()!=0:
+                     random = str(uuid.uuid4()) # Convert UUID format to a Python string.
+                     random = random.upper() # Make all characters uppercase.
+                     random = random.replace("-","") # Remove the UUID '-'.
+                     refNo= random[0:8]
+                serializer._validated_data['referenceNo']=refNo
                 serializer.save()
                 response_data={
                     'message':'Succesfully booked'
                 }
                 return Response(serializer.data,status=status.HTTP_201_CREATED)
             return Response(serializer.data,status=status.HTTP_400_BAD_REQUEST)
+    def my_random_string(string_length=8):
+        """Returns a random string of length string_length."""
+        random = str(uuid.uuid4()) # Convert UUID format to a Python string.
+        random = random.upper() # Make all characters uppercase.
+        random = random.replace("-","") # Remove the UUID '-'.
+        return random[0:string_length]
 # class CurrentBookings(APIView):
 #     # permission_classes=[IsAuthenticated,]
 #     # api to get bookings within 2 weeks ra   

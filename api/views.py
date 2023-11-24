@@ -16,6 +16,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 
@@ -28,26 +29,26 @@ def signup(request):
 @api_view(['POST'])
 def login(request):
 
-    username=request.data.get('username')
+    email=request.data.get('username')
     password=request.data.get('password')
     userFound=None
-    userFound=users.objects.get(username=username)
+    userFound = authenticate(request, email=email, password=password)
     # insert code here to call the api from other group for authentication using username and password from request
     #  then get the returned user credentials and make jwt token for it
+    print(userFound)
     if(userFound==None):
-        return Response({'message':'user not found'},status=status.HTTP_200_OK)
-    else:
-        if(check_password(password,userFound.password)==False):
-            print(userFound.password)
-            print(make_password(password))
-            return Response({'message':'Invalid Username or Password'},status=status.HTTP_200_OK)
+        return JsonResponse({'message': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     
-    user=User(id=userFound.id,username=username)
+    
+    user=User(id=userFound.id,username=email)
     refresh=RefreshToken.for_user(user)
     #extra response options below for jwt
-    refresh['username']=userFound.username
-    refresh['role']=userFound.role
+    refresh['username']=userFound.email
+    if(userFound.is_superuser or userFound.is_staff):
+        refresh['role']='admin'
+    else:
+        refresh['role']='user'
     data={
         'refresh':str(refresh),
         'access':str(refresh.access_token),

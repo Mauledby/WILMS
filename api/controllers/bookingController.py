@@ -11,6 +11,7 @@ from rest_framework import *
 from rest_framework import status
 from api.models import Booking,Venue,User as user,Attendee
 from api.serializers import BookingSerializer, VenueSerializer,BookingRequestSerializer,UserSerializer,AttendeeSerializer
+from wallet.models import User as WalletUser
 # from rest_framework.permissions import IsAuthenticated,AllowAny
 from api.jwt_util import decode_user
 # from datetime import datetime, date, timedelta
@@ -33,7 +34,7 @@ class BookingController():
         monday=converted_date-datetime.timedelta(converted_date.weekday())
         sunday=monday+datetime.timedelta(days=6)
         print(sunday)
-        obj = Booking.objects.filter(date__gte=monday.date(),date__lte=sunday.date(),user_id=user_id,status="Booked")
+        obj = Booking.objects.filter(date__gte=monday.date(),date__lte=sunday.date(),user=user_id,status="Booked")
         duration=0
         for item in obj:
             duration+=item.duration
@@ -41,7 +42,7 @@ class BookingController():
         return Response({"duration":duration,"data":serializer.data,"monday":monday},status=status.HTTP_200_OK)
     @api_view(['GET'])
     def getAllUsers(request):        
-        obj = user.objects.all()
+        obj = WalletUser.objects.all()
         serializer = UserSerializer(obj,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
     @api_view(['POST'])

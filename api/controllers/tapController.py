@@ -15,7 +15,8 @@ from api.serializers import BookingSerializer, VenueSerializer,BookingRequestSer
 from api.jwt_util import decode_user
 # from datetime import datetime, date, timedelta
 from rest_framework.decorators import api_view
-
+from wallet.models import UserProfileInfo
+from wallet.models import User as WalletUser
 # from django.contrib.auth.models import User
 from django.http import JsonResponse
 # from rest_framework_simplejwt.tokens import RefreshToken
@@ -29,7 +30,14 @@ class TapController():
         timeNow=datetime.datetime.now().time()
         thirtyMinutes=datetime.datetime.today()+datetime.timedelta(minutes = +30)
         # mao na pra makuha ang name sa user
-        name=request_body['name']
+        rfid=request_body['rfid']
+        userEmail=UserProfileInfo.objects.get(rfid_value=rfid)
+        
+       
+        
+        # store ang email as name variable so name=email in this case sorry bad practice
+        name=userEmail
+        print(name)
         hasBooking=0
         signedInAttendance=Attendance.objects.filter(name=name,isSignedIn=True)
         print(len(signedInAttendance))
@@ -65,7 +73,7 @@ class TapController():
                             booking.save()
                         venue=Venue.objects.get(id=booking.venue.id)
                         hasBooking=1
-                        Attendance.objects.create(signInTime=datetime.datetime.now().time(),venueName=venue.name,booking=booking,name=request_body['name'],venueId=venue.id,isSignedIn=True)
+                        Attendance.objects.create(signInTime=datetime.datetime.now().time(),venueName=venue.name,booking=booking,name=name,venueId=venue.id,isSignedIn=True)
             if hasBooking <= 0:
                 return JsonResponse({"message":"You Have No Booking within 30 minutes!","state":"noBooking"},status=status.HTTP_200_OK)
             else:
