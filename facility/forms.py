@@ -324,17 +324,15 @@ class Revenue_TransactionForm(ModelForm):
                   'time_out','charge_payment']
 
 class CalendarEventForm(forms.ModelForm):
-    DAY_CHOICES = CalendarEvent.DAY_CHOICES  # Use the choices from the model
-    
-    selected_days = forms.ChoiceField(choices=DAY_CHOICES, required=False)
+    date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     event_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter Event Name'}))
-    start_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
-    end_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
+    start = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}))
+    end = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}))
     type_sched = forms.ModelChoiceField(widget=forms.Select(), queryset=Sched_Type.objects.only('type_sched'))
     facility = forms.ModelChoiceField(widget=forms.Select(), queryset=Facility.objects.only('facilityname'))
     class Meta:
         model = CalendarEvent
-        fields = ['event_name', 'facility','start_date', 'end_date', 'selected_days','type_sched']
+        fields = ['event_name', 'facility','start', 'end', 'date','type_sched']
 
 class Sched_TypeForm(forms.ModelForm):
     class Meta:
@@ -342,18 +340,16 @@ class Sched_TypeForm(forms.ModelForm):
         fields= ['type_sched']
 
 class CalendarEventUpdateForm(forms.ModelForm):
-    DAY_CHOICES = CalendarEvent.DAY_CHOICES  # Use the choices from the model
-
-    selected_days = forms.ChoiceField(choices=DAY_CHOICES, required=False)
+    date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     event_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter Event Name'}))
     facility = forms.ModelChoiceField(widget=forms.Select(), queryset=Facility.objects.only('facilityname'))
-    start_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
-    end_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
+    start = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}))
+    end = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}))
     type_sched = forms.ModelChoiceField(widget=forms.Select(), queryset=Sched_Type.objects.only('type_sched'))
 
     class Meta:
         model = CalendarEvent
-        fields = ['event_name','start_date', 'end_date', 'selected_days','type_sched','facility']
+        fields = ['event_name','start', 'end', 'date','type_sched','facility']
 
 class TransactionForm(forms.ModelForm):
     transaction_datetime = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
@@ -431,7 +427,7 @@ class UserTypeMainRulesForm(ModelForm):
     # status = forms.BooleanField()
     class Meta:
         model = UserType_MainRules
-        fields = ['title','points','num_pc','num_attendies','description','rate']
+        fields = ['title','points','num_pc','num_attendies','description']
         exclude = ['status','user_type']  
 
         def __init__(self, *args, **kwargs):
@@ -450,7 +446,7 @@ class UpdateUserTypeMainRulesForm(ModelForm):
     rate = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Rate per person'}))
     status = forms.BooleanField()
     class Meta:
-        model = Facility_MainRules
+        model = UserType_MainRules
         fields = ['user_type','title','points','num_pc','num_attendies','description','rate','status']
 
     def clean(self):
@@ -473,7 +469,6 @@ class UpdateUserTypeMainRulesForm(ModelForm):
     def __str__(self):
         return (
             f"{self.cleaned_data['facility']} ({self.cleaned_data['title']}) "
-            f"({self.cleaned_data['rate']} per person) "
             f"({self.cleaned_data['capacity']})"
         )
     
@@ -485,11 +480,11 @@ class UserTypeMainRulesSetForm(ModelForm):
     num_pc = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Number of PC Facility can book'}))
     num_attendies = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Number of person can attend'}))
     description = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Description'}))
-    rate = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Rate per person'}))
+    # rate = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Rate per person'}))
     status = forms.BooleanField()
     class Meta:
         model = UserType_MainRules_set
-        fields = ['user_type','title','points','num_pc','num_attendies','description','rate','status']
+        fields = ['user_type','title','points','num_pc','num_attendies','description','status']
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)

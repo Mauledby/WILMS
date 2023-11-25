@@ -120,15 +120,12 @@ button.cardevent:hover{
             </datalist>
             <label class="modalpopup">Event Name</label><br>
               {{calform.event_name}}
-            <label class="modalpopup">Start Date</label><br>
-            <input type="datetime-local"placeholder="Input Start Date" name="start_date" value='{{ calform.start_date }}'><br>
-            <label class="modalpopup">End Date</label><br>
-            <input type="datetime-local"placeholder="Input End Date" name="end_date" value='{{calform.end_date}}'><br>
-            <label class="modalpopup">Selected Dates</label><br>
-            <input list="selected_days" name="selected_days" placeholder=" Choose Day"/>
-            <datalist id="selected_days">
-              <option value = "{{calform.selected_days}}">
-            </datalist>
+              <label class="modalpopup">Date</label><br>
+              <input type="date"placeholder="Input Date" name="date" value='{{calform.date}}'><br>
+            <label class="modalpopup">Start</label><br>
+            <input type="time"placeholder="00:00 am/pm" name="start" value='{{ calform.start }}'><br>
+            <label class="modalpopup">End</label><br>
+            <input type="time"placeholder="00:00 am/pm" name="end" value='{{calform.end}}'><br>
             <label class="modalpopup">Facility</label><br>
             <input list="calform.facility" name="facility" placeholder="Choose Day"/>
             <datalist id="calform.facility">
@@ -181,12 +178,12 @@ button.cardevent:hover{
             data-event-id="{{ e.id }}" data-event-name="{{ e.event_name }}">
               <h3 class="titletxt">
                 
-                <div style="position: absolute;">{{ e.start_date|date:"l" }}</div>
-                <div style="margin-left: 80%;">{{ e.start_date.date }}</div>
+                <div style="position: absolute;">{{ e.date|date:"l" }}</div>
+                <div style="margin-left: 80%;">{{ e.date.date }}</div>
               </h3>
               <ul class="content" style="text-align: left; height: 200px;">
-                <p>When: {{ e.start_date.date }} Time: {{ e.start_date.time }}</p>
-                <p>Until: {{ e.end_date.date }} Time: {{ e.start_date.time }}</p>
+                <p>When: {{ e.date.date}} </p>
+                <p>Time: {{ e.start}} - {{ e.end}}</p>
                 <p>What: {{ e.event_name }}</p>
                 <p>Where: {{e.facility}}</p>            
               </ul>

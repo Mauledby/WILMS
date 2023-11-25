@@ -5,6 +5,7 @@ from django.urls import path
 app_name ='facility'
 
 urlpatterns =[
+    path('get-facility/', views.get_facility, name='get_facility'),
     path('facility', views.display_facility, name='facility'),
     path('updatefaci', views.display_facility, name='updatefaci'),
     path('rules', views.rules_facility, name='rules'),

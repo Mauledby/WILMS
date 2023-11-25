@@ -24,11 +24,14 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
 
 from django.shortcuts import render, redirect
 from urllib.parse import urlencode  # Import urlencode to encode URL parameters
 
+
+@csrf_protect
 @api_view(['GET', 'POST'])
 def login_view(request):
     if request.method == 'GET':
@@ -56,7 +59,6 @@ def login_view(request):
                 return redirect(redirect_url)
         
         return JsonResponse({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
-
 
 
 

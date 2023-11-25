@@ -1,0 +1,29 @@
+.df {
+	color: #fff200;
+}
+
+.card-header {
+	background-color: #fff200;
+}
+
+.act {
+	font-size: 2em; 
+	font-weight: 700;
+	color: #000;
+}
+
+.util {
+	font-size: 2em;
+}
+
+.trhead {
+	background-color: #fff200;
+}
+
+.gr {
+	font-weight: 700;
+}
+
+.gr:hover {
+  color: #fff200;  
+}

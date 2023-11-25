@@ -59,4 +59,10 @@ urlpatterns = [
     path('signup/',signup,name='signup'),
     #for logs page
     path('getAllAttendance/',LogsController.getAllAttendance, name="get all attendance"),
+
+
+
+    # kirk added
+
+    path('react/', ReactAppView.as_view(), name='react_app'),
 ]

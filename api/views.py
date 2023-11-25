@@ -117,3 +117,10 @@ class AttendeeDetail(APIView):
         obj = Attendee.objects.filter(booking=id)
         serializer = AttendeeSerializer(obj,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+
+
+from django.views.generic import TemplateView
+
+
+class ReactAppView(TemplateView):
+    template_name = 'frontend/index.html'

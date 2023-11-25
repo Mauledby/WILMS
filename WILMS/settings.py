@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'api',
     'facility',
     'corsheaders',
+    
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,7 @@ ROOT_URLCONF = 'WILMS.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'frontend','templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,6 +160,8 @@ USE_TZ = True
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'api','templates','frontend','static'),
+    os.path.join(BASE_DIR, 'polls','static'),
 ]
 STATIC_URL = '/static/'
 
@@ -198,7 +201,8 @@ CORS_ALLOWED_ORIGINS = [
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
     

@@ -1,0 +1,217 @@
+
+.df {
+	color: #fff200;
+}
+
+.modal-header {
+	background-color: #fff200;
+}
+
+.remove {
+  display: inline-block;
+	outline: none;
+	cursor: pointer;
+  background: #24a0ed;
+  color: #fff;
+	text-align: center;
+	text-decoration: none;
+	font: 14px/100%;
+	padding-top: 5%;
+	padding-bottom: 5%;
+	padding-left: 10%;
+	padding-right: 10%;
+	/* -webkit-border-radius: .5em; */
+	font-weight: 400;
+  border-radius: 5px;
+}
+
+.remove:hover{
+  border: 1px solid #24a0ed;
+  background: #fff;
+  color: #24a0ed;
+}
+.updategroup {
+	display: inline-block;
+  outline: none;
+  cursor: pointer;
+  background:#567cfa;
+  background: linear-gradient(to right bottom, #3160fc 50%, #567cfa 50%);
+  color:#ffffff;
+  text-align: center;
+  text-decoration: none;
+  font: 14px/100%;
+  font-weight: bold;
+  text-shadow: 1px 3px 2px rgba(0,0,0,0.3);
+  padding: 5px;
+  width: 150px;
+  margin-bottom: 2px;
+  border-radius: 100px;
+}
+.deletegroup {
+	display: inline-block;
+  outline: none;
+  cursor: pointer;
+  background:#db844a;
+  background: linear-gradient(to right bottom, #e0244d 50%, #db4a6a 50%);
+  color:#ffffff;
+  text-align: center;
+  text-decoration: none;
+  font: 14px/100%;
+  font-weight: bold;  
+  text-shadow: 1px 3px 2px rgba(0,0,0,0.3);
+  padding: 5px;
+  width: 150px;
+  margin-bottom: 2px;
+  border-radius: 100px;
+}
+
+#modalheader {
+  text-transform: uppercase;
+	color: #000;
+	font-weight: bold;
+}
+
+#com-name {
+  border-radius: 5px;
+  width: 300px;
+  border-radius: 5px;
+  width: 300px;
+  border: 1px solid #000;
+  height: 40px;
+  padding: 0 1rem;
+  outline: none;
+  transition: background .5s;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+#add-committee {
+  border-radius: 5px;
+  width: 300px;
+  border: 1px solid #000;
+  height: 40px;
+  padding: 0 1rem;
+  outline: none;
+  transition: background .5s;
+  font-size: 14px;
+}
+
+#btn-add-comm {
+  margin-top: 5px;
+  border-radius: 5px;
+}
+.th {
+	background-color: #fff200;
+}
+
+.enable {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  background:#31e8ba;
+  background: linear-gradient(to right bottom, #30ce91 50%, #31e8ba 50%);
+  color:#ffffff;
+  text-align: center;
+  text-decoration: none;
+  font: 14px/100%;
+  font-weight: bold;
+  text-shadow: 1px 3px 2px rgba(0,0,0,0.3);
+  border-radius: 100px;
+  padding: 5px;
+  width: 150px;
+  margin-bottom: 2px;
+  }
+  
+.disable {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font: 14px/100%;
+  font-weight: bold;
+  text-shadow: 1px 3px 2px rgba(0,0,0,0.3);
+  border-radius: 100px;
+  padding: 5px;
+  margin-bottom: 2px;
+  width: 150px;
+  background:#fcbd7e;
+  background: linear-gradient(to right bottom, #fcb551 50%, #fcbd7e 50%);
+  color:#ffffff;
+}
+
+.userupdate {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  background:#fc84a6;
+  background: linear-gradient(to right bottom, #fd5d82 50%, #fc84a6 50%);
+  color:#ffffff;
+  text-align: center;
+  text-decoration: none;
+  font: 14px/100%;
+  font-weight: bold;
+  text-shadow: 1px 3px 2px rgba(0,0,0,0.3);
+  border-radius: 100px;
+  padding: 5px;
+  width: 150px;
+  margin-bottom: 2px;
+}
+    
+.transaction {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  background:#3EE9EA;
+  background: linear-gradient(to right bottom, #01D8E6 50%, #3EE9EA 50%);
+  color:#ffffff;
+  text-align: center;
+  text-decoration: none;
+  font: 14px/100%;
+  font-weight: bold;
+  text-shadow: 1px 3px 2px rgba(0,0,0,0.3);
+  border-radius: 100px;
+  padding: 5px;
+  width: 150px;
+}
+/* .center{
+  position: absolute;
+  left: 	50%;
+  top:	50%;
+  transform: translate(-50%, 0%);
+} */
+
+.enable:hover {
+  background:#28bd98;
+  background: linear-gradient(to right bottom, #229468 50%, #28bd98 50%);
+  color:#ffffff;
+}
+.disable:hover {
+  background:#fd9e51;
+  background: linear-gradient(to right bottom,#ff8f32 50%, #fd9e51 50%);
+  color:#ffffff;
+}
+.userupdate:hover, .userupdate:focus {
+  background:#db4a6a;
+  background: linear-gradient(to right bottom, #e0244d 50%, #db4a6a 50%);
+  color:#ffffff;
+}
+.transaction:hover {
+  background:#567cfa;
+  background: linear-gradient(to right bottom, #3160fc 50%, #567cfa 50%);
+  color:#ffffff;
+}
+
+
+.updategroup:hover {
+  background:#3EE9EA;
+  background: linear-gradient(to right bottom, #01D8E6 50%, #3EE9EA 50%);
+  color:#ffffff;
+}
+
+.deletegroup:hover{
+  background:#ff6e2b;
+  background: linear-gradient(to right bottom, #fd905d 50%, #ff6e2b 50%);
+  color:#ffffff;
+}

@@ -17,6 +17,14 @@ import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.urls import reverse
+from django.shortcuts import redirect
+from rest_framework import status
+import json
+
+
+
 
 # added increment 2
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -121,21 +129,44 @@ class UserLoginView(View):
         if user:
             if user.is_active:
                 login(request, user)
-                if user.is_superuser:
-                    return redirect('wallet:index')
+
+                # Use the authenticated user directly
+                refresh = RefreshToken.for_user(user)
+
+                # Add custom claims to the token
+                refresh['username'] = user.email
+                if user.is_superuser or user.is_staff:
+                    refresh['role'] = 'admin'
                 else:
-                    return redirect('wallet:index')
+                    refresh['role'] = 'user'
+
+                # Additional data for the response
+                data = {
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                }
+
+                # JavaScript code to store data in local storage
+                local_storage_code = (
+                    'localStorage.setItem("refresh_token", "{refresh}");\n'
+                    'localStorage.setItem("access_token", "{access}");\n'
+                    # Add more items to store if needed
+                ).format(refresh=data['refresh'], access=data['access'])
+
+                # Response data with JavaScript code
+                response_data = {
+                    'status': 'success',
+                    'data': data,
+                    'script': local_storage_code,
+                }
+
+                return JsonResponse(response_data, status=200)
             else:
-                print("Account is not active.")
-                return HttpResponse('<script>alert("Account is not active."); window.location.href="/wallet/user_login/";</script>')
+                response_data = {'status': 'error', 'message': 'Account is not active.'}
+                return JsonResponse(response_data, status=400)
         else:
-            print("User is None.")
-            return HttpResponse('<script>alert("Invalid login details supplied."); window.location.href="/wallet/user_login/";</script>')
-                    
-            
-            # print("Someone tried to login and failed.")
-            # print("They used email: {} and password: {}".format(email, password))
-            # Show an alert when the login details are invalid
+            response_data = {'status': 'error', 'message': 'Invalid login details supplied.'}
+            return JsonResponse(response_data, status=400)
 
 
 class DashboardView(View):
@@ -463,19 +494,39 @@ class SettingsView(LoginRequiredMixin, View):
     @method_decorator(user_passes_test(is_verified_user))
 
     def get(self, request):
-        user = request.user
+        try:
+                profile = UserProfileInfo.objects.get(user_id=request.user)
+                user = User.objects.get(email=request.user)
+                email = user.email
+                coin_balance = profile.coin_balance
+                point_balance = profile.point_balance
+                first_tname = profile.first_name
+                last_name = profile.last_name
+                profile_picture = profile.profile_picture if profile.profile_picture else 'user.png'
+        except UserProfileInfo.DoesNotExist:
+                # Handle the case when the user profile does not exist
+                coin_balance = 0
+                point_balance = 0
+                first_name = ""
+                last_name = ""
+                profile_picture = None  # Set a default or leave it as None
+
         context = {
-            'user': user,
-        }
+                'coin_balance': coin_balance,
+                'point_balance': point_balance,
+                'first_name':first_tname,
+                'last_name':last_name,
+                'profile_picture':profile_picture,
+                'email':email,
+            }
         return render(request, self.template_name, context)
     
 
 
 class ChangePasswordView(PasswordChangeView):
     template_name = 'wallet/change_password.html'  # Create a template for the change password page
-    success_url = reverse_lazy('wallet:change-password')  # Redirect to this URL after a successful password change
+    success_url = reverse_lazy('wallet:change-password')  # Redirect to this URL after a successful password change       
     @method_decorator(user_passes_test(is_verified_user))
-
     def form_valid(self, form):
         response = super(ChangePasswordView, self).form_valid(form)
         messages.success(self.request, 'Your password has been changed successfully.')
@@ -489,10 +540,11 @@ class UpdateAccountTypeView(View):
         user = get_object_or_404(get_user_model(), id=id)
         is_superuser = request.POST.get('isSuperuser') == 'true'
         is_staff = request.POST.get('isStaff') == 'true'
-
+        user.user_type = "teacher"
         try:
             user.is_superuser = is_superuser
             user.is_staff = is_staff
+            
             user.save()
             return JsonResponse({'success': True})
         except Exception as e:
@@ -720,6 +772,8 @@ class EditUserProfileView(View):
         try:
             
             profile = UserProfileInfo.objects.get(user_id=request.user)
+            user = User.objects.get(email=request.user)
+            email = user.email
             coin_balance = profile.coin_balance
             point_balance = profile.point_balance
             first_tname = profile.first_name
@@ -742,6 +796,7 @@ class EditUserProfileView(View):
             'first_name':first_tname,
             'last_name':last_name,
             'profile_picture':profile_picture,
+            'email':email,
             'form': form,
         }
         return render(request, 'wallet/edit_user_profile.html', context)
@@ -752,6 +807,3 @@ class EditUserProfileView(View):
                 form.save()
                 return redirect('wallet:usrdashboard')  # Redirect to the user's profile page
             return render(request, self.template_name, {'form': form, 'user_profile': user_profile})
-
-
-

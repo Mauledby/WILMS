@@ -95,12 +95,12 @@ export default function Calendar(props) {
         computers: booking.current.computers,
         coins: booking.current.coins,
         points: booking.current.points,
-        user: user.username,
+        user: user.email,
 
         user_id: user.user_id,
         attendees: [
           ...attendeeList,
-          { name: user.username, user_id: user.user_id },
+          { name: user.email, user_id: user.user_id },
         ],
       })
       .then(() => {
@@ -539,7 +539,7 @@ export default function Calendar(props) {
                   id="combo-box-demo"
                   options={fakeUserDb.map((item) => {
                     return {
-                      label: item.username,
+                      label: item.email,
                       id: item.id,
                     };
                   })}
@@ -564,7 +564,7 @@ export default function Calendar(props) {
                     }
                     if (
                       attendeeList.some(found) ||
-                      attendeeName === user?.username
+                      attendeeName === user?.email
                     ) {
                     } else {
                       let isExisting = false;
@@ -572,7 +572,7 @@ export default function Calendar(props) {
                       let userFound = null;
                       //finds username in database
                       userFound = fakeUserDb.find(
-                        (x) => x.username === attendeeName
+                        (x) => x.email === attendeeName
                       );
 
                       if (userFound !== undefined) {
@@ -875,7 +875,7 @@ export default function Calendar(props) {
                   <ListItem m={0}>
                     <ListItemText
                       fontSize="12px"
-                      primary={user?.username}
+                      primary={user?.email}
                       // secondary={secondary ? 'Secondary text' : null}
                     />
                   </ListItem>

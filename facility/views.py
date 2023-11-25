@@ -40,9 +40,85 @@ from reportlab.pdfgen import canvas
 import io
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.http import JsonResponse
+from django.core import serializers
+from .models import Setting_Facility
+
 
 def is_superuser(user):
     return user.is_superuser  # Check if the user is a superuser
+
+
+@csrf_protect
+@login_required
+@user_passes_test(is_superuser)
+def get_facility(request):
+    setting_facilities = Setting_Facility.objects.all()
+
+    facility_data = []
+    for facility in setting_facilities:
+        mainrules = Facility_MainRules_set.objects.all()
+        subrules = Facility_SubRules_set.objects.all()
+        promorules = Facility_PromoRules_set.objects.all()
+
+        facility_dict = {
+            'setting_facility_id': facility.id,
+            'facility': {
+                'facility_id': facility.facility.id if facility.facility else None,
+                'facility_name': facility.facility.facilityname if facility.facility else None,
+                'rate_per_hour': facility.facility.rateperhour if facility.facility else None,
+                'capacity': facility.facility.capacity if facility.facility else None,
+                'created_at': facility.facility.created_at if facility.facility else None,
+                'modified_at': facility.facility.modified_at if facility.facility else None,
+                # Add other fields from Facility model
+            },
+            'main_rules': {
+                'mainrules': facility.mainrules.id if facility.mainrules else None,
+                'facility': facility.mainrules.facility if facility.mainrules else None,
+                'title': facility.mainrules.title if facility.mainrules else None, 
+                'points': facility.mainrules.points if facility.mainrules else None, 
+                'num_pc': facility.mainrules.num_pc if facility.mainrules else None, 
+                'num_attendies': facility.mainrules.num_attendies if facility.mainrules else None, 
+                'description': facility.mainrules.description if facility.mainrules else None, 
+                'rate': facility.mainrules.rate if facility.mainrules else None, 
+                'status': facility.mainrules.status if facility.mainrules else None, 
+                'created_at': facility.mainrules.created_at if facility.mainrules else None, 
+                'modified_at': facility.mainrules.modified_at if facility.mainrules else None, 
+                # Add other fields from Facility_MainRules_set model
+            },
+            'promo_rules': {
+                'promrules': facility.promorules.id if facility.promorules else None,
+                'facility': facility.promorules.facility if facility.promorules else None,
+                'title': facility.promorules.title if facility.promorules else None,
+                'new_rate': facility.promorules.new_rate if facility.promorules else None,
+                'start_date': facility.promorules.start_date if facility.promorules else None,
+                'end_date': facility.promorules.end_date if facility.promorules else None,
+                'capacity': facility.promorules.capacity if facility.promorules else None,
+                'description': facility.promorules.description if facility.promorules else None,
+                'status': facility.promorules.status if facility.promorules else None,
+                'created_at': facility.promorules.created_at if facility.promorules else None,
+                'modified_at': facility.promorules.modified_at if facility.promorules else None,
+                # Add other fields from Facility_PromoRules_set model
+            },
+            'sub_rules': {
+                'subrules': facility.subrules.id if facility.subrules else None, 
+                'facility': facility.subrules.facility if facility.subrules else None, 
+                'title': facility.subrules.title if facility.subrules else None,
+                'description': facility.subrules.description if facility.subrules else None,
+                'status': facility.subrules.status if facility.subrules else None,
+                'created_at': facility.subrules.created_at if facility.subrules else None,
+                'modified_at': facility.subrules.modified_at if facility.subrules else None,
+                # Add other fields from Facility_SubRules_set model
+            },
+            'created_at': facility.created_at,
+            'modified_at': facility.modified_at,
+            # Add other fields from Setting_Facility model if needed
+        }
+        facility_data.append(facility_dict)
+
+    return JsonResponse(facility_data, safe=False)
+
+
 
 def generate_pdf_content(facility_stats, revenue_trans):
     buffer = io.BytesIO()
@@ -172,6 +248,9 @@ def get_revenue_trans(facility_filter, start_date, end_date):
 
     return revenue_trans
 
+@csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def get_events(request):
     events = CalendarEvent.objects.all().order_by('id')
     event_data = []
@@ -179,6 +258,7 @@ def get_events(request):
     for event in events:
         event_data.append({
             'title': event.event_name,
+            'date':event.date,
             'start': event.start_date.isoformat(),
             'end': event.end_date.isoformat(),
             # 'facility': event.facility.facilityname,  # Assuming 'facility' has a 'name' field
@@ -188,22 +268,26 @@ def get_events(request):
     return JsonResponse(event_data, safe=False)
 
 
+
+@csrf_protect
+@login_required
+@user_passes_test(is_superuser)
 def event_click(request, event_id):
     event = CalendarEvent.objects.get(pk=event_id)
     message = f"Event Name: {event.event_name}, Start Date: {event.start_date}, End Date: {event.end_date}"
     messages.info(request, message)
     return redirect('facility:calendarview') 
 
-def set_session(request):
-    request.session['username'] = 'myuser'
-    return HttpResponse('Session variable set.')
+# def set_session(request):
+#     request.session['username'] = 'myuser'
+#     return HttpResponse('Session variable set.')
 
-def get_session(request):
-    username = request.session.get('username')
-    if username:
-        return HttpResponse(f'Logged in as: {username}')
-    else:
-        return HttpResponse('Session variable not found.')
+# def get_session(request):
+#     username = request.session.get('username')
+#     if username:
+#         return HttpResponse(f'Logged in as: {username}')
+#     else:
+#         return HttpResponse('Session variable not found.')
     
 # def set_session_fmrules(request):
 #     request.session['facility'] = 'facility'
@@ -1521,7 +1605,7 @@ def revenue_report(request):
 @login_required
 @user_passes_test(is_superuser)
 def display_calendar(request):
-    event = CalendarEvent.objects.all().order_by('start_date')
+    event = CalendarEvent.objects.all().order_by('start')
     facility_filter = request.GET.get('facility')
     request.session['facility'] = facility_filter
     facility = Facility.objects.filter(isdeleted=0).order_by('id')

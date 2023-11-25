@@ -196,23 +196,12 @@ class Sched_Type(models.Model):
         return self.type_sched
 
 class CalendarEvent(models.Model):
-    DAY_CHOICES = [
-        ('1', 'Monday'),
-        ('2', 'Tuesday'),
-        ('3', 'Wednesday'),
-        ('4', 'Thursday'),
-        ('5', 'Friday'),
-        ('7', 'Saturday'),
-        ('8', 'Sunday'),
-        ('first_week', '1st Week of Month'),
-    ]
-
     event_name = models.CharField(max_length=100, null=False )
     facility = models.ForeignKey(Facility, null=True, on_delete=models.CASCADE)
-    start_date = models.DateTimeField(null=False, default=timezone.now)
-    end_date = models.DateTimeField(null=False, default=timezone.now)
+    start = models.TimeField(null=False, default=timezone.now)
+    end = models.TimeField(null=False, default=timezone.now)
     type_sched = models.ForeignKey(Sched_Type, null=True, on_delete=models.CASCADE)
-    selected_days = models.CharField(max_length=10, choices=DAY_CHOICES, blank=True, null=False)
+    date = models.DateTimeField(null=False, default=timezone.now)
 
 
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)

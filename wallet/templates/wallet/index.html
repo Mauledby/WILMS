@@ -15,6 +15,7 @@
     <link rel="icon" href="{% static 'img/title.PNG' %}" />
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
 
     <style>
       /* #loginBtn {
@@ -433,6 +434,8 @@ button.btn-primary{
 }
 
     </style>
+
+
   </head>
   <body>
 
@@ -515,7 +518,7 @@ button.btn-primary{
                 />
               </div>
               <div class="modal-footer" style="margin-left: 15%;">
-                <button type="submit" class="btn btn-primary" style="padding: 2px; width: 70%;">Login</button>
+                <button type="submit"class="btn btn-primary" style="padding: 2px; width: 70%;">Login</button>
               </div>
             </form>
           </div>
@@ -563,12 +566,12 @@ button.btn-primary{
     <ul class="right">
       {% if not request.user.is_authenticated %}
       <button class="adminlabel" style="left:77%;"><a class="menugroup" href="/wallet/register">Register</a></button>
-      <button class="adminlabel" id="loginBtn" style="width: fit-content; left:85%;" ><a class="menugroup" href="#">Login</a></button>
+      <button class="adminlabel" id="loginBtn" style="width: fit-content; left:85%;" ><a id="loginBtn" class="menugroup" href="#">Login</a></button>
       {% endif %} 
       {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
       <button class="adminlabel" style="left:49%;"><a class="menugroup" href="{% url 'wallet:index' %}">Home</a></button>
       <button class="adminlabel" style="left:55%;"><a class="menugroup" href="{% url 'facility:facility' %}">Facility</a></button>
-      <button class="adminlabel" style="left:62%; border: 0px;"><a class="menugroup" href="#">Booking</a></button>
+      <button class="adminlabel" style="left:62%; border: 0px;"><a class="menugroup" href="{% url 'polls:user_dashboard' %}">Booking</a></button>
       <button class="adminlabel" style="left:70%;"><a class="menugroup" href="{% url 'wallet:dashboard' %}">Wallet</a></button>
       <button class="adminlabel" style="left:77%;"><a class="menugroup" href="#">Crowd Control</a></button>
       <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
@@ -600,9 +603,11 @@ button.btn-primary{
 
       $("#loginBannerBtn").click(function () {
         $("#loginModal").show();
+        console.log('clicked')
       });
 
       $("#loginBtn").click(function () {
+        console.log('clicked')
         $("#loginModal").show();
       });
 
@@ -610,6 +615,47 @@ button.btn-primary{
         $("#loginModal").hide();
       });
     </script>
+
+{% if script %}
+<script>
+    $(document).ready(function () {
+        $("#login-form").submit(function (event) {
+            event.preventDefault();
+
+            // Your AJAX request
+            $.ajax({
+                url: '{% url "wallet:user_login" %}',
+                type: 'POST',
+                data: {
+                    email: $('#email').val(),
+                    password: $('#password').val(),
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        // Explicitly set the local storage items
+                        localStorage.setItem("refresh_token", response.data.refresh);
+                        localStorage.setItem("access_token", response.data.access);
+
+                        // Redirect or perform other actions if needed
+                        window.location.href = "/";  // Redirect to home page for example
+                    } else {
+                        // Handle error case if needed
+                        console.error(response.message);
+                    }
+                },
+                error: function (error) {
+                    // Handle errors
+                    console.error("AJAX request failed:", error);
+                },
+            });
+        });
+    });
+</script>
+{% endif %}
+
+
+
+
 
   </body>
 </html>

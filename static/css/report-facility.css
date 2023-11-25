@@ -1,0 +1,31 @@
+
+
+.card-header {
+	background-color: #fff200;
+}
+
+.trhead {
+	background-color: #fff200;
+}
+
+.df {
+	color: #fff200;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  background: #fff200;
+  border-bottom: 2px solid;
+}
+
+.btnExp {
+  background-color: #000; 
+  border: 2px solid #000;
+  color: #fff200 !important;
+}
+
+.btnExp:hover {
+  background-color: transparent;
+  border: 2px solid #000;
+  color: #000 !important;
+  font-weight: bold;
+}

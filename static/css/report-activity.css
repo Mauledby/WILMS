@@ -1,0 +1,87 @@
+
+
+.card-header {
+	background-color: #fff200;
+}
+
+.trhead {
+	background-color: #fff200;
+}
+
+.df {
+	color: #fff200;
+}
+
+.btnFilter {
+  background-color: #fff200; 
+  color: #000; 
+  border: 2px solid #fff200;
+}
+
+.btnFilter:hover {
+  background-color: transparent;
+  color: #000;
+}
+
+.btnView {
+  background-color: #fff200; 
+  color: #000; 
+  border: 2px solid #fff200;
+}
+
+.btnView:hover {
+  background-color: transparent;
+  color: #000;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  background: #fff200;
+  border-bottom: 2px solid;
+}
+
+.act {
+	font-size: 2em; 
+	font-weight: 700;
+	color: #000;
+}
+
+.acl {
+	font-size: 2em;
+}
+
+.modal-header {
+	background-color: #fff200;
+	color: #000;
+}
+
+/*.modal-title {
+	font-size: 2em;
+}*/
+
+.btn-danger {
+	color: #000;
+}
+
+.btn-danger:hover {
+	background-color: transparent !important;
+	color: #000;
+}
+
+.btnUpdate {
+  background-color: #fff200; 
+  color: #000; 
+  border: 2px solid #fff200;
+}
+
+.btnUpdate:hover {
+  background-color: transparent !important;
+  color: #000;
+}
+
+.btnSave {
+	background-color: #fff200 !important;
+}
+
+.btnSave:hover {
+	color: #fff;
+}
