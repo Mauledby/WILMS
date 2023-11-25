@@ -63,7 +63,7 @@ after_2_weeks.setDate(today.getDate() + maxWeeks * 7);
 //   },
 // ];
 
-const maxComputers = 10;
+
 export default function Calendar(props) {
   let { user, setUser, authenticated } = useContext(AuthContext);
 
@@ -142,7 +142,18 @@ export default function Calendar(props) {
   React.useEffect(() => {
     axios.get(`${BASE_URL}/api/getUsers/`).then((res) => {
       setFakeUserDb(res?.data);
+      axios.get(`${BASE_URL}/get-facility/`).then((res) => {
+        setFacilities(res?.data);
+        // stroe lng nakog variable ang index 0 pra di sigeg access
+        var indx0=res?.data[0]
+        setVenueSelected(indx0.facility.facility_name);
+
+        setVenueId(indx0?.facility?.facility_id);
+        setAttendeLimit(indx0?.main_rules?.num_attendies);
+        setMaxComputers(indx0?.main_rules?.num_pc);
+      });
     });
+    console.log(facilities)
   }, []);
   //display bookings
   const [events, setEvents] = useState([]);
@@ -204,6 +215,7 @@ export default function Calendar(props) {
   const [refresh, setRefresh] = useState(true);
   const [attendeeList, setAttendeeList] = useState([]);
   const [fakeUserDb, setFakeUserDb] = useState([]);
+  const [facilities,setFacilities]=useState([])
   const handleChange = (e) => {
     var tempBooking = booking.current;
     if (e.target.name === "computers") {
@@ -237,6 +249,8 @@ export default function Calendar(props) {
   const [attendeeName, setAttendeeName] = useState("");
   const [venueSelected, setVenueSelected] = useState("Coworking Space");
   const [venueId, setVenueId] = useState(1);
+  const[attendLimit,setAttendeLimit]=useState(0);
+  const [maxComputers,setMaxComputers]=useState(0);
   const [error, setError] = useState(false);
   const found = (element) => element.name === attendeeName;
   const navigate = useNavigate();
@@ -248,7 +262,7 @@ export default function Calendar(props) {
   };
   //to handle security
   if (user === null) {
-    navigate("/login");
+    navigate("/api/login");
   } else {
     return (
       <div>
@@ -283,7 +297,25 @@ export default function Calendar(props) {
             >
               <div style={{ display: "flex", marginBottom: "20px" }}>
                 <ButtonGroup>
-                  <Button
+                  {facilities.map((item, index) => (
+                    <Button
+                      sx={
+                        venueSelected === item?.facility?.facility_name
+                          ? selectedStyle
+                          : unselectedStyle
+                      }
+                      onClick={() => {
+                        booking.current = {...booking.current,computers:0};
+                        setVenueSelected(item?.facility?.facility_name);
+                        setVenueId(item?.facility?.facility_id);  
+                        setAttendeLimit(item?.main_rules?.num_attendies)
+                        setMaxComputers(item?.main_rules?.num_pc)
+                      }}
+                    >
+                     {item?.facility?.facility_name}
+                    </Button>
+                  ))}
+                  {/* <Button
                     sx={
                       venueSelected === "Coworking Space"
                         ? selectedStyle
@@ -292,6 +324,7 @@ export default function Calendar(props) {
                     onClick={() => {
                       setVenueSelected("Coworking Space");
                       setVenueId(1);
+                      
                     }}
                   >
                     Co-working Space
@@ -321,7 +354,7 @@ export default function Calendar(props) {
                     }}
                   >
                     Conference Room B
-                  </Button>
+                  </Button> */}
                 </ButtonGroup>
               </div>
               <FullCalendar
@@ -363,7 +396,7 @@ export default function Calendar(props) {
                       .then((response) => {
                         totalDuration = response.data.duration;
                         var limit = 3 - totalDuration;
-                        console.log("limit "+limit)
+                        console.log("limit " + limit);
                         console.log(hoursDuration);
                         if (user?.role === "user") {
                           if (hoursDuration > limit || limit < 0) {
@@ -424,7 +457,6 @@ export default function Calendar(props) {
                 allDaySlot={false}
                 initialView="timeGridWeek"
                 aspectRatio={25.0}
-                
                 //events data
 
                 eventContent={renderEventContent}
@@ -437,7 +469,6 @@ export default function Calendar(props) {
                 height="100"
                 contentHeight="auto"
                 weekends={false}
-                
               ></FullCalendar>
             </Box>
 
@@ -484,7 +515,7 @@ export default function Calendar(props) {
             </Box>
 
             <Box p="30px 30px 0px 30px">
-              {venueId === 1 ? (
+              {maxComputers!=0 ? (
                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                   <TextField
                     name="computers"
@@ -557,14 +588,20 @@ export default function Calendar(props) {
                   )}
                 />
                 <Button
+                
                   onClick={(e) => {
+                    console.log(attendLimit)
+                    if(attendeeList.length>=attendLimit){
+                      alert("Limit Exceeded for This Venue")
+                      return;
+                    }
                     if (attendeeName === "") {
                       alert("Please Enter Attendee name");
                       return;
                     }
                     if (
                       attendeeList.some(found) ||
-                      attendeeName === user?.email
+                      attendeeName === user?.username
                     ) {
                     } else {
                       let isExisting = false;

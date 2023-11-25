@@ -463,7 +463,10 @@ export default function MyReservations(props) {
                           ? selectedStyle
                           : unselectedStyle
                       }
-                      onClick={() => setTimeSelected("Upcoming")}
+                      onClick={() =>{
+                        setTimeSelected("Upcoming")
+                        console.log(events)
+                      } }
                     >
                       Upcoming
                     </Button>

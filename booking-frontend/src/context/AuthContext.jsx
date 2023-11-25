@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
         setAuthTokens(null)
         setUser(null)
         localStorage.removeItem('authTokens')
-        navigate("/login")
+        navigate("api/login")
     }
   let loginUser = (usernameText,passwordText) => {
     
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
         setAuthTokens(res.data)
         setUser(jwtDecode(res.data.access))
         localStorage.setItem('authTokens',JSON.stringify(res.data))
-    navigate("/calendar")
+    navigate("/api/calendar")
         }
       }).catch((error)=>{
        setLoginError("User Does not Exist")

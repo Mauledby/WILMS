@@ -49,17 +49,17 @@ export default function DashBoardTemplate(props) {
   //admin sidenav
   const adminNavItems = [
     // { name: "Home", icon: HomeIcon, path: "/" },
-    { name: "Tracker", icon: DashboardIcon, path: "/tracker" },
-    { name: "Calendar", icon: CalendarMonthIcon, path: "/calendar" },
-    { name: "Logs", icon: BookIcon, path: "/logs" },
-    { name: "Bookings", icon: ListIcon, path: "/bookings",},
+    { name: "Tracker", icon: DashboardIcon, path: "/api/tracker" },
+    { name: "Calendar", icon: CalendarMonthIcon, path: "/api/calendar" },
+    { name: "Logs", icon: BookIcon, path: "/api/logs" },
+    { name: "Bookings", icon: ListIcon, path: "/api/bookings",},
   ];
 
   //user sidenav
   const userNavItems = [
     // { name: "Home", icon: HomeIcon, path: "/home" },
-    { name: "Calendar", icon: CalendarMonthIcon, path: "/calendar" },
-    { name: "Bookings", icon: ListIcon, path: "/bookings" },
+    { name: "Calendar", icon: CalendarMonthIcon, path: "/api/calendar" },
+    { name: "Bookings", icon: ListIcon, path: "/api/bookings" },
   ];
   const NavItems = user?.role === "admin" ? adminNavItems : userNavItems;
   const handleDrawerToggle = () => {
