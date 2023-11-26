@@ -3,6 +3,8 @@ from django.urls import path, include
 from wallet import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path, re_path
+from .views import serve_manifest
 
 
 from django.contrib.auth import views as auth_views
@@ -14,7 +16,9 @@ urlpatterns = [
     path('wiladmin/', include('wiladmin.urls')),
     path('api/',include('api.urls')),
     path('' , views.IndexView.as_view(), name='index'),
-    path('', include('facility.urls')),
+    path('facility/', include('facility.urls')),
+
+    re_path(r'^manifest\.json$', serve_manifest),
     
     
     

@@ -26,7 +26,7 @@ function App() {
             <Route exact path="/api/calendar" element={<Calendar />} />
             <Route exact path="/api/logs" element={<AttendanceLogs />} />
             <Route exact path="/api/bookings" element={<MyReservations />} />
-            <Route exact path="/attendance" element={<Attendance />} />
+            <Route exact path="/api/attendance" element={<Attendance />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>

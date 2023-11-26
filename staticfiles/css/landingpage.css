@@ -1,0 +1,215 @@
+
+
+html {
+	scroll-behavior: smooth;
+	width: 100%;
+}
+
+@font-face {
+    font-family: fontTBI;
+}
+
+/*body {
+    font-family: fontTBI, "Times New Roman", sans-serif;
+}
+*/
+.navbar {
+	background-color:#fff200;
+	width: 100%;
+}
+
+.fa-navicon {
+	color:#000; 
+	font-size:28px;
+}
+
+.w1 {
+	height: 5em;
+	width: auto;
+}
+
+.custom-center {
+    margin: auto;
+}
+
+.nav-link {
+	font-weight: bold;
+	color: #000;
+}
+
+.nav-link:hover {	
+	font-weight: bold;
+	color: #606060;
+}
+
+.btnLogin {
+	background-color: #741e1e;
+	color: #fff;
+}
+
+.btnLogin:hover {
+	color: #fff200;
+}
+
+.img-fluid {
+	width: 100%;
+	height: 50em;
+}
+
+.img-fluid1 {
+	width: 100%;
+}
+
+.rowSize {
+	max-width: 100%;
+	height: 250px !important;
+}
+
+.img-team {
+	width: auto;
+	height: 100px;
+	-webkit-filter: grayscale(100%);  Safari 6.0 - 9.0 
+  	filter: grayscale(100%);
+  	/*border: 2px solid #000;*/
+}
+
+.img-team:hover {
+	filter: grayscale(1%);
+}
+
+.teamMargin {
+	margin-top: 100px;
+}
+
+.logoUsage {
+	background-color: #fff200;
+}
+
+#aboutus {
+	background: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url("/static/img/aboutusOverlay.png") 50% 0 no-repeat fixed;
+	height: 100%;
+    padding: 100px 0 100px 0; 
+}
+
+.aboutusContent {
+	font-size: 1.2em;
+}
+
+h1, h4 {
+	font-weight: bold;
+	font-size: 3em;
+}
+
+#contactus {
+	background-color: #fff200;
+}
+
+.lblContact {
+	color: #fff;
+	font-size: 5em;
+	margin-left: 5%;
+	margin-bottom: 3%;
+}
+
+.listGroup {
+	border: none;
+	background-color:#fff200;
+	padding-bottom: 2%;
+	color: black;
+	font-weight: 1000;
+	letter-spacing: 1.5px;
+}
+
+.miniIconListGroup {
+	width: 2%;
+	height: auto;
+	margin-left: 8%;
+	margin-right: 3%;
+}
+
+.botNavbar {
+	margin-top: 3%;
+}
+
+.codechum {
+	width: 70%;
+	height: 100%;
+}
+
+.odorwell {
+	width: 70%;
+	height: 100%;
+}
+
+.prescribr {
+	width: 70%;
+	height: 100%;
+}
+
+.modal-header {
+	background-color: #fff200;
+	letter-spacing: 1px;
+}
+
+.img-thrusts {
+	max-width: 100%;
+	height: 200px;
+	-webkit-filter: grayscale(100%);  Safari 6.0 - 9.0 
+  	filter: grayscale(100%);
+}
+
+.img-thrusts:hover {
+	filter: grayscale(1%);
+}
+
+footer {
+	background-color: #000;
+	color: #fff200;
+	padding: 5px;
+	letter-spacing: 3px;
+}
+
+.portfolio > div {
+  padding: 0 !important;
+}
+.portfolio img {
+  width: 100%;
+  height: auto;
+  opacity: 0.8;
+  background-color: #000;
+}
+@media (max-width: 480px) { 
+  .col-xs-6 { 
+    width: 100% !important; 
+  } 
+}
+
+.addCSS {
+	height: 500% !important;
+	width: 50% !important;
+}
+
+.chub {
+	max-width: 70%;
+	height: 5em;
+}
+
+.gdust {
+	max-width: 70%;
+	height: 5em;
+}
+
+.hlist {
+	max-width: 70%;
+	height: 7em;
+}
+
+.isko {
+	max-width: 70%;
+	height: 7em;
+}
+
+.nervo {
+	max-width: 80%;
+	height: 7em;
+}

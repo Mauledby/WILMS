@@ -593,6 +593,47 @@ button.btn-primary{
             $(".horizontal").removeClass("sticky");
           }
         });
+
+          // for token
+          $("#login-form").submit(function (event) {
+            event.preventDefault();
+
+            var csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+
+            // Your AJAX request
+            $.ajax({
+                url: '{% url "wallet:user_login" %}',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: csrf_token,
+                    email: $('#email').val(),
+                    password: $('#password').val(),
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        // Explicitly set the local storage items
+                        // localStorage.setItem("refresh_token", response.data.refresh);
+                        // localStorage.setItem("access_token", response.data.access);
+                        localStorage.setItem('authTokens',JSON.stringify(response.data))
+
+
+                        // Redirect or perform other actions if needed
+                        window.location.href = "/";  // Redirect to home page for example
+                    } else {
+                        // Handle error case if needed
+                        console.error(response.message);
+                    }
+                },
+                error: function (error) {
+                    // Handle errors
+                    console.error("AJAX request failed:", error);
+                },
+            });
+        });
+
+
+
+
       });
 
       //toggle menu
@@ -616,42 +657,7 @@ button.btn-primary{
       });
     </script>
 
-{% if script %}
-<script>
-    $(document).ready(function () {
-        $("#login-form").submit(function (event) {
-            event.preventDefault();
 
-            // Your AJAX request
-            $.ajax({
-                url: '{% url "wallet:user_login" %}',
-                type: 'POST',
-                data: {
-                    email: $('#email').val(),
-                    password: $('#password').val(),
-                },
-                success: function (response) {
-                    if (response.status === 'success') {
-                        // Explicitly set the local storage items
-                        localStorage.setItem("refresh_token", response.data.refresh);
-                        localStorage.setItem("access_token", response.data.access);
-
-                        // Redirect or perform other actions if needed
-                        window.location.href = "/";  // Redirect to home page for example
-                    } else {
-                        // Handle error case if needed
-                        console.error(response.message);
-                    }
-                },
-                error: function (error) {
-                    // Handle errors
-                    console.error("AJAX request failed:", error);
-                },
-            });
-        });
-    });
-</script>
-{% endif %}
 
 
 
