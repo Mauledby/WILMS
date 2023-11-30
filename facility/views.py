@@ -50,8 +50,8 @@ def is_superuser(user):
 
 
 @csrf_protect
-@login_required
-@user_passes_test(is_superuser)
+# @login_required
+# @user_passes_test(is_superuser)
 def get_facility(request):
     setting_facilities = Setting_Facility.objects.all()
 
