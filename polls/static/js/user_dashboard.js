@@ -14,7 +14,7 @@
         
     
         function updateBookingInfo() {
-            fetch('/get-booking-info/')
+            fetch('/polls/get-booking-info/')
                 .then(response => response.json())
                 .then(data => {
                     for (const areaId in data) {
