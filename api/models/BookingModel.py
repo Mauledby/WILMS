@@ -5,7 +5,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from WILMS import settings
 from api.models.VenueModel import Venue
-from facility.models import Facility
 from django.db import models
 
 
@@ -25,8 +24,8 @@ class Booking(models.Model):
     referenceNo=models.TextField(max_length=8,blank=True,unique=True, default=uuid.uuid1)
     officeName=models.CharField(max_length=50,null=True)
     status=models.CharField(max_length=20,null=True, default='Booked')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='booker',null=True)
-    venue=models.ForeignKey(Facility,related_name='venue',to_field='id',on_delete=models.CASCADE,null=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='booker',null=True)
+    venue=models.ForeignKey(Venue,related_name='venue',to_field='id',on_delete=models.CASCADE,null=True)
     venueName=models.CharField(max_length=50,null=True)
     venueId=models.IntegerField(null=True,default=0)
     

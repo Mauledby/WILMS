@@ -2,7 +2,6 @@ import datetime
 from rest_framework import serializers
 from api.models import *
 from wallet.models import User as UserObject
-from facility.models import CalendarEvent
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model=Booking
@@ -24,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 class AttendanceResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model=Attendance
-        fields=('name','id','date','signInTime','signOutTime','isOverstaying','isSignedIn','venueName','name','venueId', 'booking')
+        fields=('name','id','date','signInTime','signOutTime','isOverstaying','isSignedIn','venueName','name','venueId')
 class BookingRequestSerializer(serializers.ModelSerializer):
     attendees=AttendeeSerializer(many=True)
     class Meta:
@@ -38,9 +37,4 @@ class BookingRequestSerializer(serializers.ModelSerializer):
         if serializer.is_valid(raise_exception=True):
             attendees=serializer.save(booking=booking)
         return booking
-
-class EventsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=CalendarEvent
-        fields=('__all__')
     

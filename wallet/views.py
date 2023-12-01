@@ -21,6 +21,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
 from django.shortcuts import redirect
 from rest_framework import status
+from api.models.BookingModel import Booking
 import json
 
 
@@ -129,44 +130,21 @@ class UserLoginView(View):
         if user:
             if user.is_active:
                 login(request, user)
-
-                # Use the authenticated user directly
-                refresh = RefreshToken.for_user(user)
-
-                # Add custom claims to the token
-                refresh['username'] = user.email
-                if user.is_superuser or user.is_staff:
-                    refresh['role'] = 'admin'
+                if user.is_superuser:
+                    return redirect('wallet:index')
                 else:
-                    refresh['role'] = 'user'
-
-                # Additional data for the response
-                data = {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
-
-                # JavaScript code to store data in local storage
-                local_storage_code = (
-                    'localStorage.setItem("refresh_token", "{refresh}");\n'
-                    'localStorage.setItem("access_token", "{access}");\n'
-                    # Add more items to store if needed
-                ).format(refresh=data['refresh'], access=data['access'])
-
-                # Response data with JavaScript code
-                response_data = {
-                    'status': 'success',
-                    'data': data,
-                    'script': local_storage_code,
-                }
-
-                return JsonResponse(response_data, status=200)
+                    return redirect('wallet:index')
             else:
-                response_data = {'status': 'error', 'message': 'Account is not active.'}
-                return JsonResponse(response_data, status=400)
+                print("Account is not active.")
+                return HttpResponse('<script>alert("Account is not active."); window.location.href="/wallet/user_login/";</script>')
         else:
-            response_data = {'status': 'error', 'message': 'Invalid login details supplied.'}
-            return JsonResponse(response_data, status=400)
+            print("User is None.")
+            return HttpResponse('<script>alert("Invalid login details supplied."); window.location.href="/wallet/user_login/";</script>')
+                    
+            
+            # print("Someone tried to login and failed.")
+            # print("They used email: {} and password: {}".format(email, password))
+            # Show an alert when the login details are invalid
 
 
 class DashboardView(View):
@@ -292,6 +270,7 @@ class PointsDashboardView(View):
             user=User.objects.get(email=request.user)
             email=user.email
             vendor_transactions = VendorTransaction.objects.filter(customer=user_profile.user, currency='Points')
+            Bpoint_transactions = Booking.objects.filter(user=profile.user,points__gt=0)
         except UserProfileInfo.DoesNotExist:
             coin_balance = 0.0
             point_balance = 0.0
@@ -305,6 +284,7 @@ class PointsDashboardView(View):
             'last_name':last_name,
             'transactions': transactions,
             'vendor_transactions': vendor_transactions,
+            'Bpoint_transactions':Bpoint_transactions,
             'email':email,
         }
 
@@ -332,6 +312,7 @@ class CoinTransactionCreateAndDashboardView(LoginRequiredMixin, View):
             first_tname = profile.first_name
             last_name = profile.last_name
             vendor_transactions = VendorTransaction.objects.filter(customer=profile.user, currency='Coins')
+            Bcoin_transactions = Booking.objects.filter(user=profile.user,coins__gt=0)
         except UserProfileInfo.DoesNotExist:
             coin_balance = 0.0
 
@@ -344,8 +325,9 @@ class CoinTransactionCreateAndDashboardView(LoginRequiredMixin, View):
             'point_balance': point_balance,
             'first_name': first_tname,
             'last_name': last_name,
-            'coin_transactions': coin_transactions,
+            'Bcoin_transactions': Bcoin_transactions,
             'vendor_transactions': vendor_transactions,
+            'coin_transactions':coin_transactions,
             'email':email,
         }
 

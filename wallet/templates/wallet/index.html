@@ -450,7 +450,7 @@ button.btn-primary{
           functions ensuring optimal user flow. Join us for a streamlined
           innovation experience.
         </p>
-        <button class="btn" style="padding-bottom: 2rem;">Discover Now</button>
+        <a href="http://localhost:3000/api/login" class="btn" target="_blank">Book Now</a>
       </div>
     </section>
     <div
@@ -592,67 +592,24 @@ button.btn-primary{
         $(window).scroll(function () {
           if ($(this).scrollTop() > 30) {
             // Adjust the scroll position where the navbar becomes sticky
-            $(".horizontal").addClass("sticky");
+            $(".navbar").addClass("sticky");
           } else {
-            $(".horizontal").removeClass("sticky");
+            $(".navbar").removeClass("sticky");
           }
         });
-
-          // for token
-          $("#login-form").submit(function (event) {
-            event.preventDefault();
-
-            var csrf_token = $("input[name='csrfmiddlewaretoken']").val();
-
-            // Your AJAX request
-            $.ajax({
-                url: '{% url "wallet:user_login" %}',
-                type: 'POST',
-                data: {
-                    csrfmiddlewaretoken: csrf_token,
-                    email: $('#email').val(),
-                    password: $('#password').val(),
-                },
-                success: function (response) {
-                    if (response.status === 'success') {
-                        // Explicitly set the local storage items
-                        // localStorage.setItem("refresh_token", response.data.refresh);
-                        // localStorage.setItem("access_token", response.data.access);
-                        localStorage.setItem('authTokens',JSON.stringify(response.data))
-
-
-                        // Redirect or perform other actions if needed
-                        window.location.href = "/";  // Redirect to home page for example
-                    } else {
-                        // Handle error case if needed
-                        console.error(response.message);
-                    }
-                },
-                error: function (error) {
-                    // Handle errors
-                    console.error("AJAX request failed:", error);
-                },
-            });
-        });
-
-
-
-
       });
 
       //toggle menu
       $(".menu-btn").click(function () {
-        $(".horizontal .menu").toggleClass("active");
+        $(".navbar .menu").toggleClass("active");
         $(".menu-btn i").toggleClass("active");
       });
 
       $("#loginBannerBtn").click(function () {
         $("#loginModal").show();
-        console.log('clicked')
       });
 
       $("#loginBtn").click(function () {
-        console.log('clicked')
         $("#loginModal").show();
       });
 

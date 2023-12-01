@@ -30,7 +30,7 @@ urlpatterns = [
     path('cancelBooking/<id>',DetailsController.cancelBooking,name="cancelbooking"),
 
     #booking creation controller
-    path('calculateCost/',BookingController.calculateCost,name="calculate payment or cost"),
+    path('calculateCost/<venue_id>',BookingController.calculateCost,name="calculate payment or cost"),
     path('getUsers/',BookingController.getAllUsers,name="get all users"),
 
     #booking management controller

@@ -451,23 +451,19 @@
               <tr>
                 <th>Reference Code</th>
                 <th>Date</th>
-                <th>Description</th>
-                <th>Transaction Date</th>
-                <th>Transaction ID</th>
+                <th>Purpose</th>
                 <th>Transaction Amount</th>
-                <th>Customer ID</th>
+                <th>Venue</th>
               </tr>
             </thead>
             <tbody>
-              {% for vendor_transaction in vendor_transactions %}
+              {% for Bcoin_transaction in Bcoin_transactions %}
               <tr>
-                <td>{{ vendor_transaction.reference_code }}</td>
-                <td>{{ vendor_transaction.date }}</td>
-                <td>{{ vendor_transaction.description }}</td>
-                <td>{{ vendor_transaction.transaction_date }}</td>
-                <td>{{ vendor_transaction.transaction_id }}</td>
-                <td>{{ vendor_transaction.transaction_amount }}</td>
-                <td>{{ vendor_transaction.customer_id }}</td>
+                <td>{{ Bcoin_transaction.referenceNo }}</td>
+                <td>{{ Bcoin_transaction.bookDate }}</td>
+                <td>{{ Bcoin_transaction.purpose }}</td>
+                <td>{{ Bcoin_transaction.coins }}</td>
+                <td>{{ Bcoin_transaction.venue }}</td>
               </tr>
               {% endfor %}
             </tbody>

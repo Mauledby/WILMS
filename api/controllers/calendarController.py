@@ -14,16 +14,13 @@ from rest_framework import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from api.models import Booking,Venue,User as user,Attendee
-from api.serializers import BookingSerializer, VenueSerializer,BookingRequestSerializer,UserSerializer,AttendeeSerializer,EventsSerializer
-from wallet.models import User as WalletUser
-from wallet.models import UserProfileInfo
+from api.serializers import BookingSerializer, VenueSerializer,BookingRequestSerializer,UserSerializer,AttendeeSerializer
 # from rest_framework.permissions import IsAuthenticated,AllowAny
 from api.jwt_util import decode_user
 from datetime import datetime, date, timedelta
 from rest_framework.decorators import api_view,authentication_classes,permission_classes
 # from django.contrib.auth.models import User
 from django.http import JsonResponse
-from facility.models import CalendarEvent
 # from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
@@ -62,21 +59,6 @@ class CalendarController():
             serializer= BookingRequestSerializer(data=request.data)   
                 
             if serializer.is_valid():
-                points=serializer.validated_data['points']
-                coins=serializer.validated_data['coins']
-                # paid using coins
-                userprofile=UserProfileInfo.objects.get(user=serializer.validated_data['user'])
-                if points == 0:
-                    if userprofile.coin_balance < coins:
-                        return Response({"error": "insufficient coin balance"},status=status.HTTP_200_OK)
-                    elif userprofile.coin_balance >= coins and coins != 0:
-                        userprofile.coin_balance -= coins
-                        # userprofile.save()
-                elif coins == 0:
-                    if userprofile.point_balance < points:
-                        return Response({"error": "insufficient point balance"},status=status.HTTP_200_OK)
-                    elif userprofile.point_balance >= points and points != 0:
-                        userprofile.point_balance -= points
                 date=serializer.validated_data['date']
                 # calculate hours_difference
                 startTime=serializer.validated_data['startTime']
@@ -99,7 +81,6 @@ class CalendarController():
                      random = random.replace("-","") # Remove the UUID '-'.
                      refNo= random[0:8]
                 serializer._validated_data['referenceNo']=refNo
-                userprofile.save()
                 serializer.save()
                 response_data={
                     'message':'Succesfully booked'
@@ -112,16 +93,6 @@ class CalendarController():
         random = random.upper() # Make all characters uppercase.
         random = random.replace("-","") # Remove the UUID '-'.
         return random[0:string_length]
-    
-    @api_view(['GET'])
-    def getEvents(request):
-        week_start = date.today()
-        # week_start -= timedelta(days=week_start.weekday())
-        week_end = week_start + timedelta(days=14)
-
-        obj= CalendarEvent.objects.filter(date__gte=week_start,date__lte=week_end)
-        serializer= EventsSerializer(obj,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
 # class CurrentBookings(APIView):
 #     # permission_classes=[IsAuthenticated,]
 #     # api to get bookings within 2 weeks ra   

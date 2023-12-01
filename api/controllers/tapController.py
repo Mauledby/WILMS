@@ -33,6 +33,8 @@ class TapController():
         rfid=request_body['rfid']
         userEmail=UserProfileInfo.objects.get(rfid_value=rfid)
         
+       
+        
         # store ang email as name variable so name=email in this case sorry bad practice
         name=userEmail
         print(name)
