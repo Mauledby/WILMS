@@ -18,6 +18,7 @@ from api.jwt_util import decode_user
 from rest_framework.decorators import api_view
 # from django.contrib.auth.models import User
 from django.http import JsonResponse
+from facility.models import Setting_Facility
 # from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
@@ -46,7 +47,8 @@ class BookingController():
         serializer = UserSerializer(obj,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
     @api_view(['POST'])
-    def calculateCost(request):    
+    def calculateCost(request,venue_id):  
+        facility=Setting_Facility.objects.get(facility=venue_id)
         #kuwang ug input start time ug end time
         request_body = json.loads(request.body.decode('utf-8'))
         # starttime split
@@ -66,6 +68,7 @@ class BookingController():
         else:
             cost+=duration
         cost*=numStudents
+        cost*=facility.facility.rateperhour
         data={"cost":cost}
         return JsonResponse(data)
     # @api_view(['GET'])
