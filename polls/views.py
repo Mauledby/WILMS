@@ -217,26 +217,36 @@ def get_booking_info(request):
     return JsonResponse(data)
 
 
-from api.models import Booking
+from api.models.BookingModel import Booking as ResBooking
+
 def get_reservebooking_info(request):
     try:
-        booking = Booking.objects.get(referenceNo='A2392')
-        booking_info = {
-            'reference_number': booking.referenceNo,
-            'area_id': booking.area_id,
-            'date': booking.date.strftime('%Y-%m-%d'),
-            'start_time': booking.startTime.strftime('%H:%M'),
-            'end_time': booking.endTime.strftime('%H:%M'),
-        }
-        return JsonResponse(booking_info)
-    except Booking.DoesNotExist:
-        return JsonResponse({'error': 'Booking not found'}, status=404)
+        
+        booking = ResBooking.objects.first()
+
+       
+        if booking:
+            booking_info = {
+                'reference_number': booking.referenceNo,
+                'area_id': booking.area_id,
+                'date': booking.date.strftime('%Y-%m-%d'),
+                'start_time': booking.startTime.strftime('%H:%M'),
+                'end_time': booking.endTime.strftime('%H:%M'),
+            }
+            return JsonResponse(booking_info)
+        else:
+            return JsonResponse({'error': 'No booking found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 
+
+
+from django.http import JsonResponse
 
 def get_calendar_data(request):
-    area_data = Booking.objects.values('date', 'area_id', 'startTime', 'endTime')
+    area_data = ResBooking.objects.values('date', 'area_id', 'startTime', 'endTime')
 
     events = []
     for booking in area_data:
@@ -248,11 +258,13 @@ def get_calendar_data(request):
         events.append({
             'title': f'Area {area_id}',
             'start': date,
-            'start_time': start_time,
-            'end_time': end_time,
+            'start_time': start_time.strftime('%H:%M'),
+            'end_time': end_time.strftime('%H:%M'),
         })
 
     return JsonResponse(events, safe=False)
+
+
 
 class ActiveBookingController(LoginRequiredMixin, View):
     

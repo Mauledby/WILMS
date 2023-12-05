@@ -84,6 +84,8 @@
     </div>
     
     <script src="{% static 'js/user_dashboard.js' %}"></script>
+    
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -92,23 +94,24 @@
         
             const calendar = new FullCalendar.Calendar(expandedCalendar, {
                 initialView: 'dayGridMonth',
-                events: '/get-calendar-data/',
+                events: '/polls/get-calendar-data/',
                 eventClick: function (info) {
-                    const areaId = info.event.title;  
-                    const date = info.event.start.toLocaleDateString();  
-                
+                    const areaId = info.event.title;
+                    const date = info.event.start.toLocaleDateString();
+                    const start_time = info.event.extendedProps.start_time;
+                    const end_time = info.event.extendedProps.end_time;
+        
                     Swal.fire({
                         title: `${date}`,
-                        html: `Area ID: ${areaId}`,
+                        html: `Area ID: ${areaId}<br>
+                            Start Time: ${start_time}<br>
+                            End Time: ${end_time}`,
                         icon: 'info',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: 'OK'
                     });
                 },
-                
-                
-                
                 customButtons: {
                     myCustomButton: {
                         text: '',
@@ -144,6 +147,7 @@
             const formattedHours = parsedHours % 12 || 12;
             return `${formattedHours}:${minutes} ${ampm}`;
         }
+        
     </script>
     
 
