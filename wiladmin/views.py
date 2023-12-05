@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .models import WalkinBookingModel, AdminReportLogsModel
 from polls.models import Timer, AssignedArea, Booking
+from api.models.BookingModel import Booking as ResBooking
 from django.views import View
 from datetime import datetime
 from .forms import BookGuest
@@ -49,7 +50,7 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
                 booking.status = 'Booked'
                 booking.save()
                 
-                timer = Timer(user_id=booking.userid, minutes=30, seconds=0)
+                timer = Timer(user_id=booking.user_id, minutes=30, seconds=0)
                 timer.save()
                 
                 log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.schedule, endtime="", status='Booked')
@@ -58,7 +59,7 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
             else:
                 booking.delete()
                 
-                usertimer = Timer.objects.get(pk=str(booking.userid))
+                usertimer = Timer.objects.get(pk=str(booking.user_id))
                 usertimer.delete()
                 
                 assignedarea = AssignedArea.objects.all().filter(reference_number=booking.referenceid)
@@ -87,8 +88,8 @@ class AdminReservedDashboardController(LoginRequiredMixin, View):
     
     login_url = 'adminlogin'
     
-    def updateBookingStatus(self, reserved_id):
-        booking = Booking.objects.get(pk=int(reserved_id))
+    def updateBookingStatus(self, id):
+        booking = ResBooking.objects.get(pk=int(id))
         
         if booking.status == "Pending":
             booking.status = 'Booked'
@@ -97,7 +98,7 @@ class AdminReservedDashboardController(LoginRequiredMixin, View):
             timer = Timer(user_id=booking.user_id, minutes=60, seconds=0)
             timer.save()
             
-            log = AdminReportLogsModel(referenceid=booking.reference_number, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
+            log = AdminReportLogsModel(referenceid=booking.referenceNo, userid=booking.user_id, starttime=booking.startTime, endtime="", status='Booked')
             log.save()
         
         else:
@@ -106,18 +107,18 @@ class AdminReservedDashboardController(LoginRequiredMixin, View):
             usertimer = Timer.objects.get(pk=str(booking.user_id))
             usertimer.delete()
             
-            assignedarea = AssignedArea.objects.all().filter(reference_number=booking.reference_number)
+            assignedarea = AssignedArea.objects.all().filter(reference_number=booking.referenceNo)
             assignedarea.delete()
             
-            log = AdminReportLogsModel(referenceid=booking.reference_number, userid=booking.user_id, starttime=booking.start_time, endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
+            log = AdminReportLogsModel(referenceid=booking.referenceNo, userid=booking.user_id, starttime=booking.startTime, endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
             log.save()
     
     def get(self, request):
-        bookings = Booking.objects.all().order_by('-status')
+        bookings = ResBooking.objects.all().order_by('-status')
         return render(request, "wiladmin/reserveddashboard.html", {'bookings': bookings})
     
-    def post(self, request, reserved_id):
-        self.updateBookingStatus(reserved_id)
+    def post(self, request, id):
+        self.updateBookingStatus(id)
         return redirect('reserveddashboard')
     
         
