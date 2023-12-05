@@ -21,7 +21,7 @@
         <tbody>
           {% for bookings in bookings %}
           <tr>
-            <td>{{ bookings.reference_number }}</td>
+            <td>{{ bookings.referenceNo }}</td>
             <td>{{ bookings.user_id }}</td>
             <td>{{ bookings.date }}</td>
             {% if bookings.status == 'Pending' %}
@@ -30,7 +30,7 @@
 
             <td class="actions">
               <form
-                action="updatebooking/{{ bookings.bookingid }}"
+                action="updatereserved/{{ bookings.id }}"
                 method="POST"
               >
                 {% csrf_token %}
@@ -44,7 +44,7 @@
 
             <td class="actions">
               <form
-                action="deletebooking/{{ bookings.bookingid }}"
+                action="deletereserved/{{ bookings.id }}"
                 method="POST"
               >
                 {% csrf_token %}
