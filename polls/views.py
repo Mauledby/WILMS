@@ -217,18 +217,16 @@ def get_booking_info(request):
     return JsonResponse(data)
 
 
-
+from api.models import Booking
 def get_reservebooking_info(request):
-    
     try:
-        booking = Booking.objects.get(reference_number='A2392')
+        booking = Booking.objects.get(referenceNo='A2392')
         booking_info = {
-            'reference_number': booking.reference_number,
+            'reference_number': booking.referenceNo,
             'area_id': booking.area_id,
             'date': booking.date.strftime('%Y-%m-%d'),
-            'start_time': booking.start_time.strftime('%H:%M'),
-            'end_time': booking.end_time.strftime('%H:%M'),
-            
+            'start_time': booking.startTime.strftime('%H:%M'),
+            'end_time': booking.endTime.strftime('%H:%M'),
         }
         return JsonResponse(booking_info)
     except Booking.DoesNotExist:
@@ -238,27 +236,21 @@ def get_reservebooking_info(request):
 
 
 def get_calendar_data(request):
-    area_data = Booking.objects.values('date', 'area_id', 'start_time', 'end_time')
-
-    availability = defaultdict(lambda: defaultdict(int))
+    area_data = Booking.objects.values('date', 'area_id', 'startTime', 'endTime')
 
     events = []
     for booking in area_data:
         date = booking['date']
         area_id = booking['area_id']
-        start_time = booking['start_time']
-        end_time = booking['end_time']
-        availability[date][area_id] += 1
-        
-        events = []
-        for date, areas in availability.items():
-         for area_id, booked_count in areas.items():
-            events.append({
-                'title': f'{area_id}({booked_count})',
-                'start': date,
-                'start_time': start_time,  
-                'end_time': end_time,
-            })
+        start_time = booking['startTime']
+        end_time = booking['endTime']
+
+        events.append({
+            'title': f'Area {area_id}',
+            'start': date,
+            'start_time': start_time,
+            'end_time': end_time,
+        })
 
     return JsonResponse(events, safe=False)
 

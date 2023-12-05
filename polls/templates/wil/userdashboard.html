@@ -86,11 +86,6 @@
     <script src="{% static 'js/user_dashboard.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        
-
-
-
-        
         document.addEventListener('DOMContentLoaded', function () {
             const smallCalendarButton = document.getElementById('expand-calendar-button');
             const expandedCalendar = document.getElementById('expanded-calendar');
@@ -99,9 +94,8 @@
                 initialView: 'dayGridMonth',
                 events: '/get-calendar-data/',
                 eventClick: function (info) {
-                    const areaId = info.event.title;
+                    const areaId = info.event.title;  
                     const date = info.event.start.toLocaleDateString();  
-                    
                 
                     Swal.fire({
                         title: `${date}`,
