@@ -30,6 +30,7 @@ from django.http import JsonResponse
 from collections import defaultdict
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from api.models.BookingModel import Booking as ResBooking
 
 
 from django.shortcuts import render
