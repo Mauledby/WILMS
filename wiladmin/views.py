@@ -37,7 +37,11 @@ class AdminDashboardController(LoginRequiredMixin, View):
     login_url = 'adminlogin'
     
     def get(self, request):
-        return render(request, "wiladmin/admindashboard.html", {})
+        walkins = WalkinBookingModel.objects.all().count()
+        reserves = ResBooking.objects.all().count()
+        guests = WalkinBookingModel.objects.filter(referenceid__contains="GUEST").count()
+        available = 68 - walkins - reserves - guests
+        return render(request, "wiladmin/admindashboard.html", {'walkins': walkins, 'reserves': reserves, 'guests': guests, 'available': available})
 
 class AdminWalkinDashboardController(LoginRequiredMixin, View):
     
@@ -245,7 +249,7 @@ class ViewWorkspacesController(LoginRequiredMixin, View):
         countA9 = AssignedArea.objects.filter(area_id='A9').count()
             
         area_count = {
-            'countA1':countA1, 
+            'countA1':countA1,
             'countA2':countA2, 
             'countA3':countA3, 
             'countA4':countA4, 

@@ -1,6 +1,7 @@
 body{
   background-image: url("../images/basebg.PNG");
-  background-size: cover;
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
 /* Add styles for links */

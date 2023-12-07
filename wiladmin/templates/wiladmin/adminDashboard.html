@@ -4,14 +4,101 @@
 
 <body>
   <div class="label-page">DASHBOARD</div>
-  <div class="table" style="overflow-y: auto; height: 550px;">
-  <div class="content-container">
-    <h1>Welcome to the Crowd Control Dashboard</h1>
-    <p>
-      This is the Crowd Control dashboard where you can access different admin
-      features all about crowd control.
-    </p>
-  </div>
+  <div class="table" style="overflow-y: auto; height: 70%">
+    <div class="content-container">
+      <div class="table-divs">
+        <table class="Walkin">
+          <thead>
+            <tr>
+              <th scope="col">Walkin Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% if walkins >= 10 and walkins <= 15 %}
+              <td style="color: orange">{{ walkins }}</td>
+
+              {% elif walkins >= 16 %}
+              <td style="color: red">{{ walkins }}</td>
+
+              {% else %}
+              <td style="color: green">{{ walkins }}</td>
+
+              {% endif %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-divs"> 
+        <table class="Reserved">
+        <thead>
+          <tr>
+            <th scope="col">Reserved Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% if reserves >= 10 and reserves <= 15 %}
+            <td style="color: orange">{{ reserves }}</td>
+
+            {% elif reserves >= 16 %}
+            <td style="color: red">{{ reserves }}</td>
+
+            {% else %}
+            <td style="color: green">{{ reserves }}</td>
+
+            {% endif %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+      <div class="table-divs">
+        <table class="Guests">
+          <thead>
+            <tr>
+              <th scope="col">Guests Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% if guests >= 10 and guests <= 15 %}
+              <td style="color: orange">{{ guests }}</td>
+
+              {% elif guests >= 16 %}
+              <td style="color: red">{{ guests }}</td>
+
+              {% else %}
+              <td style="color: green">{{ guests }}</td>
+
+              {% endif %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-divs">
+        <table class="Available">
+          <thead>
+            <tr>
+              <th scope="col">Available Workspaces</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% if available >= 30 and available <= 68 %}
+              <td style="color: green">{{ available }}</td>
+
+              {% elif available >= 29 and available <= 10 %}
+              <td style="color: orange">{{ available }}</td>
+
+              {% else %}
+              <td style="color: red">{{ available }}</td>
+
+              {% endif %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </body>
 {% endblock %}
