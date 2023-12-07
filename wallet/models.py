@@ -36,6 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)  # Set default to True for students
     is_verified = models.BooleanField(default=False)
+    is_disabled = models.BooleanField(default=False)
 
     objects = UserManager()
 
@@ -51,9 +52,9 @@ class UserProfileInfo(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     first_name = models.CharField(max_length=100, null=True)
     last_name = models.CharField(max_length=100, null=True)
-    coin_balance = models.FloatField(default=0.0)
-    point_balance = models.FloatField(default=0.0)
-    points_to_give = models.FloatField(default=0.0)
+    coin_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    point_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    points_to_give = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     rfid_value = models.CharField(max_length=50,unique=True, blank=True, null=True)  # Add this field for storing RFID values
 

@@ -14,7 +14,7 @@ urlpatterns = [
     path('walletAPI/', include(('walletAPI.urls', 'walletAPI'), namespace='walletAPI')),
     path('polls/', include(('polls.urls', 'polls'), namespace='polls')),
     path('wiladmin/', include('wiladmin.urls')),
-    path('api/',include('api.urls')),
+    path('api/', include(('api.urls', 'api'), namespace='api')),
     path('' , views.IndexView.as_view(), name='index'),
     path('facility/', include('facility.urls')),
 

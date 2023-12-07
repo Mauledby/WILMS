@@ -46,6 +46,15 @@ class BookingController():
         obj = WalletUser.objects.all()
         serializer = UserSerializer(obj,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+    # @api_view(['POST'])
+    # def calculateCancelCost(request,booking_id):  
+    #     booking=Booking.objects.get(facility=booking_id)
+    #     #kuwang ug input start time ug end time
+    #     request_body = json.loads(request.body.decode('utf-8'))
+    #     # starttime split
+        
+    #     data={"cost":cost}
+    #     return JsonResponse(data)
     @api_view(['POST'])
     def calculateCost(request,venue_id):  
         facility=Setting_Facility.objects.get(facility=venue_id)

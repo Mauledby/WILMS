@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import UserProfileInfo, CoinTransaction
+from django.core.validators import MinValueValidator
 
 User = get_user_model()
 
@@ -26,21 +27,25 @@ class UserProfileInfoForm(forms.ModelForm):
 
 class CoinTransactionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  # Get the user from the keyword arguments
+        user = kwargs.pop('user', None)
         super(CoinTransactionForm, self).__init__(*args, **kwargs)
-        
-        # Set the initial value of the requestee field to the current user
+
         if user:
             self.fields['requestee'].initial = user
-        
 
         self.fields['requestee'].widget = forms.HiddenInput()
-
-        
 
     class Meta:
         model = CoinTransaction
         fields = ['requestee', 'amount', 'image_receipt', 'date_in_receipt']
+
+        widgets = {
+            'amount': forms.NumberInput(attrs={'min': 1}),  # Set the minimum value for the amount field
+        }
+
+        validators = {
+            'amount': [MinValueValidator(1)],  # Another way to set the minimum value for the amount field
+        }
 
 
 

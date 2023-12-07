@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WILMS</title>
-    <link href={% static "icon/favicon3.ico" %} rel="shortcut icon">
+    <!-- <link href={% static "icon/favicon3.ico" %} rel="shortcut icon"> -->
     <!-- <link href={% static "facility/general.css" %} rel="stylesheet" > -->
     <link
       rel="stylesheet"
@@ -450,7 +450,7 @@ button.btn-primary{
           functions ensuring optimal user flow. Join us for a streamlined
           innovation experience.
         </p>
-        <a href="http://localhost:3000/api/login" class="btn" target="_blank">Book Now</a>
+        <a href="{% url 'api:react_app' %}"class="btn" target="_blank">Book Now</a>
       </div>
     </section>
     <div

@@ -1,6 +1,5 @@
 from django.urls import path
-from wallet.views import IndexView, RegisterView, UserLoginView, DashboardView, UserListView,UserLogoutView,UserDashboardView,PointsDashboardView, TransactionApprovalView,SuccessRedirectView,CoinTransactionCreateAndDashboardView,GetTransactionDetailsView,SettingsView,ChangePasswordView, UpdateAccountTypeView, TeacherUserListView, AdminAwardPointsToTeacherView, ActivateAccountView,ScanAndDisplayRFIDView,EditUserProfileView
-
+from wallet.views import AccountStatusView, GetUserStatusView, IndexView, RegisterView, UserLoginView, DashboardView, UserListView,UserLogoutView,UserDashboardView,PointsDashboardView, TransactionApprovalView,SuccessRedirectView,CoinTransactionCreateAndDashboardView,GetTransactionDetailsView,SettingsView,ChangePasswordView, UpdateAccountTypeView, TeacherUserListView, AdminAwardPointsToTeacherView, ActivateAccountView,ScanAndDisplayRFIDView,EditUserProfileView
 # Increment 2
 from django.conf import settings
 from django.conf.urls.static import static  
@@ -51,6 +50,12 @@ urlpatterns = [
 
     # EDIT PROFILE
     path('edit_profile/', EditUserProfileView.as_view(), name='edit_profile'),
+
+    #ACCOUNT Status
+    path('account_status/<int:user_id>/', AccountStatusView.as_view(), name='account_status'),
+    path('get_user_status/<int:user_id>/', GetUserStatusView.as_view(), name='get_user_status'),
+
+  
 
 
 
