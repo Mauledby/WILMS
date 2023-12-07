@@ -10,7 +10,7 @@
         <table class="Walkin">
           <thead>
             <tr>
-              <th scope="col">Walkin Count</th>
+              <th scope="col">Walk-in Count</th>
             </tr>
           </thead>
           <tbody>
@@ -29,29 +29,29 @@
           </tbody>
         </table>
       </div>
-      <div class="table-divs"> 
+      <div class="table-divs">
         <table class="Reserved">
-        <thead>
-          <tr>
-            <th scope="col">Reserved Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {% if reserves >= 10 and reserves <= 15 %}
-            <td style="color: orange">{{ reserves }}</td>
+          <thead>
+            <tr>
+              <th scope="col">Reserved Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% if reserves >= 10 and reserves <= 15 %}
+              <td style="color: orange">{{ reserves }}</td>
 
-            {% elif reserves >= 16 %}
-            <td style="color: red">{{ reserves }}</td>
+              {% elif reserves >= 16 %}
+              <td style="color: red">{{ reserves }}</td>
 
-            {% else %}
-            <td style="color: green">{{ reserves }}</td>
+              {% else %}
+              <td style="color: green">{{ reserves }}</td>
 
-            {% endif %}
-          </tr>
-        </tbody>
-      </table>
-    </div>
+              {% endif %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="table-divs">
         <table class="Guests">
           <thead>
