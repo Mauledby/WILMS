@@ -1,7 +1,6 @@
-#page-content-wrapper {
-  background: url("../images/basebg.jpg") no-repeat;
+body{
+  background-image: url("../images/basebg.PNG");
   background-size: cover;
-  /* Add any other styles you need for #page-content-wrapper */
 }
 
 /* Add styles for links */

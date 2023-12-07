@@ -1,8 +1,9 @@
 {% extends 'wiladmin/base.html' %} {% load static %} {% block body_block %}
 
 <link rel="stylesheet" href="{% static 'css/logs.css' %}" />
-
 <body>
+  <div class="label-page">REPORT LOGS</div>
+  <div class="table" style="overflow-y: auto; height: 70%;">
   <div class="content-container">
     <div class="table-wrapper-scroll-y my-custom-scrollbar">
       <table class="table table-bordered table-striped mb-0">
@@ -56,6 +57,7 @@
         onClick="refreshPage()"
       />
     </form>
+  </div>
   </div>
 </body>
 {% endblock %}

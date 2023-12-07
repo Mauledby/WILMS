@@ -1,11 +1,12 @@
 {% extends 'wiladmin/base.html' %} {% load static %} {% block body_block %}
 
 <link rel="stylesheet" href="{% static 'css/walkindashboard.css' %}" />
-
 <body>
+  <div class="label-page">WALK-IN</div>
+  <div class="table" style="overflow-y: auto; height: 70%;">
   <div class="content-container">
     <div class="table-wrapper-scroll-y my-custom-scrollbar">
-      <table class="table table-bordered table-striped mb-0">
+      <table class="table table-bordered table-striped mb-0" id="table">
         <caption>
           Booking List
         </caption>
@@ -20,7 +21,7 @@
         </thead>
         <tbody>
           {% for bookings in bookings %}
-          <tr>
+          <tr id="tabledata">
             <td>{{ bookings.referenceid }}</td>
             <td>{{ bookings.userid }}</td>
             <td>{{ bookings.schedule }}</td>
@@ -53,11 +54,14 @@
             </td>
 
             {% endif %}
+            {% empty %}
+            <h3 style="position: fixed; margin-top: 20%; margin-left: 32%; opacity: 0.3;">No Available Rules</h3>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
+</div>
 </body>
 {% endblock %}

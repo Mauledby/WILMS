@@ -50,7 +50,7 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
                 booking.status = 'Booked'
                 booking.save()
                 
-                timer = Timer(user_id=booking.user_id, minutes=30, seconds=0)
+                timer = Timer(user_id=booking.userid, minutes=30, seconds=0)
                 timer.save()
                 
                 log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.schedule, endtime="", status='Booked')
@@ -59,7 +59,7 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
             else:
                 booking.delete()
                 
-                usertimer = Timer.objects.get(pk=str(booking.user_id))
+                usertimer = Timer.objects.get(pk=str(booking.userid))
                 usertimer.delete()
                 
                 assignedarea = AssignedArea.objects.all().filter(reference_number=booking.referenceid)
@@ -74,6 +74,10 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
             log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.schedule,endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
             log.save()
             return redirect('walkindashboard')
+    
+    def getAllWalkin(request):
+        bookings = WalkinBookingModel.objects.all()
+        return JsonResponse({'bookings':bookings})
         
     def get(self, request):
         bookings = WalkinBookingModel.objects.all().order_by('-status', '-bookingid')
@@ -169,7 +173,7 @@ class BookGuestController(LoginRequiredMixin, View):
         referenceid = 'GUEST'
         userid = '18-0107-262'
         schedule = str(datetime.now().strftime("%d/%m/%Y, %H:%M"))
-        status = 'Pending'
+        status = 'Booked'
         booking = WalkinBookingModel(referenceid = referenceid, userid = userid, schedule = schedule, status = status)
         booking.save()
     

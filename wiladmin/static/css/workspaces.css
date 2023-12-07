@@ -1,3 +1,7 @@
+body{
+  background: url("../images/basebg.PNG") no-repeat;
+  background-size: cover;
+}
 #page-content-wrapper {
   background: url("../images/basebg.jpg") no-repeat;
   background-size: cover;
@@ -31,6 +35,16 @@
   text-align: center;
   color: white;
   backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: row;
+}
+
+.user-list{
+  margin-top: 3px;
+  align-self: center;
+  color: #000000;
+  width: 500px;
+  text-align: center;
 }
 
 .my-custom-scrollbar {
@@ -54,7 +68,7 @@ table {
 td,
 th {
   border: 1px solid #dddddd;
-  text-align: left;
+  text-align: center;
   padding: 4px;
 }
 

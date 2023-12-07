@@ -3,6 +3,7 @@ from django.views.generic.list import ListView
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse, reverse_lazy
+from facility.models import Facility_SubRules_set, Setting_Facility
 from wallet.forms import UserForm, UserProfileInfoForm,CoinTransactionForm, TransactionApprovalForm, UserProfileInfoUpdateForm
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponse, JsonResponse
@@ -47,13 +48,15 @@ def is_teacher_user(user):
 
 def is_superuser(user):
     return user.is_superuser  # Check if the user is a superuser
-
+    
 
 class IndexView(View):
     def get(self, request):
-        return render(request, 'wallet/index.html')
-    
-
+        facility = Setting_Facility.objects.filter(isdeleted=0).order_by('-created_at')
+        display = Facility_SubRules_set.objects.all().order_by('-created_at')
+        message = "try"
+        messages.info(request, message)
+        return render(request, 'wallet/index.html',{'display':display, 'facility':facility})
 
 
 class SpecialView(View):
@@ -89,7 +92,8 @@ class RegisterView(View):
             last_name = profile_form.cleaned_data['last_name']
 
             if User.objects.filter(email=email).exists() or UserProfileInfo.objects.filter(first_name=first_name,last_name=last_name).exists():
-                messages.error(request, 'A user with the same first name, last name, or email already exists.')
+                message = f"A user with the same first name, last name, or email already exists."
+                messages.error(request,message)
             else:
                 user = user_form.save(commit=False)
                 user.set_password(user.password)
@@ -102,19 +106,23 @@ class RegisterView(View):
 
                 registered = True
 
+                message = f"Registration is successful! Please activate your account at the activation kiosk."
+                messages.info(request, message)
+
                 return render(request, 'wallet/registration.html', {
                     'user_form': user_form,
                     'profile_form': profile_form,
                     'registered': registered,
-                    'success_message': 'Registration is successful! Please activate your account at the activation kiosk.'
+                    'success_message': ''
                 })
 
         else:
+            message = f"Invalid Inputs"
+            messages.error(request, message)
             return render(request, 'wallet/registration.html', {
                 'user_form': user_form,
                 'profile_form': profile_form,
                 'registered': registered,
-                'error_message': 'Registration failed. Please correct the errors.'
             })
 
 
@@ -127,20 +135,25 @@ class UserLoginView(View):
         password = request.POST.get('password')
 
         user = authenticate(request, email=email, password=password)
-
+        
         if user:
-            if user.is_active:
+            if user.is_active and user.is_verified:
                 login(request, user)
                 if user.is_superuser:
+                    user_profile = UserProfileInfo.objects.get(user=user)
+                    firstname = user_profile.first_name
+                    request.session['firstname'] = firstname
                     return redirect('wallet:index')
                 else:
                     return redirect('wallet:index')
             else:
-                print("Account is not active.")
-                return HttpResponse('<script>alert("Account is not active."); window.location.href="/wallet/user_login/";</script>')
+                message = f" {email} is not Verified"
+                messages.warning(request, message)
+                return render(request, 'wallet/login.html', {})
         else:
-            print("User is None.")
-            return HttpResponse('<script>alert("Invalid login details supplied."); window.location.href="/wallet/user_login/";</script>')
+            message = f" Invalid login details supplied."
+            messages.error(request, message)
+            return render(request, 'wallet/login.html', {})
                     
             
             # print("Someone tried to login and failed.")
@@ -151,6 +164,7 @@ class UserLoginView(View):
 class DashboardView(View):
     @method_decorator(login_required)
     def get(self, request):
+        firstname = request.session.get('firstname') 
         if request.user.is_superuser:
             try:
                 profile = UserProfileInfo.objects.get(user_id=request.user)
@@ -165,17 +179,23 @@ class DashboardView(View):
                 'coin_balance': coin_balance,
                 'point_balance': point_balance,
                 'email':email,
+                'firstname':firstname,
             }
 
             return render(request, 'wallet/dashboard.html', context)
         else:
             response_data = {'message': 'You do not have permission to access this page.'}
             return JsonResponse(response_data, status=403)
-            
+        # return render(request,{'firstname':firstname})
+
+# def dis_base(request):
+#     firstname = request.session.get('firstname') 
+#     return render(request, 'base.html', {'firstname':firstname})
 
 class UserListView(View):
     @method_decorator(login_required)
     def get(self, request):
+        firstname = request.session.get('firstname') 
         if request.user.is_superuser:
             try:
                 transactions = Transaction.objects.all().order_by('-date')
@@ -189,6 +209,7 @@ class UserListView(View):
                 'users': users,
                 'transactions': transactions,
                 'userT':userT,
+                'firstname':firstname,
             }
             return render(request, 'wallet/user_list.html', context)
         else:
@@ -374,9 +395,10 @@ class TransactionApprovalView(View):
     form_class = TransactionApprovalForm
 
     def get(self, request):
+        firstname = request.session.get('firstname') 
         if request.user.is_superuser:
             transactions = CoinTransaction.objects.all()
-            return render(request, self.template_name, {'transactions': transactions, 'form': self.form_class()})
+            return render(request, self.template_name, {'transactions': transactions, 'form': self.form_class(),'firstname':firstname,})
         else:
             return HttpResponseForbidden("You do not have permission to access this page.")
         
@@ -645,6 +667,7 @@ class AdminAwardPointsToTeacherView(View):
 
     @method_decorator(user_passes_test(lambda user: user.is_superuser))
     def get(self, request):
+        firstname = request.session.get('firstname')
         # Retrieve a list of teacher users who have is_staff set to true
         try:
             # Filter both User and UserProfileInfo by is_staff
@@ -657,6 +680,7 @@ class AdminAwardPointsToTeacherView(View):
         context = {
             'teachers': teachers,
             'teacher_profiles': teacher_profiles,
+            'firstname':firstname,
         }
         return render(request, self.template_name, context)
 

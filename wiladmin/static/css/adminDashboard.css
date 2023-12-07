@@ -1,3 +1,8 @@
+body{
+    background-image: url("../images/basebg.PNG");
+    background-size: cover;
+}
+
 #page-content-wrapper {
     background: url("../images/basebg.jpg") no-repeat;
     background-size: cover;
@@ -29,6 +34,11 @@
 .content-container {
     margin-top: 2%;
     text-align: center;
-    color: white;
+    color: rgb(0, 0, 0);
     backdrop-filter: blur(2px);
+    overflow-y: auto;
+}
+
+h1{
+    color: #000000;
 }
