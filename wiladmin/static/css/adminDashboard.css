@@ -33,6 +33,11 @@ h1{
     margin-bottom: 10px;
 }
 
-th, td, tr{
+th, tr{
     font-size: 30px;
+}
+
+td{
+    font-size: 70px;
+    font-weight: bold;
 }
