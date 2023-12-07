@@ -1,20 +1,21 @@
 {% extends 'wiladmin/base.html' %} {% load static %} {% block body_block %}
 
 <link rel="stylesheet" href="{% static 'css/bookguest.css' %}" />
-
 <body>
-  <div class="content-container">
-    <div class="buttonContainer">
-      <form method="POST">
-        {% csrf_token %}
-        <input
-          type="text"
-          class="username"
-          placeholder="Enter Name or ID Number"
-          name="userid"
-        /><br /><br />
-        <input type="submit" class="button" value="BOOK" />
-      </form>
+  <div class="table" style="background: transparent">
+    <div class="content-container">
+      <div class="buttonContainer">
+        <form method="POST">
+          {% csrf_token %}
+          <input
+            type="text"
+            class="username"
+            placeholder="Enter Name or ID Number"
+            name="userid"
+          /><br /><br />
+          <input type="submit" class="button" value="BOOK" />
+        </form>
+      </div>
     </div>
   </div>
 </body>

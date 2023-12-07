@@ -10,8 +10,10 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <title>Wildspace</title>
-
+    <title>WILMS | Crowd Control</title>
+    <link href="{% static 'icon/favicon3.ico' %}" rel="shortcut icon">
+    <link href="{% static 'facility/extended.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/extend-base.css' %}" /> 
     <link
       href="{% static 'bootstrap-4.4.1-dist/css/bootstrap.min.css' %}"
       rel="stylesheet"
@@ -20,7 +22,6 @@
     <link href="{% static 'css/sidebar.css' %}" rel="stylesheet" />
     <link href="{% static 'css/baseStyle.css' %}" rel="stylesheet" />
     <link href="{% static 'css/base.css' %}" rel="stylesheet" />
-    <link rel="shortcut icon" href="{% static 'images/WILLOGO.png' %}" />
     <link
       rel="stylesheet"
       href="{% static 'plugins/fontawesome-free/css/all.min.css' %}"
@@ -28,46 +29,19 @@
 
     {% block headerinclude %} {% endblock %}
   </head>
-
   <body>
-    <div id="header-wrapper">
-      <!-- Header with Logo -->
-      <header class="bg-custom-color">
-        <div class="row">
-          <div class="col-2">
-            <!-- Logo  -->
-            <img
-              src="{% static 'images/WILLOGO.png' %}"
-              alt="Logo"
-              width="75"
-              height="65"
-            />
-          </div>
-
-          <div class="col-10 d-flex justify-content-end align-items-center">
-            <div>
-              <div
-                class="card"
-                style="
-                  padding: 10px 10px 3px 10px;
-                  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-                  background-color: #faca04;
-                  margin-right: 20px;
-                "
-              >
-                <h5 class="All-Font" style="color: #000">{{user.email}}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-    </div>
     <div class="d-flex" id="wrapper">
-      <!-- Sidebar -->
-      <div class="sidebar-wrapper border-right" id="sidebar-wrapper">
-        <div class="sidebar-heading text-center">
-          <h2 class="All-Font">WILDSPACE</h2>
+      <div class="sidebar-wrapper border-right" id="sidebar-wrapper" style="  overflow: hidden;
+      height: 100%;
+      width:16.3%;
+      position: fixed;
+      top: 100px;">
+        <div class="avatar">
+          {% block pic %}
+          <img src="{% static 'media/admin3.png' %}" alt="Another Profile Picture">
+          {% endblock %}
         </div>
+        <li style="list-style: none; color: white; text-align: center; padding: 0rem; margin-bottom: 10px;">{{ firstname }}</li> 
         <div class="list-group list-group-flush">
           {% if user.is_authenticated %}
           <a
@@ -103,17 +77,11 @@
             >Report Logs</a
           >
 
-          <div style="margin-bottom: 0px"></div>
-
-          <a
-            href="logout"
-            class="list-group-item list-group-item-action sidebar-link {% if 'logout' in request.path %}active-link{% endif %}"
-            >Logout</a
-          >
+          <div style="margin-bottom: 280px"></div>
 
           {% else %}
           <a
-            href="/wiladmin/login/"
+            href="/wallet/user_login/"
             class="list-group-item list-group-item-action sidebar-link"
             onmouseover="this.style.backgroundColor='#f5f5f5'"
             onmouseenter="this.insertAdjacentHTML('beforebegin', '<span class=\'highlight-box\'></span>')"
@@ -122,23 +90,58 @@
             Login
           </a>
           <a
-            href="/wiladmin/login/"
+            href="{% url 'wallet:register' %}"
             class="list-group-item list-group-item-action sidebar-link {% if 'register' in request.path %}active-link{% endif %}"
             >Register</a
           >
           {% endif %}
         </div>
       </div>
-      <!-- /#sidebar-wrapper -->
-      <!-- Page Content -->
-      <div id="page-content-wrapper" , style="background-color: #f8f9fa">
-        <div class="container-fluid">{% block body_block %} {% endblock %}</div>
-      </div>
-      <!-- /#page-content-wrapper -->
-    </div>
-    <!-- /#wrapper -->
 
-    <!-- jQuery -->
+      {% block body_block %} {% endblock %}
+    </div>
+    <nav class="horizontal">
+      <ul class="left">
+        <li><a href="{% url 'wallet:index' %}"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+      </ul>
+      <ul class="center" >
+    
+        {% if messages %}
+        {% for message in messages %}
+         
+            {% if message.tags == 'success' %}
+            <div>
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  <h4 style="margin:1px; font-size: 16px;">✅ Success!</h4>{{ message }}</div>
+            {% elif message.tags == 'warning' %}
+            <div>
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                <h4 style="margin:1px; font-size: 16px;">⚠️ Warning!</h4>{{ message }}</div>
+            {% elif message.tags == 'error' %}
+            <div>
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  <h4 style="margin:1px; font-size: 16px;">⛔ Oops!</h4>{{ message }}</div>
+            {% endif %} 
+          {% endfor %}
+          {% endif %}
+    
+    </ul>
+      <ul class="right">
+        <button class="adminlabel" style="left:46%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:index' %}">HOME</a></button>
+        <button class="adminlabel" style="left:52%;"><a class="menugroup menugroup-action {% if 'facility' in request.path %}active-link{% endif %}" href="{% url 'facility:facility' %}">FACILITY</a></button>
+        <button class="adminlabel" style="left:60%; border: 0px;"><a class="menugroup menugroup-action {% if 'booking' in request.path %}active-link{% endif %}" href="#">BOOKING</a></button>
+        <button class="adminlabel" style="left:68%;"><a class="menugroup menugroup-action {% if 'wallet' in request.path %}active-link{% endif %}" href="{% url 'wallet:dashboard' %}">WALLET</a></button>
+        <button class="adminlabel" style="left:75%;"><a class="menugroup menugroup-action {% if 'wiladmin' in request.path %}active-link{% endif %}" href="{% url 'admindashboard' %}">CROWD CONTROL</a></button>
+        <button class="adminlabel" style="width: fit-content;left:90%;" ><a class="menugroup" style=" color: red;" href="{% url 'wallet:logout' %}">LOGOUT</a></button>
+      </ul>
+      
+    </nav> 
+
+    <script>
+      function closeOverlay() {
+          document.getElementById('overlay').style.display = 'none';
+      }
+  </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap core JavaScript -->
     <script src="{% static 'bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
@@ -173,5 +176,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'functions-js/search.js' %}"></script>
   </body>
 </html>

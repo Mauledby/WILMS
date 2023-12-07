@@ -31,6 +31,7 @@
   text-align: center;
   color: white;
   backdrop-filter: blur(2px);
+  height: fit-content;
 }
 
 .my-custom-scrollbar {
@@ -141,4 +142,9 @@ tr:nth-child(even) {
 caption {
   position: absolute;
   top: -5%;
+}
+
+body{
+  background-image: url("../images/basebg.PNG");
+  background-size: cover;
 }

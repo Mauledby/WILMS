@@ -1,5 +1,5 @@
 
-        const totalSeats = 6
+        
         function updateAvailability(buttonElement) {
             const availability = parseInt(buttonElement.getAttribute("data-availability"));
             const totalSeats = parseInt(buttonElement.getAttribute("data-total"));
@@ -89,7 +89,7 @@
         }
         
         function areaButtonClick(areaId) {
-            fetch('/polls/area_button_click/?area_id=' + areaId)
+            fetch('/area_button_click/?area_id=' + areaId)
                 .then(response => response.json())
                 .then(data => {
                     if (data.reference_number) {
@@ -103,7 +103,7 @@
         }
         
         function insertIntoDatabase(areaId, referenceNumber) {
-            fetch('/polls/insert_into_database/', {
+            fetch('/insert_into_database/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -150,7 +150,7 @@
         
         function generateReferenceNumber(areaId) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/polls/area_button_click/?area_id=' + areaId, false);
+            xhr.open('GET', '/area_button_click/?area_id=' + areaId, false);
             xhr.send();
         
             if (xhr.status === 200) {
@@ -164,7 +164,7 @@
         
         
         
-        setInterval(updateBookingInfo, 2000);
+        setInterval(updateBookingInfo, 3000);
         
         window.onload = updateBookingInfo;
     
