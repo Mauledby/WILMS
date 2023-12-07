@@ -61,7 +61,17 @@
           >
           <a
             href="workspaces"
-            class="list-group-item list-group-item-action {% if 'workspaces' in request.path %}active-link{% endif %}"
+            class="list-group-item list-group-item-action {% if 'workspaces' in request.path %}active-link
+                                                          {% elif 'A1' in request.path %}active-link
+                                                          {% elif 'A2' in request.path %}active-link
+                                                          {% elif 'A3' in request.path %}active-link
+                                                          {% elif 'A4' in request.path %}active-link
+                                                          {% elif 'A5' in request.path %}active-link
+                                                          {% elif 'A6' in request.path %}active-link
+                                                          {% elif 'A7' in request.path %}active-link
+                                                          {% elif 'A8' in request.path %}active-link
+                                                          {% elif 'A9' in request.path %}active-link
+                                                          {% endif %}"
             >View Workspaces</a
           >
 
