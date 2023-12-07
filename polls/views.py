@@ -30,8 +30,7 @@ from django.http import JsonResponse
 from collections import defaultdict
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from api.models.BookingModel import Booking as ResBooking
-
+from api.models.BookingModel import Booking as Resbook
 
 from django.shortcuts import render
 
@@ -247,24 +246,22 @@ def get_reservebooking_info(request):
 from django.http import JsonResponse
 
 def get_calendar_data(request):
-    area_data = ResBooking.objects.values('date', 'area_id', 'startTime', 'endTime')
-
+    area_data = Resbook.objects.all()
     events = []
+
     for booking in area_data:
-        date = booking['date']
-        area_id = booking['area_id']
-        start_time = booking['startTime']
-        end_time = booking['endTime']
+        date = booking.date.strftime('%Y-%m-%d')  
+        description = booking.description
+        purpose = booking.purpose
+        reference = booking.referenceNo
 
         events.append({
-            'title': f'Area {area_id}',
-            'start': date,
-            'start_time': start_time.strftime('%H:%M'),
-            'end_time': end_time.strftime('%H:%M'),
+            'title': f'{description}({purpose})',
+            'start': date,  
+            'referenceNo': reference
         })
 
     return JsonResponse(events, safe=False)
-
 
 
 class ActiveBookingController(LoginRequiredMixin, View):

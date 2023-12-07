@@ -68,13 +68,13 @@ class CalendarController():
                 userprofile=UserProfileInfo.objects.get(user=serializer.validated_data['user'])
                 if points == 0:
                     if userprofile.coin_balance < coins:
-                        return Response({"error": "insufficient coin balance"},status=status.HTTP_200_OK)
+                        return Response({"error": f"Insufficient coin balance. You currently have {userprofile.coin_balance} coins."},status=status.HTTP_200_OK)
                     elif userprofile.coin_balance >= coins and coins != 0:
                         userprofile.coin_balance -= coins
                         # userprofile.save()
                 elif coins == 0:
                     if userprofile.point_balance < points:
-                        return Response({"error": "insufficient point balance"},status=status.HTTP_200_OK)
+                        return Response({"error": f"Insufficient point balance. You currently have {userprofile.point_balance} points."},status=status.HTTP_200_OK)
                     elif userprofile.point_balance >= points and points != 0:
                         userprofile.point_balance -= points
                 date=serializer.validated_data['date']

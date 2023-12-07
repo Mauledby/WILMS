@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.views.generic.list import ListView
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
@@ -218,37 +219,41 @@ class UserListView(View):
     def post(self, request):
         recipient_id = request.POST.get('recipient')
         sender_id = request.POST.get('sender')
-        points = float(request.POST.get('points'))
+        raw_points = request.POST.get('points')
 
         try:
-            recipient = get_user_model().objects.get(id=recipient_id)
-            sender = get_user_model().objects.get(id=sender_id)  # Corrected this line
+            # Convert the raw_points to Decimal and validate if it's non-negative
+            points = Decimal(raw_points)
+            if points < 0:
+                return JsonResponse({'error': 'Points must be non-negative'})
+            else:
+                recipient = get_user_model().objects.get(id=recipient_id)
+                sender = get_user_model().objects.get(id=sender_id)
+                recipient_profile = UserProfileInfo.objects.get(user_id=recipient.id)
+                sender_profile = UserProfileInfo.objects.get(user_id=sender.id)
 
-            recipient_profile = UserProfileInfo.objects.get(user_id=recipient.id)
-            sender_profile = UserProfileInfo.objects.get(user_id=sender.id)  # Corrected this line
-                
-            recipient_profile.point_balance += points
-            recipient_profile.save()
+                recipient_profile.point_balance += points
+                recipient_profile.save()
 
-            transaction = Transaction.objects.create(recipient=recipient, sender=sender, points=points)
+                transaction = Transaction.objects.create(recipient=recipient, sender=sender, points=points)
 
-            users = UserProfileInfo.objects.all()
-            user_data = []
-            for user in users:
-                full_name = f"{user.first_name} {user.last_name}"
-                user_data.append({
-                    'email': user.user.email,
-                    'id': user.profile_id,
-                    'name':full_name,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'point_balance': user.point_balance,
-                })
+                users = UserProfileInfo.objects.all()
+                user_data = []
+                for user in users:
+                    full_name = f"{user.first_name} {user.last_name}"
+                    user_data.append({
+                        'email': user.user.email,
+                        'id': user.profile_id,
+                        'name': full_name,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'point_balance': user.point_balance,
+                    })
 
-            return JsonResponse({'users': user_data})
+                return JsonResponse({'users': user_data})
 
-        except (get_user_model().DoesNotExist, UserProfileInfo.DoesNotExist):
-            pass
+        except (get_user_model().DoesNotExist, UserProfileInfo.DoesNotExist, Decimal.InvalidOperation):
+            return JsonResponse({'error': 'Invalid input or user does not exist'})
 
 
 class UserDashboardView(View):
@@ -813,3 +818,41 @@ class EditUserProfileView(View):
                 form.save()
                 return redirect('wallet:usrdashboard')  # Redirect to the user's profile page
             return render(request, self.template_name, {'form': form, 'user_profile': user_profile})
+
+
+#  ACCOUNT STATUS
+class AccountStatusView(View):
+    def post(self, request, user_id, *args, **kwargs):
+        try:
+            user = get_user_model().objects.get(id=user_id)
+            
+            action = request.POST.get('action')  # 'enable' or 'disable'
+            if action == 'enable':
+                user.is_active = True
+            elif action == 'disable':
+                user.is_active = False
+
+            user.save()
+
+            return JsonResponse({'success': True})
+
+        except get_user_model().DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'User not found'}, status=404)
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+class GetUserStatusView(View):
+    def get(self, request, user_id, *args, **kwargs):
+        try:
+            user = get_user_model().objects.get(id=user_id)
+            status = "Active" if user.is_active else "Inactive"
+            return JsonResponse({'status': status})
+
+        except get_user_model().DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
