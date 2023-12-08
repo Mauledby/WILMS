@@ -161,6 +161,7 @@ class UserLoginView(View):
             # Show an alert when the login details are invalid
 
 
+
 class DashboardView(View):
     @method_decorator(login_required)
     def get(self, request):

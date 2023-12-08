@@ -1,0 +1,479 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- <meta name="viewport" content="width=devicewidth, initial-scale=1.0"> -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <title>WILMS | Facility Management</title>
+  <link href="{% static 'icon/favicon3.ico' %}" rel="shortcut icon">
+  <link href="{% static 'facility/general.css' %}" rel="stylesheet">
+  <link href="{% static 'facility/extended.css' %}" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="general.css">
+  <link rel="stylesheet" href="table.css"> -->
+  <style>
+    
+    a.menugroup {
+    /* Other styles for .menugroup */
+    /* ... */
+    font-weight: 800;
+    font-size: 21px;
+    color:#000;
+    padding-bottom: 10.5px;
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0);
+    transition: border-bottom 0.3s ease; /* Change expand to ease */
+    
+    }
+    a.menugroup:hover {
+    color: #fff;
+    border-bottom: 3px solid rgba(64, 45, 0, 0.8);
+    transition: border-bottom 0.5s ease forwards;
+    
+    }
+    a{
+      text-decoration: none;
+      color: #000000;
+  }
+  a:hover{
+    text-decoration: none;
+    color: #000000;
+  }
+
+  nav.horizontal {
+    position: fixed;
+    display:block;
+    width: 100%;
+    background-color: #fecc00;
+    height:100px;
+    overflow: hidden;
+    top: 0px;
+    left: 0;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  
+  
+  nav.horizontal ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav.horizontal li {
+    float: left;
+  }
+  
+  nav.horizontal li a {
+    display: block;
+    color: #333;
+    text-align: center;
+    padding: 14px 16px;
+    height: 100px;
+    text-decoration: none;
+  }
+  
+  nav.horizontal li a:hover {
+    color: #333;
+  }
+  
+  nav.horizontal ul.right {
+    float: right;
+  }
+  nav.horizontal ul.left{
+    float: left;
+  }
+  nav.horizontal ul.center{
+    float: center;
+  }
+  nav.horizontal li a img {
+    top: 0rem;
+    align-items: center;
+    width: 200px;
+    height: flex;
+    margin-right: 10px;
+    right: 20rem;
+    align-items: center;
+  }
+/*   
+  button.adminlabel{
+    position: fixed;
+    display: block;
+    right: 2%;
+    width: fit-content;
+    height: 100px;
+    background: #ffcc0100;
+    top: 0rem;
+    align-items: center;
+    border: none;
+    font-weight: bolder;
+    font-size: 22px;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+  }
+   */
+  
+  
+  button.btn-primary{
+    width: fit-content;
+    height: 36.41px;
+    color: #000000;
+    font-weight: 500;
+    font-size: 14px;
+    
+    background-color: #ffcc01;
+    border: none;
+    border-radius: 5px;
+  }
+  button.btn-primary:hover{
+    color: #FFCD02;
+    background: #FFFFFF;
+  }
+  button:hover{
+    cursor: pointer;
+  }
+  *::-webkit-scrollbar-thumb {
+      opacity: 0;
+    background-color: #ffcc0186; /* Change the color of the scrollbar thumb */
+    border-radius: 5px; /* Add rounded corners to the scrollbar thumb */
+  }
+  
+  /* Optional: Style the scrollbar track */
+  *::-webkit-scrollbar-track {
+    opacity: 0;
+    background-color: #e8e1ae; /* Change the color of the scrollbar track */
+  }
+  
+  /* Optional: Style the scrollbar itself */
+  *::-webkit-scrollbar {
+    opacity: 0;
+    margin-left: 0%;
+    width: 0px; /* Adjust the width of the scrollbar */
+  }
+  
+  
+  @keyframes slideFromLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+      margin-left: 3%; /* New left position after entering */
+    }
+  }
+  
+  @keyframes slideExitLeftFadeOut {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+      margin-left: 3%; /* Keep consistent with the final position in slideFromLeft */
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-100%);
+      margin-left: -200px; /* Return to the initial position outside the viewport */
+    }
+  }
+  
+  .info {
+    color: #000;
+    background: rgba(246, 247, 231, 0.9); 
+    border-top: 13px solid #e8e800;
+    justify-content: center;
+    margin-top: 25%;
+    margin-left: 47%;
+    align-items: center;
+    padding: 20px; 
+    border-radius: 5px;
+    animation: slideFromLeft 0.5s ease forwards;
+  }
+  
+  .warning {
+    position: fixed;
+    border-left: 13px solid #e8e800;
+    color: rgb(232, 214, 214);
+    background: rgba(74, 67, 67, 0.748);  
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    justify-content: center;
+    width: fit-content;
+    margin-top: 43%;
+     /* Initial position outside the viewport */
+    align-items: center;
+    padding: 20px; 
+    border-radius: 5px;
+    opacity: 0; /* Start with zero opacity */
+    animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 4s forwards;
+  }
+  
+  .error {
+    position: fixed;
+    border-left: 13px solid #6f0000;
+    color: rgb(232, 214, 214);
+    background: rgba(74, 67, 67, 0.748);  
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    justify-content: center;
+    width: fit-content;
+    margin-top: 43%;
+     /* Initial position outside the viewport */
+    align-items: center;
+    padding: 20px; 
+    border-radius: 5px;
+    opacity: 0; /* Start with zero opacity */
+    animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 4s forwards;
+    
+  }
+  div.table{
+  position: absolute;
+  width: auto;
+  height: max-content; 
+  padding-bottom: 5rem;
+  left: 19%;
+  right: 3%;
+  top: 27%;
+  padding-inline: 5%;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  flex-direction: row;
+  margin-bottom: 5rem;
+  }
+  .label-page{
+  position: absolute;
+  display: block;
+  width: auto;
+  height: 71px;
+  left: 19%;
+  right: 3%;
+  top: 17%;
+  font-weight: 700;
+  font-size: 32px;
+  color: #000000;
+  float: left;
+  padding: 15px;
+  
+  background: #FFCC01;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  }
+    .active-link {
+    color: #ffcc01;
+    /* Other styles you want for the active link */
+  }
+  a.menugroup.active-link{
+    color:#fff;
+  }
+  
+  nav.vertical li a.nav1.active-link {
+    background-color: #ffcc01; color: black; /* Your desired color for the active link within nav1 */
+    /* Other styles for the active link within nav1 */
+  }
+  nav.vertical li a.nav2.active-link {
+    background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
+    }
+    nav.vertical li a.nav3.active-link {
+    background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
+    }
+      button.btn-primary{
+      width: fit-content;
+      height: 36.41px;
+      color: #000000;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 5px;
+      background-color: #ffcc01;
+      border: none;
+      border-radius: 5px;
+    }
+    button.btn-primary:hover{
+      color: #FFCD02;
+      background: #FFFFFF;
+    }
+    button{
+    width: auto;
+    align-items: center;
+    padding: 2px;
+    background: #FFCC01;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    /* padding: 20px; */
+    /* padding-bottom: 20px; */
+    padding-inline: 15px;
+  }
+  
+  form.modal-dialog{
+    right: -12%;
+  }
+  
+  .active-link {
+    color: #ffcc01;
+    /* Other styles you want for the active link */
+  }
+  
+  nav.vertical li a.nav1.active-link {
+    background-color: #ffcc01; color: black; /* Your desired color for the active link within nav1 */
+    /* Other styles for the active link within nav1 */
+  }
+  nav.vertical li a.nav2.active-link {
+    background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
+    }
+    nav.vertical li a.nav3.active-link {
+    background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
+    }
+  
+  
+  table{
+    position: left;
+    width: fit-content;
+  }
+  button.adminlabel{
+      position: fixed;
+      display: block;
+      right: 2%;
+      width: fit-content;
+      height: 100px;
+      background: #FFCC01;
+      top: 0rem;
+      align-items: center;
+      border: none;
+      font-weight: 700px;
+      font-size: 22px;
+      box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+    }
+    .avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  /* border-radius: 50%; */
+  overflow: hidden;
+  margin: 15px auto;
+  /* border: 7px solid #FAFAFA; */
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+  
+  </style>
+</head>
+<body>
+  <ul class="center" >
+
+    {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'info' %}
+        
+      <div class="center" id="overlay" style="position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(5, 4, 0, 0.5);
+        z-index: 99999999;
+        opacity: 1;
+        transition: opacity 5s ease;">
+      <ul style="list-style: none; text-align: center; width: 100%; margin-left: 10%;">
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="width: 40%; height: auto; word-wrap: break-word;  margin: 0 auto; text-align: center;">
+            <div style="background-color: #ffcc01b6; width: 100%; padding: 1rem; border: 0px; "><h4 style="margin:1px; font-size: 16px;">Information</h4></div>
+            <br>{{ message }}
+              <br>
+              <button style="margin-top: 10%;" type="button" class="btn btn-secondary" onclick="closeOverlay()">OK</button>
+          </li>
+      </ul>
+  </div>
+  {% endif %} 
+  {% endfor %}
+  {% endif %}
+  <script>
+      function closeOverlay() {
+          document.getElementById('overlay').style.display = 'none';
+      }
+  </script></ul>
+
+  {% block facility_content %}
+  {% endblock %}
+
+
+  <nav class="vertical">
+    <div class="avatar">
+      {% block pic %}
+      <img src="{% static 'media/admin3.png' %}" alt="Another Profile Picture">
+      {% endblock %}
+    </div>
+    <li style="color: white; text-align: center; padding: 0rem;">{{ firstname }}</li>
+    <ul>
+      <li>
+        <a href="{% url 'facility:facility' %}" class="nav1 nav1-action {% if 'facilitymanagement' in request.path %}active-link{% endif %}">Facility Management</a>
+        <!-- class="list-group-item list-group-item-action All-Font {% if 'facility' in request.path %}active-link{% endif %}" -->
+        <ul class="drpdwn1">
+          <li><a href="{% url 'facility:facility' %}" class="drp1">Facility</a></li>
+          <li><a href="{% url 'facility:usertable' %}" class="drp1">User</a></li>
+          <li><a href="{% url 'facility:calendar' %}" class="drp1">Calendar</a></li>
+        </ul>
+      </li>
+      <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2 nav2-action {% if 'revenue' in request.path %}active-link{% endif %}">Revenue</a>
+        <ul class="drpdwn2">
+          <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2">Dashboard</a></li>
+          <li><a href="{% url 'facility:revenuereport' %}" class="drp2">Reports</a></li>
+        </ul>
+      </li>
+      <li><a href="{% url 'facility:rulessummary' %}" class="nav3 nav3-action {% if 'rulessummary' in request.path %}active-link{% endif %}">Rules Summary</a></li>
+    </ul>
+  </nav>
+
+<!-- horizontal pane for navbar -->
+<nav class="horizontal">
+  <ul class="left">
+    <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+  </ul>
+  <ul class="center" >
+
+    {% if messages %}
+    {% for message in messages %}
+     
+        {% if message.tags == 'success' %}
+        <div>
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+              <h4 style="margin:1px; font-size: 16px;">✅ Success!</h4>{{ message }}</div>
+        {% elif message.tags == 'warning' %}
+        <div>
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            <h4 style="margin:1px; font-size: 16px;">⚠️ Warning!</h4>{{ message }}</div>
+        {% elif message.tags == 'error' %}
+        <div>
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+              <h4 style="margin:1px; font-size: 16px;">⛔ Oops!</h4>{{ message }}</div>
+        {% endif %} 
+      {% endfor %}
+      {% endif %}
+
+</ul>
+  <ul class="right">
+    <!-- class="nav1 nav1-action {% if 'facilitymanagement' in request.path %}active-link{% endif %}" -->
+    <button class="adminlabel" style="left:46%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:index' %}">HOME</a></button>
+    <button class="adminlabel" style="left:52%;"><a class="menugroup menugroup-action {% if 'facility' in request.path %}active-link{% endif %}" href="{% url 'facility:facility' %}">FACILITY</a></button>
+    <button class="adminlabel" style="left:60%; border: 0px;"><a class="menugroup menugroup-action {% if 'booking' in request.path %}active-link{% endif %}" href="#">BOOKING</a></button>
+    <button class="adminlabel" style="left:68%;"><a class="menugroup menugroup-action {% if 'wallet' in request.path %}active-link{% endif %}" href="{% url 'wallet:dashboard' %}">WALLET</a></button>
+    <button class="adminlabel" style="left:75%;"><a class="menugroup menugroup-action {% if 'wiladmin' in request.path %}active-link{% endif %}" href="{% url 'admindashboard' %}">CROWD CONTROL</a></button>
+    <button class="adminlabel" style="width: fit-content;left:90%;" ><a class="menugroup" style=" color: #f5f2e9;" href="{% url 'wallet:logout' %}">LOGOUT</a></button>
+  </ul>
+  
+</nav> 
+</body>
+</html>
+

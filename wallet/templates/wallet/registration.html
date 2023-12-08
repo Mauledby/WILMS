@@ -18,6 +18,255 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"> </script>
 
 <style>
+    a.menugroup {
+    /* Other styles for .menugroup */
+    /* ... */
+    font-weight: 800;
+    font-size: 21px;
+    color:#000;
+    padding-bottom: 1.5px;
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0);
+    transition: border-bottom 0.3s ease; /* Change expand to ease */
+    
+    }
+    a{
+      text-decoration: none;
+      color: #000000;
+  }
+  a:hover{
+    text-decoration: none;
+    color: #000000;
+  }
+    a.menugroup:hover {
+    color: #fff;
+    border-bottom: 10px solid rgba(64, 45, 0, 0.8);
+    transition: border-bottom 0.5s ease forwards;
+    
+    }
+    nav.horizontal {
+    position: fixed;
+    display:block;
+    width: 100%;
+    /* background-color: #fecc00; */
+    height:100px;
+    overflow: hidden;
+    top: 0px;
+    left: 0;
+    transition: all 0.3s ease;
+  }
+  nav.horizontal.sticky {
+        /* padding: 15px 50px; */
+        position: fixed;
+        top: 0;
+        background: #fac004; /* Background color for the sticky navbar */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.9);
+        height: fit-content;
+        color: #0000;
+        text-emphasis-color: #0000;
+      }
+
+  
+
+  nav.horizontal ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav.horizontal li {
+    float: left;
+  }
+
+  nav.horizontal li a {
+    display: block;
+    color: #333;
+    text-align: center;
+    padding: 14px 16px;
+    height: 100px;
+    text-decoration: none;
+  }
+
+  nav.horizontal li a:hover {
+    color: #333;
+  }
+  
+  nav.horizontal ul.right {
+    float: right;
+  }
+  nav.horizontal ul.left{
+    float: left;
+  }
+  nav.horizontal ul.center{
+    float: center;
+  }
+  nav.horizontal li a img {
+    top: 0rem;
+    align-items: center;
+    width: 200px;
+    height: flex;
+    margin-right: 10px;
+    right: 20rem;
+    align-items: center;
+  }
+  
+  button.btn-primary{
+    width: fit-content;
+    height: 36.41px;
+    color: #000000;
+    font-weight: 500;
+    font-size: 14px;
+    
+    background-color: #ffcc01;
+    border: none;
+    border-radius: 5px;
+  }
+  button.btn-primary:hover{
+    color: #FFCD02;
+    background: #FFFFFF;
+  }
+  button:hover{
+    cursor: pointer;
+  }
+  *::-webkit-scrollbar-thumb {
+      opacity: 0;
+    background-color: #ffcc0186; /* Change the color of the scrollbar thumb */
+    border-radius: 5px; /* Add rounded corners to the scrollbar thumb */
+  }
+  
+  /* Optional: Style the scrollbar track */
+  *::-webkit-scrollbar-track {
+    opacity: 0;
+    background-color: #e8e1ae; /* Change the color of the scrollbar track */
+  }
+  
+  /* Optional: Style the scrollbar itself */
+  *::-webkit-scrollbar {
+    opacity: 0;
+    margin-left: 0%;
+    width: 0px; /* Adjust the width of the scrollbar */
+  }
+  
+  
+  @keyframes slideFromLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+      margin-left: 3%; /* New left position after entering */
+    }
+  }
+  
+  @keyframes slideExitLeftFadeOut {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+      margin-left: 3%; /* Keep consistent with the final position in slideFromLeft */
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-100%);
+      margin-left: -200px; /* Return to the initial position outside the viewport */
+    }
+  }
+  
+  .info {
+    color: #000;
+    background: rgba(246, 247, 231, 0.9); 
+    border-top: 13px solid #e8e800;
+    justify-content: center;
+    margin-top: 25%;
+    margin-left: 47%;
+    align-items: center;
+    padding: 20px; 
+    border-radius: 5px;
+    animation: slideFromLeft 0.5s ease forwards;
+  }
+  
+  .warning {
+    position: fixed;
+    border-left: 13px solid #e8e800;
+    color: rgb(232, 214, 214);
+    background: rgba(74, 67, 67, 0.748);  
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    justify-content: center;
+    width: fit-content;
+    margin-top: 43%;
+     /* Initial position outside the viewport */
+    align-items: center;
+    padding: 20px; 
+    border-radius: 5px;
+    opacity: 0; /* Start with zero opacity */
+    animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 4s forwards;
+  }
+  .success {
+  position: fixed;
+  border-left: 13px solid #069201;
+  color: rgb(232, 214, 214);
+  background: rgba(74, 67, 67, 0.748);  
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  justify-content: center;
+  width: fit-content;
+  margin-top: 43%;
+   /* Initial position outside the viewport */
+  align-items: center;
+  padding: 20px; 
+  border-radius: 5px;
+  opacity: 0; /* Start with zero opacity */
+  animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 10s forwards;
+}
+  .error {
+    position: fixed;
+    border-left: 13px solid #6f0000;
+    color: rgb(232, 214, 214);
+    background: rgba(74, 67, 67, 0.748);  
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    justify-content: center;
+    width: fit-content;
+    margin-top: 43%;
+     /* Initial position outside the viewport */
+    align-items: center;
+    padding: 20px; 
+    border-radius: 5px;
+    opacity: 0; /* Start with zero opacity */
+    animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 4s forwards;
+    
+  }
+    button{
+    width: auto;
+    align-items: center;
+    padding: 2px;
+    background: #FFCC01;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    /* padding: 20px; */
+    /* padding-bottom: 20px; */
+    padding-inline: 15px;
+  }
+  
+
+button.adminlabel{
+      position: fixed;
+      display: block;
+      right: 2%;
+      width: fit-content;
+      height: 100px;
+      background:#fac004;
+      top: 0rem;
+      align-items: center;
+      border: none;
+      font-weight: 700px;
+      font-size: 22px;
+      box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+    }
+button.adminlabel:hover{
+    border-radius: 0px;
+}
     *{
     margin: 0;
     padding: 0;
@@ -350,36 +599,43 @@ input[type="email"] {
 
 </style>
 </head>
-<body>
-    <nav class="navbar">
-          <div class="max-width">
-            <div>
-              <img
-                src="{% static 'img/w1_yellow.png' %}"
-                alt=""
-                style="
-                  height: 30%;
-                  width: 30%;
-                  margin-bottom: -20px;
-                  margin-top: -10px;
-                "
-              />
-            </div>
-            <ul class="menu">
-              <li><a href="/wallet/register" class="menu-btn">REGISTER</a></li>
-              <li style="margin-left: 10px">
-                <button class="btn btn-outline-success" type="button" id="loginBtn" onclick="window.location.href='/wallet/user_login'">
-                  BACK TO MAIN PAGE
-                </button>
-              </li>
-             
+<body>  
+  <ul class="center" >
 
-
-            </ul>
-            <i class="fas fa-bars menu-btn"></i>
-        </div>
-    </nav>
-    
+    {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'info' %}
+        
+      <div class="center" id="overlay" style="position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(5, 4, 0, 0.5);
+        z-index: 99999999;
+        opacity: 1;
+        transition: opacity 5s ease;">
+      <ul style="list-style: none; text-align: center; width: 100%; margin-left: 40%;">
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="width: 40%; height: auto; word-wrap: break-word;  margin: 0 auto; text-align: center;">
+            <div style="background-color: #ffcc01b6; width: 100%; padding: 1rem; border: 0px; "><h4 style="margin:1px; font-size: 16px;">😺 You are registered!</h4></div>
+            <br>{{ message }}
+              <br>
+              <button style="margin-top: 10%;" type="button" class="btn btn-secondary" onclick="window.location.href='/wallet/user_login'">OK</button>
+          </li>
+      </ul>
+  </div>
+  {% endif %} 
+  {% endfor %}
+  {% endif %}
+  <script>
+      function closeOverlay() {
+          document.getElementById('overlay').style.display = 'none';
+      }
+  </script></ul>
 
     <section class="banner-container">
         <div class="banner">
@@ -437,14 +693,46 @@ input[type="email"] {
                 
         </div>
     </section>
-
-    {% if success_message %}
+    <nav class="horizontal">
+      <ul class="left" style="margin-left: 2rem;">
+        <li>
+        <a href="{% url 'wallet:index' %}"><img style="background-color: #fac004; padding: 5px; border-radius: 5px;" src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+      </ul>
+      <ul class="center">
+        {% if messages %}
+        {% for message in messages %}
+         
+            {% if message.tags == 'success' %}
+            <div>
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  <h4 style="margin:1px; font-size: 16px;">✅ Success!</h4>{{ message }}</div>
+                  
+            {% elif message.tags == 'warning' %}
+            <div>
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                <h4 style="margin:1px; font-size: 16px;">⚠️ Warning!</h4>{{ message }}</div>
+            {% elif message.tags == 'error' %}
+            <div>
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  <h4 style="margin:1px; font-size: 16px;">⛔ Oops!</h4>{{ message }}</div>
+            {% endif %} 
+          {% endfor %}
+          {% endif %}
+      </ul>
+      <ul class="right">
+        <!-- <button class="adminlabel" style="left:70%; padding-inline: 10px; border-radius: 5px; height: 60px; margin-top: 1.4%;"><a class="menugroup" href="/wallet/register">REGISTER</a></button> -->
+        <button class="adminlabel" type="button" id="loginBtn" onclick="window.location.href='/wallet/user_login'" style="width: fit-content;left:80%;padding-inline: 10px; border-radius: 5px; height: 60px; margin-top: 1.4%;"><a id="loginBtn" class="menugroup" data-bs-target="" href="#">BACK TO MAIN PAGE</a></button>            
+      </ul>
+  
+    </nav>
+    {% if messages %}
+    {% if message.tags == 'success' %}
     <script>
       $(document).ready(function () {
-        alert("{{ success_message }}");
         window.location.href = "{% url 'wallet:user_login' %}";
       });
     </script>
+    {% endif %}
   {% endif %}
   
   {% if error_message %}
@@ -456,22 +744,20 @@ input[type="email"] {
   {% endif %}
 
 <script>
-  $(document).ready(function () {
-   
-    });
-    $(window).scroll(function () {
-      if ($(this).scrollTop() > 30) {
-        // Adjust the scroll position where the navbar becomes sticky
-        $(".navbar").addClass("sticky");
-      } else {
-        $(".navbar").removeClass("sticky");
-      }
-    });
-  
+      $(document).ready(function () {
+        $(window).scroll(function () {
+          if ($(this).scrollTop() > 30) {
+            // Adjust the scroll position where the navbar becomes sticky
+            $(".horizontal").addClass("sticky");
+          } else {
+            $(".horizontal").removeClass("sticky");
+          }
+        });
+      });
 
   //toggle menu
   $(".menu-btn").click(function () {
-    $(".navbar .menu").toggleClass("active");
+    $(".horizontal .menu").toggleClass("active");
     $(".menu-btn i").toggleClass("active");
   });
   function validateForm() {
