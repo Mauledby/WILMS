@@ -21,6 +21,7 @@ urlpatterns = [
     path('login', views.AdminLoginController.as_view(), name='adminlogin'),
     path('logout', views.handleLogout, name='adminlogout'),
     path('admindashboard', views.AdminDashboardController.as_view(), name='admindashboard'),
+    path('updatedashboard', views.AdminDashboardController.update_dashboard, name='updatedashboard'),
     path('reportlogs', views.AdminReportLogsController.as_view(), name='reportlogs'),
     path('walkindashboard', views.AdminWalkinDashboardController.as_view(), name='walkindashboard'),
     path('reserveddashboard', views.AdminReservedDashboardController.as_view(), name='reserveddashboard'),
@@ -34,5 +35,4 @@ urlpatterns = [
     path('updateworkspaces', views.ViewWorkspacesController.update_workspaces, name='updateworkspaces'),
     path('test', views.TestController.as_view(), name='test'),
     path('test/<str:areaid>', views.TestController.as_view(), name='testusers'),
-    path('getAllWalkin', views.AdminWalkinDashboardController.getAllWalkin, name='getAllWalkin'),
 ]

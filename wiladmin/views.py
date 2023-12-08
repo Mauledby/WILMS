@@ -36,6 +36,21 @@ class AdminDashboardController(LoginRequiredMixin, View):
     
     login_url = 'adminlogin'
     
+    def update_dashboard(request):
+        totalwalkins = WalkinBookingModel.objects.all().count()
+        reserves = ResBooking.objects.all().count()
+        guests = WalkinBookingModel.objects.filter(referenceid__contains="GUEST").count()
+        available = 68 - totalwalkins - reserves
+        walkins = totalwalkins - guests
+        
+        dashboard_count = {
+            'walkins':walkins,
+            'reserves':reserves, 
+            'guests':guests, 
+            'available':available
+            }
+        return JsonResponse({'dashboard_count': dashboard_count})
+    
     def get(self, request):
         totalwalkins = WalkinBookingModel.objects.all().count()
         reserves = ResBooking.objects.all().count()

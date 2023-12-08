@@ -16,13 +16,13 @@
           <tbody>
             <tr>
               {% if walkins >= 10 and walkins <= 15 %}
-              <td style="color: orange">{{ walkins }}</td>
+              <td style="color: orange" id="walkins">{{ walkins }}</td>
 
               {% elif walkins >= 16 %}
-              <td style="color: red">{{ walkins }}</td>
+              <td style="color: red" id="walkins">{{ walkins }}</td>
 
               {% else %}
-              <td style="color: green">{{ walkins }}</td>
+              <td style="color: green" id="walkins">{{ walkins }}</td>
 
               {% endif %}
             </tr>
@@ -39,13 +39,13 @@
           <tbody>
             <tr>
               {% if reserves >= 10 and reserves <= 15 %}
-              <td style="color: orange">{{ reserves }}</td>
+              <td style="color: orange" id="reserves">{{ reserves }}</td>
 
               {% elif reserves >= 16 %}
-              <td style="color: red">{{ reserves }}</td>
+              <td style="color: red" id="reserves">{{ reserves }}</td>
 
               {% else %}
-              <td style="color: green">{{ reserves }}</td>
+              <td style="color: green" id="reserves">{{ reserves }}</td>
 
               {% endif %}
             </tr>
@@ -62,13 +62,13 @@
           <tbody>
             <tr>
               {% if guests >= 10 and guests <= 15 %}
-              <td style="color: orange">{{ guests }}</td>
+              <td style="color: orange" id="guests">{{ guests }}</td>
 
               {% elif guests >= 16 %}
-              <td style="color: red">{{ guests }}</td>
+              <td style="color: red" id="guests">{{ guests }}</td>
 
               {% else %}
-              <td style="color: green">{{ guests }}</td>
+              <td style="color: green" id="guests">{{ guests }}</td>
 
               {% endif %}
             </tr>
@@ -85,13 +85,13 @@
           <tbody>
             <tr>
               {% if available >= 30 and available <= 68 %}
-              <td style="color: green">{{ available }}</td>
+              <td style="color: green" id="available">{{ available }}</td>
 
               {% elif available >= 29 and available <= 10 %}
-              <td style="color: orange">{{ available }}</td>
+              <td style="color: orange" id="available">{{ available }}</td>
 
               {% else %}
-              <td style="color: red">{{ available }}</td>
+              <td style="color: red" id="available">{{ available }}</td>
 
               {% endif %}
             </tr>
@@ -100,5 +100,6 @@
       </div>
     </div>
   </div>
+  <script src="{% static 'functions-js/refresh-dashboardcount.js' %}"></script>
 </body>
 {% endblock %}

@@ -11,7 +11,7 @@ const a9 = document.getElementById('a9');
 setInterval(() => {
     $.ajax({
         type: 'GET',
-        url:'/updateworkspaces',
+        url:'updateworkspaces',
         success: function(response){
             console.log('success', response);
             a1.value=JSON.stringify(response.area_count.countA1) + "/5";
