@@ -38,6 +38,179 @@
 
 </script>
 <style>
+  .menugroup {
+  /* Other styles for .menugroup */
+  /* ... */
+  color:#fff;
+  padding-bottom: 34.5px;
+  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0);
+  transition: border-bottom 0.3s ease; /* Change expand to ease */
+  }
+  a{
+    text-decoration: none;
+    color: #000000;
+}
+a:hover{
+  text-decoration: none;
+  color: #000000;
+}
+  .menugroup:hover {
+  color: #000000;
+  border-bottom: 1px solid rgba(64, 45, 0, 0.8);
+  
+  }
+nav.horizontal {
+  position: fixed;
+  display:block;
+  width: 100%;
+  background-color: #fecc00;
+  height:100px;
+  overflow: hidden;
+  top: 0px;
+  left: 0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+
+
+nav.horizontal ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.horizontal li {
+  float: left;
+}
+
+nav.horizontal li a {
+  display: block;
+  color: #333;
+  text-align: center;
+  padding: 14px 16px;
+  height: 100px;
+  text-decoration: none;
+}
+
+nav.horizontal li a:hover {
+  color: #333;
+}
+
+nav.horizontal ul.right {
+  float: right;
+}
+nav.horizontal ul.left{
+  float: left;
+}
+nav.horizontal ul.center{
+  float: center;
+}
+nav.horizontal li a img {
+  top: 0rem;
+  align-items: center;
+  width: 200px;
+  height: flex;
+  margin-right: 10px;
+  right: 20rem;
+  align-items: center;
+}
+
+button.adminlabel{
+  position: fixed;
+  display: block;
+  right: 2%;
+  width: fit-content;
+  height: 100px;
+  background: #ffcc0100;
+  top: 0rem;
+  align-items: center;
+  border: none;
+  font-weight: bolder;
+  font-size: 22px;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+}
+
+
+
+button.btn-primary{
+  width: fit-content;
+  height: 36.41px;
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+  
+  background-color: #ffcc01;
+  border: none;
+  border-radius: 5px;
+}
+button.btn-primary:hover{
+  color: #FFCD02;
+  background: #FFFFFF;
+}
+button:hover{
+  cursor: pointer;
+}
+*::-webkit-scrollbar-thumb {
+background-color: #ffcc0186; /* Change the color of the scrollbar thumb */
+border-radius: 5px; /* Add rounded corners to the scrollbar thumb */
+}
+
+/* Optional: Style the scrollbar track */
+*::-webkit-scrollbar-track {
+background-color: #e8e1ae; /* Change the color of the scrollbar track */
+}
+
+/* Optional: Style the scrollbar itself */
+*::-webkit-scrollbar {
+margin-left: 0%;
+width: 0px; /* Adjust the width of the scrollbar */
+}
+div.table{
+position: absolute;
+width: auto;
+height: 100%; 
+padding-bottom: 5rem;
+left: 19%;
+right: 3%;
+top: 27%;
+padding-inline: 5%;
+background: #FFFFFF;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+flex-direction: row;
+}
+.label-page{
+position: absolute;
+display: block;
+width: auto;
+height: 71px;
+left: 19%;
+right: 3%;
+top: 17%;
+font-weight: 700;
+font-size: 32px;
+color: #000000;
+float: left;
+padding: 15px;
+
+background: #FFCC01;
+box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+}
+  .active-link {
+  color: #ffcc01;
+  /* Other styles you want for the active link */
+}
+
+nav.vertical li a.nav1.active-link {
+  background-color: #ffcc01; color: black; /* Your desired color for the active link within nav1 */
+  /* Other styles for the active link within nav1 */
+}
+nav.vertical li a.nav2.active-link {
+  background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
+  }
+  nav.vertical li a.nav3.active-link {
+  background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
+  }
     button.btn-primary{
     width: fit-content;
     height: 36.41px;
@@ -83,83 +256,90 @@
 
 
     <div class="label-page" style="padding: 10px;">Calendar View<a style="margin-left: 75%; font-size: larger;" href="{% url 'facility:calendar' %}"><</a></div>
-    <div class="table" style="padding:0;">
+    <div class="table" style="padding:0; height: 550px;">
 
         <div id='calendar'></div>
 
 
 
-<nav class="vertical">
-  <div class="avatar">
-    <img src="{% static 'media/avatar1.png' %}" alt="Profile Picture">
-  </div>
-  <ul>
-    <li>
-      <ul>
+        <nav class="vertical">
+          <div class="avatar">
+            {% block pic %}
+            <img src="{% static 'media/admin3.png' %}" alt="Another Profile Picture">
+            {% endblock %}
+          </div>
+          <li style="color: white; text-align: center; padding: 0rem;">{{ firstname }}</li>
+          <ul>
+            <li>
+              <a href="{% url 'facility:facility' %}" class="nav1 nav1-action {% if 'facility' in request.path %}active-link{% endif %}">Facility Management</a>
+              <!-- class="list-group-item list-group-item-action All-Font {% if 'facility' in request.path %}active-link{% endif %}" -->
+              <ul class="drpdwn1">
+                <li><a href="{% url 'facility:facility' %}" class="drp1">Facility</a></li>
+                <li><a href="{% url 'facility:usertable' %}" class="drp1">User</a></li>
+                <li><a href="{% url 'facility:calendar' %}" class="drp1">Calendar</a></li>
+              </ul>
+            </li>
+            <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2 nav2-action {% if 'revenue' in request.path %}active-link{% endif %}">Revenue</a>
+              <ul class="drpdwn2">
+                <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2">Dashboard</a></li>
+                <li><a href="{% url 'facility:revenuereport' %}" class="drp2">Reports</a></li>
+              </ul>
+            </li>
+            <li><a href="{% url 'facility:rulessummary' %}" class="nav3 nav3-action {% if 'rulessummary' in request.path %}active-link{% endif %}">Rules Summary</a></li>
+          </ul>
+        </nav>
+      
+      <!-- horizontal pane for navbar -->
+      <nav class="horizontal">
+        <ul class="left">
+          <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
+        </ul>
+        <ul class="center" >
+      
+          {% if messages %}
+          {% for message in messages %}
+            {% if message.tags == 'error' %}
+              
+                <div class="center" style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
+                justify-content: center; align-items: center; ">
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
+                  </div>
+              {% elif message.tags == 'success' %}
+              <div style="position: fixed; z-index: 999; width: 100%;" >
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  {{ message }}</div>
+              {% elif message.tags == 'warning' %}
+              <div style="position: fixed; z-index: 999; width: 100%;" >
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  {{ message }}</div>
+              {% elif message.tags == 'info' %}
+              <div style="position: fixed; z-index: 999; width: 100%;" >
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  {{ message }}</div>
+              {% endif %} 
+            {% endfor %}
+            {% endif %}
+      
+      <!-- <li>
+      <input type="text" class="search-bar"placeholder="Search...">
+      <button type="submit" class="search-btn">Search</button></li> -->
+      <li></li>
       </ul>
-    </li>
-    <li><a href="{% url 'facility:facility' %}" class="nav1" style=" background-color: #ffcc01; color: black;">Facility Management</a>
-
-      <ul class="drpdwn1">
-        <li><a href="{% url 'facility:facility' %}" class="drp1">Facility</a></li>
-        <li><a  href="{% url 'facility:usertable' %}" class="drp1" >User</a></li>
-        <li><a href="{% url 'facility:calendar' %}" class="drp1" style=" background-color: #ffcc01; color: black;">Calendar</a></li>
-      </ul>
-    </li>
-    <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2">Revenue</a>
-      <ul class="drpdwn2">
-        <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2">Dashboard</a></li>
-        <li><a href="{% url 'facility:revenuereport' %}" class="drp2">Reports</a></li>
-      </ul></li>
-    <li><a href="{% url 'facility:settingfacility' %}" class="nav3">Rules Summary</a></li>
-  </ul>
-</nav>
-<!-- horizontal pane for navbar -->
-<nav class="horizontal">
-  <ul class="left">
-    <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
-  </ul>
-  <ul class="center" >
-
-    {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == 'error' %}
+        <ul class="right">
+          <button class="adminlabel" style="left:49%;"><a class="menugroup" href="{% url 'wallet:index' %}">Home</a></button>
+          <button class="adminlabel" style="left:55%;"><a class="menugroup" href="{% url 'facility:facility' %}">Facility</a></button>
+          <button class="adminlabel" style="left:62%; border: 0px;"><a class="menugroup" href="{% url 'polls:user_dashboard' %}">Booking</a></button>
+          <button class="adminlabel" style="left:70%;"><a class="menugroup" href="{% url 'wallet:dashboard' %}">Wallet</a></button>
+          <button class="adminlabel" style="left:76%;"><a class="menugroup" href="#">Crowd Control</a></button>
+          <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
+        </ul>
         
-          <div class="center" style="position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
-          justify-content: center; align-items: center; ">
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
-            </div>
-        {% elif message.tags == 'success' %}
-        <div style="position: fixed; z-index: 999; width: 100%;" >
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}</div>
-        {% elif message.tags == 'warning' %}
-        <div style="position: fixed; z-index: 999; width: 100%;" >
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}</div>
-        {% elif message.tags == 'info' %}
-        <div style="position: fixed; z-index: 999; width: 100%;" >
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}</div>
-        {% endif %} 
-      {% endfor %}
-      {% endif %}
-
-<!-- <li>
-<input type="text" class="search-bar"placeholder="Search...">
-<button type="submit" class="search-btn">Search</button></li> -->
-<li></li>
-</ul>
-  <ul class="right">
-    <a href="#"><button class="adminlabel">admin</button></a>
-  </ul>
-  
-</nav> 
+      </nav>  
 </body>
 </html>

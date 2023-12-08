@@ -110,6 +110,9 @@ class RulesFacilityForm(ModelForm):
         fields = ['facility']
         exlude = ['mainrules','promorules','subrules']
 
+    def __str__(self):
+        return self.facility.facilityname 
+
 class SettingFacilityForm(ModelForm):
     facility = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Facility'}))
     mainrules = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Main Rules'}))

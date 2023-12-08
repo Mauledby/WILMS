@@ -1,16 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-  <meta charset="UTF-8">
-  <title>WILMS | Facility Management</title>
-  <link rel="icon" href="{% static 'icon/favicon3.ico' %}" type="image/x-icon">
-  <link rel="stylesheet" href="{% static 'facility/general.css' %}">
-  <!-- <link rel="stylesheet" href="general.css">
-  <link rel="stylesheet" href="table.css"> -->
+{% block facility_content %}
   <style>
   form.modal-dialog{
   right: -12%;
@@ -26,8 +16,7 @@ input[type=datetime-local]{
 }
     
   </style>
-</head>
-<body>
+
   {% for f in addedpromorules %} 
   <div class="modal fade" id="warning-{{ f.id }}" >
       <form method="POST" class="modal-dialog modal-dialog-centered" id="delfaci" style="
@@ -128,9 +117,9 @@ input[type=datetime-local]{
         </table>
     </card>
         </button>
-        <button class="setbtn" style=" margin-left: 10%; background-color: #FFCC01; color: #000000;"  type="button"  data-bs-target="#staticBackdrop">
+        <button class="setbtn"  type="button"  data-bs-target="#staticBackdrop">
           <!-- setfmstatus_one   -->
-          <a href="{% url 'facility:setfmstatus_one' %}">Set</a>
+          <a class="set" href="{% url 'facility:setfpstatus_one' %}">Set</a>
           </button>
           <div class="vline"></div>
           <div class="menurules">
@@ -155,19 +144,24 @@ input[type=datetime-local]{
                 <li>Number of Computers: {{ f.num_pc }}</li>
                 
                 <li> -->
-                    <li>Start Date: {{ f.start_date }}</li>
+                <li>Start Date: {{ f.start_date }}</li>
                 <li>Description: {{ f.description }}</li>
                 <li>Rate: {{ f.new_rate }}</li>
+                
               </ul>
+
               <br>
               <div class="hline" style="margin-top: 2.8rem; border-bottom: none;"></div>
             </section>
+            
             </div>
+            {% empty %}
+            <h3 style="opacity: 0.3;">No Available Rules</h3>
             {% endfor %}
           </div>
         <!-- </form> -->
     </div>
-<button data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-left: 26em; background-color: #ffcc01; color: #000000;"  type="button" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Rules</button>
+<button data-bs-toggle="modal" data-bs-target="#staticBackdrop" type="button" class="btnrules" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Rules</button>
     <!-- <button type="submit" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Facility</button> -->
 
   </div>
@@ -177,78 +171,4 @@ input[type=datetime-local]{
     <!-- BUTTON TO ADD FACILITY -->
     
 
-  <!-- vertical pane for navbar-->
-  <nav class="vertical">
-    <div class="avatar">
-      <img src="{% static 'media/avatar1.png' %}" alt="Profile Picture">
-    </div>
-    <ul>
-      <li>
-        <ul>
-        </ul>
-      </li>
-      <li><a href="{% url 'facility:facility' %}" class="nav1" style=" background-color: #ffcc01; color: black;">Facility Management</a>
-  
-        <ul class="drpdwn1">
-          <li><a href="{% url 'facility:facility' %}" class="drp1" style=" background-color: #ffcc01; color: black;">Facility</a></li>
-          <li><a  href="{% url 'facility:usertable' %}" class="drp1" >User</a></li>
-          <li><a href="{% url 'facility:calendar' %}" class="drp1">Calendar</a></li>
-        </ul>
-      </li>
-      <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2">Revenue</a>
-        <ul class="drpdwn2">
-          <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2">Dashboard</a></li>
-          <li><a href="{% url 'facility:revenuereport' %}" class="drp2">Reports</a></li>
-        </ul></li>
-      <li><a href="{% url 'facility:settingfacility' %}" class="nav3">Rules Summary</a></li>
-    </ul>
-  </nav>
-  <!-- horizontal pane for navbar -->
-  <nav class="horizontal">
-    <ul class="left">
-      <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
-    </ul>
-    <ul class="center" >
-  
-      {% if messages %}
-      {% for message in messages %}
-        {% if message.tags == 'error' %}
-          
-            <div class="center" style="position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
-            justify-content: center; align-items: center; ">
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-              {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
-              </div>
-          {% elif message.tags == 'success' %}
-          <div style="position: fixed; z-index: 999; width: 100%;" >
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-              {{ message }}</div>
-          {% elif message.tags == 'warning' %}
-          <div style="position: fixed; z-index: 999; width: 100%;" >
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-              {{ message }}</div>
-          {% elif message.tags == 'info' %}
-          <div style="position: fixed; z-index: 999; width: 100%;" >
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-              {{ message }}</div>
-          {% endif %} 
-        {% endfor %}
-        {% endif %}
-  
-  <!-- <li>
-  <input type="text" class="search-bar"placeholder="Search...">
-  <button type="submit" class="search-btn">Search</button></li> -->
-  <li></li>
-  </ul>
-    <ul class="right">
-      <a href="#"><button class="adminlabel">admin</button></a>
-    </ul>
-    
-  </nav> 
-  </body>
-  </html>
+    {% endblock %}
