@@ -18,7 +18,7 @@ function hideMessage() {
 }
 
 function areaButtonClick(areaId) {
-    fetch('/area_button_click/?area_id=' + areaId)
+    fetch('/polls/area_button_click/?area_id=' + areaId)
         .then(response => response.json())
         .then(data => {
             if (data.reference_number) {
@@ -32,7 +32,7 @@ function areaButtonClick(areaId) {
 }
 
 function insertIntoDatabase(areaId, referenceNumber) {
-    fetch('/insert_into_database/', {
+    fetch('/polls/insert_into_database/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ function handleYesButtonClick() {
 
 function generateReferenceNumber(areaId) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/area_button_click/?area_id=' + areaId, false);
+    xhr.open('GET', '/polls/area_button_click/?area_id=' + areaId, false);
     xhr.send();
 
     if (xhr.status === 200) {
@@ -89,4 +89,4 @@ function generateReferenceNumber(areaId) {
         console.error('Error:', xhr.status);
         return '';
     }
-}
+} 

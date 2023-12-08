@@ -1,11 +1,9 @@
 from datetime import datetime
-from decimal import Decimal
 import random
 from django.db import connection
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from polls.models import AssignedArea
-from wallet.models import UserProfileInfo
 from wiladmin.models import WalkinBookingModel
 
 class FacilityMapController:
@@ -21,39 +19,21 @@ class FacilityMapController:
 
     def areaButtonClick(self, request):
 
+        area_id = request.GET.get('area_id')
+
+        reference_number = self.generateReferenceNumber(area_id)
+
+        reference = AssignedArea(reference_number=reference_number, area_id=area_id)
+        reference.save()
+
         user_id = request.user.id
-        try:
-            user_profile = UserProfileInfo.objects.get(user_id=user_id)
-        except UserProfileInfo.DoesNotExist:
-            return HttpResponse("User profile not found")
-            
+        schedule = datetime.now().strftime("%d/%m/%Y, %H:%M")
+        status = "Pending"
         
-        normal_cost = 0.5
-        walkin_cost = Decimal(normal_cost*1.2)
-        if user_profile.coin_balance > walkin_cost:
-            # Insufficient balance, return a message
-            area_id = request.GET.get('area_id')
+        booking = WalkinBookingModel(referenceid = reference_number, userid=user_id, schedule=schedule, status=status)
+        booking.save()
 
-            reference_number = self.generateReferenceNumber(area_id)
-
-            reference = AssignedArea(reference_number=reference_number, area_id=area_id)
-            reference.save()
-            user_profile.coin_balance -= walkin_cost
-            user_profile.save()
-
-            schedule = datetime.now().strftime("%d/%m/%Y, %H:%M")
-            status = "Pending"
-            
-            booking = WalkinBookingModel(referenceid = reference_number, userid=user_id, schedule=schedule, status=status)
-            
-            booking.save()
-
-            return JsonResponse({'reference_number': reference_number})
-        else:
-            print("Insufficient Coin Balance. Booking Failed")
-            return HttpResponse("Insufficient Coin Balance. Booking Failed")
-        
-
+        return JsonResponse({'reference_number': reference_number})
 
     def generateReferenceNumber(self, area_id):
         reference_number = area_id.upper() + str(random.randint(100, 999))
