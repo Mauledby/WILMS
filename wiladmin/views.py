@@ -82,14 +82,14 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
                 usertimer = Timer.objects.get(pk=str(booking.userid))
                 usertimer.delete()
                 
-                assignedarea = AssignedArea.objects.all().filter(reference_number=booking.referenceid)
+                assignedarea = AssignedArea.objects.filter(reference_number=booking.referenceid)
                 assignedarea.delete()
                 
                 log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.start_time,endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
                 log.save()
                 
         except Timer.DoesNotExist:
-            assignedarea = AssignedArea.objects.all().filter(reference_number=booking.referenceid)
+            assignedarea = AssignedArea.objects.filter(reference_number=booking.referenceid)
             assignedarea.delete()
             log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.start_time,endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
             log.save()
@@ -204,7 +204,7 @@ class BookGuestController(LoginRequiredMixin, View):
         form = BookGuest(request.POST)
         
         if form.is_valid():
-            referenceid = 'A'+str(random.randint(3, 9))+'GUEST'.upper()
+            referenceid = 'A'+str(random.randint(3, 9))+'GUEST'.upper()+str(random.randint(1, 68))
             userid = request.POST.get('userid')
             start_time = datetime.now()
             end_time = None

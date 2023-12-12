@@ -14,8 +14,8 @@ setInterval(() => {
         url:'updateworkspaces',
         success: function(response){
             console.log('success', response);
-            a1.value=JSON.stringify(response.area_count.countA1) + "/5";
-            a2.value=JSON.stringify(response.area_count.countA2) + "/5";
+            a1.value=JSON.stringify(response.area_count.countA1) + "/1";
+            a2.value=JSON.stringify(response.area_count.countA2) + "/1";
             a3.value=JSON.stringify(response.area_count.countA3) + "/6";
             a4.value=JSON.stringify(response.area_count.countA4) + "/6";
             a5.value=JSON.stringify(response.area_count.countA5) + "/6";

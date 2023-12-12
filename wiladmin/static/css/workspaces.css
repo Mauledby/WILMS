@@ -146,13 +146,16 @@ tr:nth-child(even) {
   left: 9%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 60px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA2-button {
@@ -161,13 +164,16 @@ tr:nth-child(even) {
   left: 27.2%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 60px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA3-button {
@@ -176,13 +182,16 @@ tr:nth-child(even) {
   left: 77%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 60px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA4-button {
@@ -191,13 +200,16 @@ tr:nth-child(even) {
   left: 91%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 60px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA5-button {
@@ -206,13 +218,16 @@ tr:nth-child(even) {
   left: 77%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 60px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA6-button {
@@ -221,13 +236,16 @@ tr:nth-child(even) {
   left: 91%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 60px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA7-button {
@@ -236,13 +254,16 @@ tr:nth-child(even) {
   left: 31%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 65px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA8-button {
@@ -251,13 +272,16 @@ tr:nth-child(even) {
   left: 78%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 45px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
 }
 
 .areaA9-button {
@@ -266,11 +290,28 @@ tr:nth-child(even) {
   left: 90%;
   font-family: "Poppins", sans-serif;
   transform: translate(-50%, -50%);
-  background-color: #83cd56;
-  border: 1px solid #000000;
+  background-color: #e8e800;
   font-size: 12px;
-  border-radius: 0%;
-  width: 45px;
+  border-radius: 10px;
+  border-style: none;
+  width: 80px;
   height: 25px;
   cursor: pointer;
+  font-weight: bold;
+  opacity: .8;
+  backdrop-filter: blur(90px) transparent;
+}
+
+input:hover{
+  background-color: rgb(0, 0, 0);
+  opacity: .8;
+  font-size: 13px;
+  font-weight: bolder;
+  color: white;
+  height: 40px;
+  width: 80px;
+  transition-duration: .3s;
+  backdrop-filter: blur(50px);
+  border-radius: 40px;
+  border: 1px solid #000000;
 }
