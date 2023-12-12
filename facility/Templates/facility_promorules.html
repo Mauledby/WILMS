@@ -71,7 +71,7 @@ input[type=datetime-local]{
 <!-- ----------------------------------------------FACILITY RULES----------------------------------------------------------- -->
 
 <div class="label-page" style="padding: 10px;">FACILITY <a style="margin-left: 83%; font-size: larger;" href="{% url 'facility:facimainback' %}"><</a></div>
-    <div class="table" style="height: 550px;">
+    <div class="table">
       {% csrf_token %}
       <div class="margin">
         <input type="text" class="facilabel" value="{{sfacility.facility}}" style=" font-size: larger; height: fit-content; width: 35%; margin-top: 1rem;" disabled>

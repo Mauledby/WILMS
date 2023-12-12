@@ -7,7 +7,7 @@
   
 
 <div class="label-page">SETTINGS</div>
-    <div class="table" style=" height: fit-content; overflow-y: auto; margin-bottom: 2rem;">
+    <div class="table">
       <!-- <h4 class="subtext">Facility Table</h4><br> --><br>
       <h1 style="font-size: 30px; font-weight: bolder; background-color: #e9cd5f; padding: 10px;">FACILITY</h1>
       <table cellspacing="2" style="display: block; margin-top: content; display: block;">
@@ -64,7 +64,7 @@
                       <thead>
                         <tr>
                           <th>ID</th>
-                          <th>User Type</th>
+                          <th>USER TYPE</th>
                           <th>MAIN RULES</th>
                           <th>PROMO RULES</th>
                           <th>SUB RULES</th>
@@ -110,34 +110,32 @@
                               {% endfor %}
                             </tbody>
                           </table>
-    </div>
-    <div class="label-page" style="position: relative;">SETTINGS</div>
-    <div class="label-page">RECYCLE BIN</div>
-    <div class="table" style="height: fit-content;"><br>
-    <h1 style="font-size: 30px; font-weight: bolder; background-color: #e9cd5f; padding: 10px;">FACILITY</h1>
-    <table cellspacing="2" style="display: block; margin-top: content; display: block;">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Facility Name</th>
-          <th>Rate/HR</th>
-          <th>Capacity</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for f in del_facility %} 
-        <tr>
-          <td>{{ f.id }}</td>
-          <td>{{ f.facilityname }}</td>
-          <td>₱{{ f.rateperhour }}</td>
-          <td>{{ f.capacity }}</td>
-          {% empty %}
-          <tr>No Available Facility</tr>
-        </tr>
-        {% endfor %}
-      </tbody>
-      </table></div>
+                          <br>
+                          <h1 style="font-size: 30px; font-weight: bolder; background-color: #e9cd5f; padding: 10px;">FACILITY DELETED</h1>   
+                                <table cellspacing="2" style="display: block; margin-top: content; display: block;">
+                                  <thead>
+                                    <tr>
+                                      <th>ID</th>
+                                      <th>FACILITY NAME</th>
+                                      <th>RATE/HOUR</th>
+                                      <th>CAPACITY</th>
+                                      <th>ACTION</th>
+                                    </tr>
+                                  </thead>
+                            
+                                  <tbody>
+                                    {% for f in del_facility %} 
+                                    <tr>
+                                      <td>{{ f.id }}</td>
+                                      <td>{{ f.facilityname }}</td>
+                                      <td>₱{{ f.rateperhour }}</td>
+                                      <td>{{ f.capacity }}</td>
+                                      {% empty %}
+                                      <tr>No Available Facility</tr>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
     </div>
 
   {% endblock %}

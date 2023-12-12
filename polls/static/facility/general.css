@@ -390,17 +390,14 @@ right:20% */
   }
   
   nav.vertical ul li:hover > ul.drpdwn1 {
-    /* display:inline-table;
-    position:-ms-page; */
     position: fixed;
     display: block;
-    left: 16.65%;
-    top: 31.3%;
+    left: 16.6vw; /* Adjust this value as needed */
+    top:15.2rem; /* Adjust this value as needed */
     height: auto;
-    width:204px;
+    width: 204px;
     background-color: white;
-    margin-top: 0%;
-
+    margin-top: 0;
   }
   nav.vertical ul li:hover > ul a.drp1{
     position: content;
@@ -421,7 +418,7 @@ right:20% */
     position:-ms-page; */
     position: fixed;
     display: block;
-    left:254.9px;
+    left: 16.6vw;
     top: 20rem;
     height: auto;
     width:204px;
@@ -806,7 +803,8 @@ button.btn-facility:hover{
 div.table{
   position: absolute;
   width: auto;
-  height: max-content; 
+  height: 100vh; 
+  overflow: auto;
   padding-bottom: 5rem;
   left: 19%;
   right: 3%;
@@ -815,6 +813,7 @@ div.table{
   background: #FFFFFF;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   flex-direction: row;
+  margin-bottom: 2rem;
 }
 .label-page{
   position: absolute;
@@ -949,7 +948,7 @@ tr{
 a.rules-tab{
   position: absolute;
   display: inline-block;
-  top:5%;
+  top: 2rem;
   /* font-weight: 200px; */
   font-size: 20px;
   text-decoration-line: underline;
