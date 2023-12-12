@@ -188,6 +188,34 @@ def get_timer_data(request):
     except Timer.DoesNotExist:
         return JsonResponse({'error': 'Timer data not found'}, status=404)
 
+
+
+@login_required
+def update_timer(request):
+    if request.method == 'POST':
+        minutes = request.POST.get('minutes')
+        seconds = request.POST.get('seconds')
+
+        
+        
+        if minutes is not None and seconds is not None:
+           
+            minutes = int(minutes)
+            seconds = int(seconds)
+
+            
+            user_timer, created = Timer.objects.get_or_create(user_id=request.user.id)
+
+           
+            user_timer.minutes = minutes
+            user_timer.seconds = seconds
+            user_timer.save()
+
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'error': 'Invalid minutes or seconds'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 @login_required
 def end_session_view(request):
     if request.method == 'POST':

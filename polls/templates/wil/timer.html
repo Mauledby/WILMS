@@ -80,28 +80,70 @@
           });
         }
       }
-      function updateTimer() {
+      let csrftoken = getCookie('csrftoken');
+      function updateTimerInDatabase(minutes, seconds) {
         $.ajax({
-            url: '{% url "polls:get_timer_data" %}',
-            dataType: 'json',
-            success: function (data) {
-                var formattedTime = data.minutes.toString().padStart(2, '0') + ':' + data.seconds.toString().padStart(2, '0');
-                $('#timer').text(formattedTime);
-
-                if (!data.session_ended) {
-                    if (data.minutes === 3 && data.seconds === 0) {
-                        showNotification("WILDSPACE WARNING", "You have 3 minutes remaining!");
-                    }
-
-                    if (data.minutes === 0 && data.seconds === 0) {
-                        showNotification("WILDSPACE", "Your time has ended!");
-                    }
-                } else {
-                    $('#timer').text('00:00');
-                }
+            url: '{% url "polls:update_timer" %}',
+            method: 'POST',
+            data: {
+                minutes: minutes,
+                seconds: seconds
+            },
+            headers: {
+              "X-CSRFToken": csrftoken
+          },
+            success: function(data) {
+                
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                
             }
         });
     }
+    function formatTime(totalSeconds) {
+      let minutes = Math.floor(totalSeconds / 60);
+      let seconds = totalSeconds % 60;
+  
+      minutes = String(minutes).padStart(2, '0');
+      seconds = String(seconds).padStart(2, '0');
+  
+      return `${minutes}:${seconds}`;
+  }
+    function getTimerDataFromServer() {
+      $.ajax({
+          url: '{% url "polls:get_timer_data" %}',
+          dataType: 'json',
+          success: function(data) {
+              if (data) {
+                  let formattedTime = data.minutes.toString().padStart(2, '0') + ':' + data.seconds.toString().padStart(2, '0');
+                  
+                  $('#timer').text(formattedTime);
+  
+                  
+                  let timeLeft = data.minutes * 60 + data.seconds;
+  
+                  let timer = setInterval(() => {
+                      timeLeft--;
+  
+                      if (timeLeft >= 0) {
+                          self.postMessage({ type: 'tick', timeLeft: formatTime(timeLeft) });
+                          if (timeLeft % 60 === 0) {
+                              let minutesLeft = Math.floor(timeLeft / 60);
+                              updateTimerInDatabase(minutesLeft, timeLeft % 60);
+                          }
+                      } else {
+                          clearInterval(timer);
+                          self.postMessage({ type: 'finished' });
+                      }
+                  }, 1000);
+              }
+          },
+          error: function(xhr, textStatus, errorThrown) {
+              
+          }
+      });
+  }
+  
       function showNotification(title, body) {
         if (Notification.permission === "granted") {
           var options = {
@@ -194,22 +236,25 @@
 
 
 function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
 }
 
-  
+
+
+$(document).ready(function() {
+  setInterval(updateTimerInDatabase, 1000);
+});
   
   function cancelEndSession() {
     
