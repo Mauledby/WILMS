@@ -24,7 +24,7 @@ class UserLoginController(View):
             
             if user is not None:
                 login(request, user)
-                return redirect('user_dashboard')
+                return redirect('polls:userdashboard')
         
         
         context = {'form': form, 'error_message': 'Invalid credentials. Please try again.'}
@@ -32,9 +32,6 @@ class UserLoginController(View):
 
 def user_logout(request):
     logout(request)
-    return redirect('user_login')
-
-
-
+    return redirect('polls:userlogin')
 
 

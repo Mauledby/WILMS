@@ -10,11 +10,11 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body style="background-color: #FECC00;">
-<a href="{% url 'location' %}" class="left-button"><i class="fas fa-arrow-left"></i></a>
+<a href="{% url 'polls:location' %}" class="left-button"><i class="fas fa-arrow-left"></i></a>
 <div>
 <div class="name-container" style="background-color:#000000">
   <div>
-    <h4 >Welcome {{ user.username }}</h4>
+    <h4 >Welcome {{ user.email }}</h4>
   </div>
   <div class="button-overlay"></div>
 </div>  
@@ -42,11 +42,11 @@
     <h3 style="text-align:center;">WILDSPACE INFORMATION</h3>
     <br>
     <div>
-        <h4>User Id: <span style="color: red; text-decoration: underline;">{{ id_number }}</span></h4>
-        <h4>Booking Reference Number: <span style="color: red; text-decoration: underline;">{{ booking_reference_number }}</span></h4>
-        <h4>Assigned Area: <span style="color: red; text-decoration: underline;">{{ assigned_area }}</span></h4>
-        <h4>Date of Use: <span style="color: red; text-decoration: underline;">{{ date_of_use }}</span></h4>
-        <h4>Booking type: <span style="color: red; text-decoration: underline;">Walk-in</span></h4>
+      <h4>User Id: <span style="color: red; text-decoration: ">{{ id_number }}</span></h4>
+      <h4>Booking Reference Number: <span style="color: red; text-decoration: ">{{ booking_reference_number }}</span></h4>
+      <h4>Assigned Area: <span style="color: red; text-decoration: ">{{ assigned_area }}</span></h4>
+      <h4>Date of Use: <span style="color: red; text-decoration: ">{{ date_of_use }}</span></h4>      
+      <h4>Booking type: <span style="color: red; text-decoration: ">Walk-in</span></h4>
 
     </div>
     <br>
@@ -80,24 +80,28 @@
           });
         }
       }
-    function updateTimer() {
+      function updateTimer() {
         $.ajax({
-          url: '{% url "get_timer_data" %}',
-          dataType: 'json',
-          success: function (data) {
-            if (!data.session_ended) {
-              var formattedTime = padNumber(data.minutes) + ':' + padNumber(data.seconds);
-              $('#timer').text(formattedTime);
-              if (data.minutes === 0 && data.seconds === 0) {
-                
-                showNotification("WILDSPACE", "Your time has ended!");
-              }
-            } else {
-              $('#timer').text('00:00');
+            url: '{% url "polls:get_timer_data" %}',
+            dataType: 'json',
+            success: function (data) {
+                var formattedTime = data.minutes.toString().padStart(2, '0') + ':' + data.seconds.toString().padStart(2, '0');
+                $('#timer').text(formattedTime);
+
+                if (!data.session_ended) {
+                    if (data.minutes === 3 && data.seconds === 0) {
+                        showNotification("WILDSPACE WARNING", "You have 3 minutes remaining!");
+                    }
+
+                    if (data.minutes === 0 && data.seconds === 0) {
+                        showNotification("WILDSPACE", "Your time has ended!");
+                    }
+                } else {
+                    $('#timer').text('00:00');
+                }
             }
-          }
         });
-      }
+    }
       function showNotification(title, body) {
         if (Notification.permission === "granted") {
           var options = {
@@ -137,7 +141,7 @@
     var csrfToken = getCookie('csrftoken');
 
     $.ajax({
-        url: '{% url "end_session" %}',  
+        url: '{% url "polls:end_session" %}',  
         method: 'POST',
         data: {session_ended: true},
         headers: {
@@ -220,9 +224,7 @@ function getCookie(name) {
     overlay.style.display = 'none';
   }
   
-  $(document).ready(function() {
-      setInterval(updateTimer, 1000);
-  });
+ 
   
   
   document.querySelector('.end-button').addEventListener('click', function() {
@@ -230,8 +232,18 @@ function getCookie(name) {
   });
 
 
+  let worker = new Worker('/static/js/timerWorker.js');
+  worker.postMessage('start');
+  worker.onmessage = function (e) {
+    if (e.data.type === 'tick') {
+      
+      document.getElementById('timer').textContent = e.data.timeLeft;
+    } else if (e.data.type === 'finished') {
+      
+      console.log('Timer finished!');
+    }
+  };
   
-
   
   </script>
 

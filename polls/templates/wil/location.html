@@ -18,7 +18,7 @@
     <div class="content">
         <div class="header">
             <div >
-                <a href="{% url 'userprofile' %}">
+                <a href="{% url 'polls:userprofile' %}">
                     <img src="{% static 'images/profile.png' %}" alt="Profile Icon" class="profile-icon" style="width: 50px; height: 50px; margin-right:46px; position: relative; right: 20px;">
                 </a>
                 
@@ -89,12 +89,37 @@
 
     </div>
 
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
         document.querySelector('.time-button').addEventListener('click', function() {
 
-            window.location.href = "{% url 'timer' %}";
+            window.location.href = "{% url 'polls:timer' %}";
+        });
+    </script>
+    
+    <script>
+        function updateTimer() {
+            $.ajax({
+                url: '{% url "polls:get_timer_data" %}',
+                dataType: 'json',
+                success: function (data) {
+                    if (!data.session_ended) {
+                        var formattedTime = data.minutes.toString().padStart(2, '0') + ':' + data.seconds.toString().padStart(2, '0');
+                        $('#timer').text(formattedTime);
+                        if (data.minutes === 0 && data.seconds === 0) {
+                            showNotification("WILDSPACE", "Your time has ended!");
+                        }
+                    } else {
+                        $('#timer').text('00:00');
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            updateTimer(); // Call the function when the page loads
+            setInterval(updateTimer, 1000); // Start the timer to update every second
         });
     </script>
 </body>

@@ -26,11 +26,11 @@ class FacilityMapController:
         reference = AssignedArea(reference_number=reference_number, area_id=area_id)
         reference.save()
 
-        user_id = request.user.id
-        schedule = datetime.now().strftime("%d/%m/%Y, %H:%M")
+        userid = request.user.id
+        start_time = datetime.now()
         status = "Pending"
         
-        booking = WalkinBookingModel(referenceid = reference_number, userid=user_id, schedule=schedule, status=status)
+        booking = WalkinBookingModel(referenceid = reference_number, userid=userid, start_time=start_time, status=status)
         booking.save()
 
         return JsonResponse({'reference_number': reference_number})

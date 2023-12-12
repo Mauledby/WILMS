@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 {% load static %}
 
@@ -96,14 +97,14 @@
                 initialView: 'dayGridMonth',
                 events: '/polls/get-calendar-data/',
                 eventClick: function (info) {
-                    const areaId = info.event.title;
+                    const venue_id = info.event.title;
                     const date = info.event.start.toLocaleDateString();
                     const start_time = info.event.extendedProps.start_time;
                     const end_time = info.event.extendedProps.end_time;
         
                     Swal.fire({
                         title: `${date}`,
-                        html: `Area ID: ${areaId}<br>
+                        html: `Area ID: ${venue_id}<br>
                             Start Time: ${start_time}<br>
                             End Time: ${end_time}`,
                         icon: 'info',

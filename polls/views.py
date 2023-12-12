@@ -1,4 +1,3 @@
-
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from polls.user_login_controller import UserLoginController
@@ -11,29 +10,26 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from .user_login_controller import UserLoginController
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render
+
 from polls.user_login_controller import UserLoginController, user_logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+
 from django.http import JsonResponse
 from polls.models import Timer
 from django.views import View
-from django.http import JsonResponse
 from polls.models import Timer 
 from asgiref.sync import sync_to_async
-from django.shortcuts import render
+
 from .models import AssignedArea, Booking
 from django.db import models
-from django.http import JsonResponse
-from .models import AssignedArea
-from django.http import JsonResponse
+
 from collections import defaultdict
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from api.models.BookingModel import Booking as ResBooking
 
 
-from django.shortcuts import render
+
 
 from django.http import JsonResponse
 
@@ -48,12 +44,13 @@ def show_message_view(request):
     message = facility_controller.showMessage(request)
     return JsonResponse({'message': message})
 
-@login_required(redirect_field_name="userlogin")
+@login_required(redirect_field_name="polls:userlogin")
 def map(request):
 
-    username = request.user.email
+    user = request.user.id
+    userreserve = ResBooking.objects.filter(user_id=user).count()
     bookings = WalkinBookingModel.objects.all().count()
-    userbooks = WalkinBookingModel.objects.filter(userid=username).count()
+    userbooks = WalkinBookingModel.objects.filter(userid=user).count()
     area_bookings = AssignedArea.objects.values('area_id').annotate(booked_count=models.Count('area_id'))
     
     areas = []
@@ -67,38 +64,63 @@ def map(request):
 
     
     if bookings != 0 and userbooks != 0:
-        user = WalkinBookingModel.objects.get(userid=username)
+        userbooking = WalkinBookingModel.objects.get(userid=user)
+        
 
-        if user.status=="Booked":
-            return redirect('timer')
+        if userbooking.status=="Booked":
+            return redirect('polls:timer')
         else:
             return render(request, 'wil/map.html', {'areas': areas})
-        
+    elif bookings != 0 and userreserve != 0:
+        userreservebooking = ResBooking.objects.get(user=user)
+        if userreservebooking.status=="Booked":   
+            return redirect('polls:timer')
+        else:
+            return render(request,'wil/map.html', {'areas': areas})
     else:
         return render(request, 'wil/map.html', {'areas': areas})
 
-@login_required(redirect_field_name="userlogin")
+@login_required(redirect_field_name="polls:userlogin")
 def location(request):
     return assigned_area_controller.getAssignedArea(request)
-@login_required(redirect_field_name="userlogin")
+@login_required(redirect_field_name="polls:userlogin")
 def user_profile(request):
     return render(request, "wil/userprofile.html", {})
-@login_required(redirect_field_name="userlogin")
+
+
+@login_required(redirect_field_name="polls:userlogin")
 def timer(request):
     try:
-        context = time_monitoring_controller.getTimer(request)
-        return render(request, "wil/timer.html", context)
+       
+        
+        walkinbooking = WalkinBookingModel.objects.get(userid=request.user.id)
+        reference = walkinbooking.referenceid
+
+        context = {
+            'id_number': walkinbooking.userid if walkinbooking else 'N/A',
+            'booking_reference_number': walkinbooking.referenceid if walkinbooking else 'N/A',
+            'assigned_area': reference[:2] if reference else 'N/A',
+            'date_of_use': walkinbooking.start_time if walkinbooking else 'N/A',
+            
+        }
+        
+        return render(request, "wil/timer.html", context=context)
     except WalkinBookingModel.DoesNotExist:
-        return redirect('user_dashboard')
-@login_required(redirect_field_name="userlogin")
+        
+        return redirect('polls:userdashboard')
+
+
+
+
+@login_required(redirect_field_name="polls:userlogin")
 def user_login(request):
     return user_login_controller.as_view()(request)
 
 def user_logout(request):
     logout(request)
-    return redirect('user_login')
+    return redirect('polls:user_login')
 
-@login_required(redirect_field_name="userlogin")
+@login_required(redirect_field_name="polls:userlogin")
 def user_dashboard(request):
     
     area_bookings = AssignedArea.objects.values('area_id').annotate(booked_count=models.Count('area_id'))
@@ -117,8 +139,8 @@ def user_dashboard(request):
 
     
     try:
-        reservedbookingcount = Booking.objects.filter(user_id=request.user.email).count()
-        booking = Booking.objects.get(user_id=request.user.email)
+        reservedbookingcount = ResBooking.objects.filter(user_id=request.user.id).count()
+        booking = ResBooking.objects.filter(user_id=request.user.id)
         if(reservedbookingcount > 0):
             if(booking.status == "Pending"):
                 area_id = booking.reference_number
@@ -153,45 +175,25 @@ def user_dashboard(request):
     return render(request, "wil/userdashboard.html", {'areas': areas})
 
 
-
+@login_required
 def get_timer_data(request):
-    
-    timers = Timer.objects.all().count()
-    
-    if timers == 0:
-        return redirect(user_dashboard)
-    else:
-        usertimer = Timer.objects.get(user_id=request.user.username)
-    
-        if usertimer is not None and usertimer.session_ended != True:
-            if not usertimer.session_ended:
-                if usertimer.seconds > 0:
-                    usertimer.seconds -= 1
-                elif usertimer.minutes > 0:
-                    usertimer.minutes -= 1
-                    usertimer.seconds = 59
-                else:
-                    usertimer.session_ended = True
-                
-                usertimer.save()
-
-            timer_data = {
-                'minutes': usertimer.minutes,
-                'seconds': usertimer.seconds,
-                'session_ended': usertimer.session_ended,
-            }
-
-            return JsonResponse(timer_data)
-        
-        else:
-            return render(request, "wil/userdashboard.html", {})
+    try:
+        usertimer = Timer.objects.get(user_id=request.user.id)
+        timer_data = {
+            'minutes': usertimer.minutes,
+            'seconds': usertimer.seconds,
+            'session_ended': usertimer.session_ended,
+        }
+        return JsonResponse(timer_data)
+    except Timer.DoesNotExist:
+        return JsonResponse({'error': 'Timer data not found'}, status=404)
 
 @login_required
 def end_session_view(request):
     if request.method == 'POST':
         
         try:
-            timer = Timer.objects.get(pk=str(request.user.username))
+            timer = Timer.objects.get(pk=str(request.user.id))
             timer.session_ended = True
             timer.save()
 
@@ -244,20 +246,20 @@ def get_reservebooking_info(request):
 
 
 
-from django.http import JsonResponse
-
+#need ilisdan ang venue_id into area_id or addan og area_id
 def get_calendar_data(request):
-    area_data = ResBooking.objects.values('date', 'area_id', 'startTime', 'endTime')
+    area_data = ResBooking.objects.values('date', 'venue_id', 'startTime', 'endTime')
 
     events = []
     for booking in area_data:
         date = booking['date']
-        area_id = booking['area_id']
+        venue_id = booking['venue_id']
         start_time = booking['startTime']
         end_time = booking['endTime']
 
+        
         events.append({
-            'title': f'Area {area_id}',
+            'title': f'Area {venue_id}',
             'start': date,
             'start_time': start_time.strftime('%H:%M'),
             'end_time': end_time.strftime('%H:%M'),
@@ -273,7 +275,7 @@ class ActiveBookingController(LoginRequiredMixin, View):
     
     def get(self, request):
         
-        booking = Booking.objects.get(user_id=request.user.username)
+        booking = Booking.objects.get(user_id=request.user.id)
         if(booking.status == "Pending"):
             area_id = booking.reference_number
             context = {
@@ -290,9 +292,3 @@ area_button_click = facility_controller.areaButtonClick
 insert_into_database = facility_controller.insertIntoAssignedAreaModel
 hideMessage = facility_controller.hideMessage
 handleYesButtonClick = facility_controller.handleYesButtonClick
-
-
-
-
-
-
