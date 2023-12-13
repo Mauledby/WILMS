@@ -5,300 +5,310 @@
 
       <!-- Style -->
       <style>
-           #page-content-wrapper {
+        #page-content-wrapper {
+ background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+ background-size: cover;
+ /* Add any other styles you need for #page-content-wrapper */
+}
+
+     /* CSS for active and hover states */
+     .list-group-item {
+         /* Define the default styles for the list items */
+         background-color: #ffffff;
+         color: #000000;
+     }
+ 
+     .list-group-item:hover {
+         /* Define styles for hover state */
+         background-color: #f0f0f0;
+         color: #000000;
+     }
+ 
+     .list-group-item.active-link {
+         /* Define styles for active state */
+         background-color: #007bff;
+         color: #ffffff;
+     }
+ 
+ 
+       .main-scroll-div {
+         width: 90%;
+         height: 100%;
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+         /* border: 2px solid #000000; */
+       }
+       .cover {
+         position: relative;
+         width: 90%;
+         height: 50%;
+       }
+       .cover::before {
+         position: absolute;
+         content: "";
+         left: 0;
+         top: 0;
+         z-index: 99;
+         height: 100%;
+         width: 150px;
+         background-image: linear-gradient(90deg, black, transparent);
+       }
+ 
+       .cover::after {
+         position: absolute;
+         content: "";
+         right: 0;
+         top: 0;
+         z-index: 99;
+         height: 100%;
+         width: 150px;
+         background-image: linear-gradient(-90deg, black, transparent);
+       }
+       .scroll-images {
+         width: 100;
+         height: auto;
+         display: flex;
+         justify-content: left;
+         align-items: center;
+         overflow: auto;
+         position: relative;
+         scroll-behavior: smooth;
+       }
+ 
+       .child {
+         min-width: 600px;
+         height: 450px;
+         margin: 1px 10px;
+         cursor: pointer;
+         border: 1px solid #ffffff;
+         overflow: hidden;
+       }
+       .scroll-images::-webkit-scrollbar {
+         -webkit-appearance: none;
+       }
+ 
+       .child-img {
+         width: 100%;
+         height: 100%;
+       }
+ 
+       .settings-button {
+         color: #000;
+         margin-left: 10px; /* Adjust the margin as needed */
+         font-size: 24px;
+         padding: 15px 20px;
+       }
+ 
+       .header-wrapper {
+         position: fixed;
+         width: 100%;
+         z-index: 1000;
+       }
+ 
+       header {
+         padding: 25px 20px;
+         background-color: #faca00;
+       }
+ 
+       header img {
+         margin-right: 10px;
+       }
+ 
+       .navbar-toggler {
+         color: #f8f9fa; /* Set the text color */
+         background-color: #9c7b16; /* Set the background color */
+         border-color: #ffff; /* Set the border color */
+       }
+       .bg-custom-color {
+         background-color: #faca04;
+         max-height: 100px;
+         /* Add any additional styles you want */
+       }
+ 
+       .active-link {
+         color: #9c7b16; /* Change this color to your desired active link color */
+       }
+ 
+       /* Add styles for links */
+       .sidebar-link {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         padding: 10px 20px;
+         margin-bottom: 10px;
+         border-radius: 5px;
+         transition: background-color 0.3s ease;
+       }
+ 
+       .sidebar-wrapper {
+         background-color: #000000; /* Change sidebar background color */
+       }
+ 
+       h2 {
+         color: #ffffff;
+       }
+ 
+       .list-group-item.active-link {
+         color: #faca00;
+       }
+       /* Add spacing between links */
+       .list-group-item:not(:valid) {
+         margin-left: 5px;
+         margin-bottom: 10px;
+         max-width: 95%;
+         border-radius: 15px 5px;
+         background-color: #333333;
+         color: #ffffff;
+         text-align: center;
+         font-family: "Poppins";
+       }
+ 
+       .All-Font {
+         font-family: "Poppins";
+       }
+       .list-group-item.active-link {
+ /* Define styles for active state */
+ background-color: #faca04;
+ color: #000000;
+}    .list-group-item:hover {
+     /* Define styles for hover state */
+     background-color: #f0f0f0;
+     color: #000000;
+ }
+ li:hover{
+   cursor: pointer;
+ }
+ body{
     background: url("{% static 'img/basebg.PNG' %}") no-repeat;
-    background-size: cover;
-    /* Add any other styles you need for #page-content-wrapper */
+background-size: cover;
   }
+     </style>
 
-        /* CSS for active and hover states */
-        .list-group-item {
-            /* Define the default styles for the list items */
-            background-color: #ffffff;
-            color: #000000;
-        }
-    
-        .list-group-item:hover {
-            /* Define styles for hover state */
-            background-color: #f0f0f0;
-            color: #000000;
-        }
-    
-        .list-group-item.active-link {
-            /* Define styles for active state */
-            background-color: #007bff;
-            color: #ffffff;
-        }
-    
-    
-          .main-scroll-div {
-            width: 90%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            /* border: 2px solid #000000; */
-          }
-          .cover {
-            position: relative;
-            width: 90%;
-            height: 50%;
-          }
-          .cover::before {
-            position: absolute;
-            content: "";
-            left: 0;
-            top: 0;
-            z-index: 99;
-            height: 100%;
-            width: 150px;
-            background-image: linear-gradient(90deg, black, transparent);
-          }
-    
-          .cover::after {
-            position: absolute;
-            content: "";
-            right: 0;
-            top: 0;
-            z-index: 99;
-            height: 100%;
-            width: 150px;
-            background-image: linear-gradient(-90deg, black, transparent);
-          }
-          .scroll-images {
-            width: 100;
-            height: auto;
-            display: flex;
-            justify-content: left;
-            align-items: center;
-            overflow: auto;
-            position: relative;
-            scroll-behavior: smooth;
-          }
-    
-          .child {
-            min-width: 600px;
-            height: 450px;
-            margin: 1px 10px;
-            cursor: pointer;
-            border: 1px solid #ffffff;
-            overflow: hidden;
-          }
-          .scroll-images::-webkit-scrollbar {
-            -webkit-appearance: none;
-          }
-    
-          .child-img {
-            width: 100%;
-            height: 100%;
-          }
-    
-          .settings-button {
-            color: #000;
-            margin-left: 10px; /* Adjust the margin as needed */
-            font-size: 24px;
-            padding: 15px 20px;
-          }
-    
-          .header-wrapper {
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-          }
-    
-          header {
-            padding: 25px 20px;
-            background-color: #faca00;
-          }
-    
-          header img {
-            margin-right: 10px;
-          }
-    
-          .navbar-toggler {
-            color: #f8f9fa; /* Set the text color */
-            background-color: #9c7b16; /* Set the background color */
-            border-color: #ffff; /* Set the border color */
-          }
-          .bg-custom-color {
-            background-color: #faca04;
-            max-height: 100px;
-            /* Add any additional styles you want */
-          }
-    
-          .active-link {
-            color: #9c7b16; /* Change this color to your desired active link color */
-          }
-    
-          /* Add styles for links */
-          .sidebar-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-          }
-    
-          .sidebar-wrapper {
-            background-color: #000000; /* Change sidebar background color */
-          }
-    
-          h2 {
-            color: #ffffff;
-          }
-    
-          .list-group-item.active-link {
-            color: #faca00;
-          }
-          /* Add spacing between links */
-          .list-group-item:not(:valid) {
-            margin-left: 5px;
-            margin-bottom: 10px;
-            max-width: 95%;
-            border-radius: 15px 5px;
-            background-color: #333333;
-            color: #ffffff;
-            text-align: center;
-            font-family: "Poppins";
-          }
-    
-          .All-Font {
-            font-family: "Poppins";
-          }
-          .list-group-item.active-link {
-    /* Define styles for active state */
-    background-color: #faca04;
-    color: #000000;
-  }    .list-group-item:hover {
-        /* Define styles for hover state */
-        background-color: #f0f0f0;
-        color: #000000;
-    }
-        </style>
-
-
-</head>
 <body>
-    <div class="container custom-container" id="onpage">
-        
-          <div class="row mt-5">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header">
-                  <h3>Recent Transactions</h3>
-                </div>
-                <div class="card-body">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>2022-01-01</td>
-                        <td>Awarded Points</td>
-                        <td>100.00</td>
-                      </tr>
-                      <tr>
-                        <td>2022-01-02</td>
-                        <td>Awarded Points</td>
-                        <td>50.00</td>
-                      </tr>
-                      <tr>
-                        <td>2022-01-03</td>
-                        <td>Redeemed Points</td>
-                        <td>75.00</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header">
-                  <h3>Actions</h3>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <button class="btn btn-primary btn-block">Manage Teachers</button>
-                    </div>
-                    <div class="col-md-6">
-                      <button class="btn btn-primary btn-block">Award Points</button>
-                    </div>
-                  </div>
-                  <div class="row mt-3">
-                    <div class="col-md-6">
-                      <button class="btn btn-primary btn-block">Give Coins</button>
-                    </div>
-                    <div class="col-md-6">
-                      <button class="btn btn-primary btn-block"> Check Venues</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        <br><br>
-        <div class="row">
-            <div class="col-md-6">
+  <body>
+    <div class="label-page">DASHBOARD</div>
+    <div class="table">
+      <div class="container custom-container" id="onpage">
+          
+            <div class="row mt-5">
+              <div class="col-md-6">
                 <div class="card">
                   <div class="card-header">
-                    <h3>Top Earners</h3>
+                    <h3>Recent Transactions</h3>
                   </div>
                   <div class="card-body">
                     <table class="table">
                       <thead>
                         <tr>
-                          <th>Rank</th>
-                          <th>Name</th>
-                          <th>Earnings</th>
+                          <th>Date</th>
+                          <th>Type</th>
+                          <th>Amount</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>1</td>
-                          <td>John Doe</td>
-                          <td>1000.00</td>
+                          <td>2022-01-01</td>
+                          <td>Awarded Points</td>
+                          <td>100.00</td>
                         </tr>
                         <tr>
-                          <td>2</td>
-                          <td>Jane Smith</td>
-                          <td>750.00</td>
+                          <td>2022-01-02</td>
+                          <td>Awarded Points</td>
+                          <td>50.00</td>
                         </tr>
                         <tr>
-                          <td>3</td>
-                          <td>Bob Johnson</td>
-                          <td>500.00</td>
+                          <td>2022-01-03</td>
+                          <td>Redeemed Points</td>
+                          <td>75.00</td>
                         </tr>
                       </tbody>
                     </table>
-                    
                   </div>
                 </div>
-                
-            </div>
-            <div class="col-md-6">
+              </div>
+              <div class="col-md-6">
                 <div class="card">
+                  <div class="card-header">
+                    <h3>Actions</h3>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <button class="btn btn-primary btn-block">Manage Teachers</button>
+                      </div>
+                      <div class="col-md-6">
+                        <button class="btn btn-primary btn-block">Award Points</button>
+                      </div>
+                    </div>
+                    <div class="row mt-3">
+                      <div class="col-md-6">
+                        <button class="btn btn-primary btn-block">Give Coins</button>
+                      </div>
+                      <div class="col-md-6">
+                        <button class="btn btn-primary btn-block"> Check Venues</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <br><br>
+          <div class="row">
+              <div class="col-md-6">
+                  <div class="card">
                     <div class="card-header">
-                        <h3>Upcoming Events</h3>
+                      <h3>Top Earners</h3>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">Pitch Perfect - January 10, 2024</li>
-                            <li class="list-group-item">Teknoblast - June 15, 2024</li>
-                            <li class="list-group-item">TeknoSpace - December 20, 2024</li>
-                        </ul>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Earnings</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>John Doe</td>
+                            <td>1000.00</td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td>Jane Smith</td>
+                            <td>750.00</td>
+                          </tr>
+                          <tr>
+                            <td>3</td>
+                            <td>Bob Johnson</td>
+                            <td>500.00</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      
                     </div>
-                </div>
-            </div>
-        </div>
+                  </div>
+                  
+              </div>
+              <div class="col-md-6">
+                  <div class="card">
+                      <div class="card-header">
+                          <h3>Upcoming Events</h3>
+                      </div>
+                      <div class="card-body">
+                          <ul class="list-group">
+                              <li class="list-group-item">Pitch Perfect - January 10, 2024</li>
+                              <li class="list-group-item">Teknoblast - June 15, 2024</li>
+                              <li class="list-group-item">TeknoSpace - December 20, 2024</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
+  </body>
 </body>
 {% endblock %}

@@ -18,6 +18,61 @@
     
 
     <style>
+
+@keyframes slideFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: 3%; /* New left position after entering */
+  }
+}
+
+.slideFromLeftAnimation {
+  animation: slideFromLeft 0.5s ease forwards;
+}
+
+          button.adminlabel{
+    position: fixed;
+    display: block;
+    right: 2%;
+    width: fit-content;
+    height: 100px;
+    background: #ffcc0100;
+    top: 0rem;
+    align-items: center;
+    border: none;
+    font-weight: bolder;
+    font-size: 22px;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+  }
+            button#koisk {
+  opacity: 1;
+  z-index: 999999;
+  transform: translateX(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  margin-left:25%; 
+  font-size: 16px;   
+            position: fixed;
+            color: rgb(232, 214, 214);
+            background: #ffcc0137;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+            justify-content: left;
+            width: max-content;
+            margin-top: 43%;
+            height: max-content;
+             /* Initial position outside the viewport */
+            align-items: center;
+            padding: 15px; 
+            border-radius: 15px;
+}
+button#koisk:hover{
+  background: #ffcc01;
+  animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 2s forwards;
+}
       /* #loginBtn {
         width: 70px;
         height: 30px;
@@ -648,7 +703,11 @@ button.btn-primary{
       </div>
     </div>
     <nav class="horizontal">
-      <ul class="left" style="margin-left: 2rem;">
+      {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
+      <div>
+        <button class="adminlabel" id="koisk" style="left: 82%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:activate_account' %}">😺 ACTIVATION KOISK</a></div>
+        {% endif %} {% endif %}
+        <ul class="left" style="margin-left: 2rem;">
         <li>
         <a href="{% url 'wallet:index' %}"><img style="background-color: #fac004; padding: 5px; border-radius: 5px;" src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
       </ul>

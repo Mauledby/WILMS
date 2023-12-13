@@ -748,14 +748,26 @@ class ActivateAccountView(View):
                     user.is_active = True
                     user.is_verified = True  # Mark the user as verified
                     user.save()
+                    message = f"Account Activated"
+                    messages.success(request, message)
+                    # return render(request, 'wallet/activate_account.html')
                     return HttpResponse('<script>alert("Account Activated"); window.location.href="/wallet/activate_account/";</script>')
                 else:
+                    message = f"Invalid RFID value"
+                    messages.warning(request, message)
+                    # return render(request, 'wallet/activate_account.html')
                     return JsonResponse({'success': False, 'message': 'Invalid RFID value.'})
             else:
                 # return JsonResponse({'success': False, 'message': 'The account is already verified and active.'})
+                message = f"The account is already verified and active."
+                messages.warning(request, message)
+                # return render(request, 'wallet/activate_account.html')
                 return HttpResponse('<script>alert("The account is already verified and active."); window.location.href="/wallet/activate_account/";</script>')
                 
         else:
+            message = f"Invalid login details supplied or the account is already active"
+            messages.error(request, message)
+            # return render(request, 'wallet/activate_account.html')
             # return JsonResponse({'success': False, 'message': 'Invalid login details supplied or the account is already active.'})
             return HttpResponse('<script>alert("Invalid login details supplied or the account is already active"); window.location.href="/wallet/activate_account/"</script>')
   

@@ -1,6 +1,10 @@
 {% extends 'wallet/base.html' %} {% load static %} {% block body_block %}
 
 <style>
+    body{
+    background: url("{% static 'img/basebg.PNG' %}") no-repeat;
+background-size: cover;
+  }
   .container-fluid {
     background: url("{% static 'img/basebg.PNG' %}") no-repeat;
     background-size: cover;
@@ -78,6 +82,8 @@
 </style>
 
 <!-- Modal for transaction details -->
+<body>
+<div class="table" style="background: transparent; margin-top: 0px; box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.25);">
 <div class="container custom-container">
   <div class="jumbotron">
     <h1 style="color: black">Transaction Approval</h1>
@@ -195,7 +201,8 @@
       </div>
     </div>
   </div>
-
+</div>
+</body>
   <!-- Your existing scripts here -->
 
   <script>

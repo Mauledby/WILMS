@@ -17,7 +17,54 @@
   <!-- <link rel="stylesheet" href="general.css">
   <link rel="stylesheet" href="table.css"> -->
   <style>
-    
+    button#koisk {
+  opacity: 1;
+  z-index: 999999;
+  transform: translateX(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  margin-left:25%; 
+  font-size: 16px;   
+            position: fixed;
+            color: rgb(232, 214, 214);
+            background: #ffcc0137;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+            justify-content: left;
+            width: max-content;
+            margin-top: 43%;
+            height: max-content;
+             /* Initial position outside the viewport */
+            align-items: center;
+            padding: 15px; 
+            border-radius: 15px;
+}
+button#koisk:hover{
+  background: #ffcc01;
+  animation: slideFromRight 0.5s ease forwards;
+}
+@keyframes slideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: -2%; /* New left position after entering */
+  }
+}
+
+@keyframes slideExitRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: -2%; /* Keep consistent with the final position in slideFromLeft */
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+    margin-left: -200px; /* Return to the initial position outside the viewport */
+  }
+}
     a.menugroup {
     /* Other styles for .menugroup */
     /* ... */
@@ -154,32 +201,7 @@
     margin-left: 0%;
     width: 0px; /* Adjust the width of the scrollbar */
   }
-  
-  
-  @keyframes slideFromLeft {
-    0% {
-      opacity: 0;
-      transform: translateX(-100%);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-      margin-left: 3%; /* New left position after entering */
-    }
-  }
-  
-  @keyframes slideExitLeftFadeOut {
-    0% {
-      opacity: 1;
-      transform: translateX(0);
-      margin-left: 3%; /* Keep consistent with the final position in slideFromLeft */
-    }
-    100% {
-      opacity: 0;
-      transform: translateX(-100%);
-      margin-left: -200px; /* Return to the initial position outside the viewport */
-    }
-  }
+
   
   .info {
     color: #000;
@@ -231,7 +253,7 @@
   div.table{
   position: absolute;
   width: auto;
-  height: max-content; 
+  height: 100%;
   padding-bottom: 5rem;
   left: 19%;
   right: 3%;
@@ -267,16 +289,7 @@
     color:#fff;
   }
   
-  nav.vertical li a.nav1.active-link {
-    background-color: #ffcc01; color: black; /* Your desired color for the active link within nav1 */
-    /* Other styles for the active link within nav1 */
-  }
-  nav.vertical li a.nav2.active-link {
-    background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
-    }
-    nav.vertical li a.nav3.active-link {
-    background-color: #ffcc01; color: black; /* Change this color to your desired active link color */
-    }
+
       button.btn-primary{
       width: fit-content;
       height: 36.41px;
@@ -442,7 +455,8 @@
     <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
   </ul>
   <ul class="center" >
-
+    <div>
+      <button class="adminlabel" id="koisk" style="left: 82%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:activate_account' %}">😺 ACTIVATION KOISK.....................</a></button></div>
     {% if messages %}
     {% for message in messages %}
      

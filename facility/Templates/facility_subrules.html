@@ -47,10 +47,10 @@
 <!-- ----------------------------------------------FACILITY RULES----------------------------------------------------------- -->
 
 <div class="label-page" style="padding: 10px;">FACILITY <a style="margin-left: 83%; font-size: larger;" href="{% url 'facility:facimainback' %}"><</a></div>
-    <div class="table" style="height: 550px;">
+    <div class="table">
       {% csrf_token %}
       <div class="margin">
-        <input type="text" class="facilabel" value="{{sfacility.facility}}" style=" font-size: larger; height: fit-content; width: 35%; margin-top: 1rem;" disabled>
+        <input type="text" class="facilabel" value="{{sfacility.facility}}" style=" font-size: larger; height: fit-content; width: 40%; margin-top: 1rem;" disabled>
       <card class="card">
         <h5 style="font-weight: bold; margin-bottom: 1px;">Main Rules</h5>
         <table class="" style=" height: 60px; border-radius: 5px; border-spacing: 2rem; overflow: hidden;">
@@ -103,7 +103,7 @@
             <button class="prules"><a href="{% url 'facility:facilitypromorules' sfacility.id %}">Promo Rules</a></button> 
           </div>
           <!-- <form method="POST"> {% csrf_token %} -->
-          <div id="overflowTest" style="margin-left: 33rem; height: 400px; ">
+          <div id="overflowTest" style="margin-left: 50%; height: 55vh; ">
           {% for f in addedsubrules %} 
           <button type="submit" class="btnaddrules" style="margin-left: 50%; position: relative; top: 3rem; z-index: 999;"><a href="{% url 'facility:setfsstatus' f.id %}">Add</a></button>
           <button class="btneditrules" style="margin-left: 2%; position: relative; top: 3rem; z-index: 999;"><a href="#">Edit</a></button>
@@ -131,7 +131,7 @@
             {% endfor %}
           </div>
         <!-- </form> -->
-    </div>
+    </div><br>
 <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"  type="button" class="btnrules" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Rules</button>
     <!-- <button type="submit" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Facility</button> -->
 

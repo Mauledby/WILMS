@@ -67,7 +67,13 @@
                         
                     </div>
                     
+<<<<<<< HEAD
                
+=======
+                    
+                    
+                    
+>>>>>>> 4f6b9d3c2d1a0ea4f4883b90b74f1d342fd70865
                     
                 </div>
                 
@@ -95,14 +101,22 @@
                 initialView: 'dayGridMonth',
                 events: '/polls/get-calendar-data/',
                 eventClick: function (info) {
+<<<<<<< HEAD
                     const venue_id = info.event.title;
+=======
+                    const areaId = info.event.title;
+>>>>>>> 4f6b9d3c2d1a0ea4f4883b90b74f1d342fd70865
                     const date = info.event.start.toLocaleDateString();
                     const start_time = info.event.extendedProps.start_time;
                     const end_time = info.event.extendedProps.end_time;
         
                     Swal.fire({
                         title: `${date}`,
+<<<<<<< HEAD
                         html: `Area ID: ${venue_id}<br>
+=======
+                        html: `Area ID: ${areaId}<br>
+>>>>>>> 4f6b9d3c2d1a0ea4f4883b90b74f1d342fd70865
                             Start Time: ${start_time}<br>
                             End Time: ${end_time}`,
                         icon: 'info',
@@ -151,4 +165,8 @@
     
 
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 4f6b9d3c2d1a0ea4f4883b90b74f1d342fd70865
