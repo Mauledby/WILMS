@@ -206,6 +206,7 @@ def get_timer_data(request):
         
         else:
             return render(request, "wil/userdashboard.html", {})
+
 @login_required
 def end_session_view(request):
     if request.method == 'POST':
