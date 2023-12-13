@@ -83,15 +83,17 @@ select#inputGroupSelect01 {
     }
 
     button.dashboardrevenue{
-        background-color: #FFFFFF; 
+        background-color: transparent; 
+        filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.25));
         text-align: left; 
         border-radius: 0; 
         height: 28%; 
         padding-top: 4px; 
-        width: 20%; 
+        width: 15.2vw; 
         padding-left: 2rem;
-        margin-left:-0.39%;
-        border: none; 
+        margin-left:0%;
+        margin-right: 0%;
+        border-bottom: 0px solid #CFCFCF; 
     }
     button.dashboardrevenue:hover{
         border-bottom: 2px solid #ffcc01;  
@@ -103,6 +105,9 @@ select#inputGroupSelect01 {
 
     p.dif{
         font-size: 9px; margin-top: -2%;
+    }
+    div.menugroup{
+        border-bottom: 0px solid #ffcc01; 
     }
     div.menugroup:hover{
         border-bottom: 2px solid #ffcc01; 
@@ -138,6 +143,27 @@ select#inputGroupSelect01 {
   stroke: #E0E0E0;
   margin-top: 2rem;
 }
+*::-webkit-scrollbar-thumb {
+      opacity: 0;
+    background-color: #ffcc0186; /* Change the color of the scrollbar thumb */
+    border-radius: 5px; /* Add rounded corners to the scrollbar thumb */
+  }
+  
+  /* Optional: Style the scrollbar track */
+  *::-webkit-scrollbar-track {
+    opacity: 0;
+    background-color: #e8e1ae; /* Change the color of the scrollbar track */
+  }
+  
+  /* Optional: Style the scrollbar itself */
+  *::-webkit-scrollbar {
+    opacity: 0;
+    margin-left: 0%;
+    width: 0px; /* Adjust the width of the scrollbar */
+  }
+.table{
+  overflow-x: hidden;
+}
   </style>
 
 <!-- -----------------------------------------------ADD RULES--------------------------------------------- -->
@@ -145,9 +171,9 @@ select#inputGroupSelect01 {
 <!-- ---------------------------------------------- Calendar ----------------------------------------------------------- -->
 
     <div class="label-page" >Revenue Dashboard</div>
-    <div class="table" style="height: fit-content;">
+    <div class="table">
       <form method="get">
-        <div class="menu">
+        <div class="menu" style="padding: 1rem;">
           <select name="facility" class="custom-select" id="inputGroupSelect01" style="margin-top: 2rem; padding: 2px;">
             <option name="facility" type="submit" value="">All</option>
             {% for f in facilityt %}
@@ -162,13 +188,13 @@ select#inputGroupSelect01 {
           <label style="margin-left: 2%; color: #606060; font-size: 20px; font-weight: 700; line-height: normal;">To:</label>
           <input name="end_date" type="date" style="margin-left: 5px">
           
-          <button type="submit" style="margin-left: 2%;">Proceed</button>
+          <button type="submit" style="margin-left: 2%;">Proceed</button><br>
+          <a href="#" style=" margin-top: 20vh; margin-left: 60vw; text-decoration: underline; color: #3C3C3C; opacity: 0.8;">🖨️Statement of Revenue</a>
         </div>
         </form>
         <br>
-        <a href="#" style="margin-left: 80%; text-decoration: underline; color: #3C3C3C; opacity: 0.8;">🖨️Statement of Revenue</a>
-        <div style="margin-top: -3%; margin-bottom: 2rem; width: 100%; height: fit-content; background: #FFF; border: 0.5px solid rgba(0, 0, 0, 0.20); filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));">
-            <div class="menugroup" style="border: none; margin-left: 5px; margin-top: 5px; padding-top: 5px; border-bottom: 2px solid #CFCFCF;">
+        <div style=" overflow-x: hidden; padding: 1px; margin-top: -3%; margin-bottom: 2rem; width: 100%; height: fit-content; background: transparent;">
+            <div class="menugroup" style="border: 0px solid #b81a1a;  margin-left: 5px; margin-top: 5px; padding-top: 5px; border-bottom: 0px solid #CFCFCF; width: 100%; ">                
                 <button class="dashboardrevenue">
                 <p class="label">Total Revenue</p>
                   <h5 style="margin-top:-8%">₱{{ total_revenue|floatformat:2 }}</h5>
@@ -208,6 +234,7 @@ select#inputGroupSelect01 {
                     {%  endif %}
   
                 </button>
+
             </div>
             <form method="get" hidden>
               {{ chart_type_form }}
@@ -248,7 +275,7 @@ select#inputGroupSelect01 {
         </div>
         <br>
         
-        <div class="columns" style="margin-top: 0rem;height: 400px; background: #FFF; border: 0.5px solid rgba(0, 0, 0, 0.20); filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));">
+        <div class="columns" style="overflow: hidden; margin-top: 0rem;height: 400px; background: #FFF; border: 0.5px solid rgba(0, 0, 0, 0.20); filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));">
               <div class="columni column1" >
                 <div class="two-column-in">
                   <div class="column">
@@ -311,6 +338,7 @@ select#inputGroupSelect01 {
               </script>
             
         </div>
+        <br>
     </div>
     
 

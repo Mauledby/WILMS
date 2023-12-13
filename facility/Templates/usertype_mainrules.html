@@ -60,7 +60,7 @@
 <!-- ----------------------------------------------User RULES----------------------------------------------------------- -->
 
 <div class="label-page" style="padding: 10px;">USER <a style="margin-left: 83%; font-size: larger;" href="{% url 'facility:umainback' %}"><</a></div>
-    <div class="table" style="height: 550px; overflow: hidden;">
+    <div class="table">
       {% csrf_token %}
       <div class="margin">
         <input type="text" class="facilabel" value="{{suser.user_type}}" style=" font-size: larger; height: fit-content; width: 35%; margin-top: 1rem;" disabled>

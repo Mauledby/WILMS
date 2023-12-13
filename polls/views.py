@@ -175,47 +175,37 @@ def user_dashboard(request):
     return render(request, "wil/userdashboard.html", {'areas': areas})
 
 
-@login_required
 def get_timer_data(request):
-    try:
+    
+    timers = Timer.objects.all().count()
+    
+    if timers == 0:
+        return redirect(user_dashboard)
+    else:
         usertimer = Timer.objects.get(user_id=request.user.id)
-        timer_data = {
-            'minutes': usertimer.minutes,
-            'seconds': usertimer.seconds,
-            'session_ended': usertimer.session_ended,
-        }
-        return JsonResponse(timer_data)
-    except Timer.DoesNotExist:
-        return JsonResponse({'error': 'Timer data not found'}, status=404)
+    
+        if usertimer is not None and usertimer.session_ended != True:
+            if not usertimer.session_ended:
+                if usertimer.seconds > 0:
+                    usertimer.seconds -= 1
+                elif usertimer.minutes > 0:
+                    usertimer.minutes -= 1
+                    usertimer.seconds = 59
+                else:
+                    usertimer.session_ended = True
+                
+                usertimer.save()
 
+            timer_data = {
+                'minutes': usertimer.minutes,
+                'seconds': usertimer.seconds,
+                'session_ended': usertimer.session_ended,
+            }
 
-
-@login_required
-def update_timer(request):
-    if request.method == 'POST':
-        minutes = request.POST.get('minutes')
-        seconds = request.POST.get('seconds')
-
+            return JsonResponse(timer_data)
         
-        
-        if minutes is not None and seconds is not None:
-           
-            minutes = int(minutes)
-            seconds = int(seconds)
-
-            
-            user_timer, created = Timer.objects.get_or_create(user_id=request.user.id)
-
-           
-            user_timer.minutes = minutes
-            user_timer.seconds = seconds
-            user_timer.save()
-
-            return JsonResponse({'success': True})
         else:
-            return JsonResponse({'error': 'Invalid minutes or seconds'}, status=400)
-
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+            return render(request, "wil/userdashboard.html", {})
 @login_required
 def end_session_view(request):
     if request.method == 'POST':

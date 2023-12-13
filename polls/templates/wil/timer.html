@@ -73,164 +73,153 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    if ("Notification" in window) {
-        if (Notification.permission !== "granted") {
-          Notification.requestPermission().then(function (permission) {
-            
-          });
-        }
-      }
-      let csrftoken = getCookie('csrftoken');
-      function updateTimerInDatabase(minutes, seconds) {
-        $.ajax({
-            url: '{% url "polls:update_timer" %}',
-            method: 'POST',
-            data: {
-                minutes: minutes,
-                seconds: seconds
-            },
-            headers: {
-              "X-CSRFToken": csrftoken
-          },
-            success: function(data) {
-                
-            },
-            error: function(xhr, textStatus, errorThrown) {
-                
-            }
+  if ("Notification" in window) {
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission().then(function (permission) {
+          
         });
+      }
     }
-    function formatTime(totalSeconds) {
-      let minutes = Math.floor(totalSeconds / 60);
-      let seconds = totalSeconds % 60;
-  
-      minutes = String(minutes).padStart(2, '0');
-      seconds = String(seconds).padStart(2, '0');
-  
-      return `${minutes}:${seconds}`;
-  }
-    function getTimerDataFromServer() {
+    function updateTimer() {
       $.ajax({
           url: '{% url "polls:get_timer_data" %}',
           dataType: 'json',
           success: function(data) {
-              if (data) {
-                  let formattedTime = data.minutes.toString().padStart(2, '0') + ':' + data.seconds.toString().padStart(2, '0');
-                  
+              if (!data.session_ended) {
+                  var formattedTime = padNumber(data.minutes) + ':' + padNumber(data.seconds);
                   $('#timer').text(formattedTime);
-  
                   
-                  let timeLeft = data.minutes * 60 + data.seconds;
-  
-                  let timer = setInterval(() => {
-                      timeLeft--;
-  
-                      if (timeLeft >= 0) {
-                          self.postMessage({ type: 'tick', timeLeft: formatTime(timeLeft) });
-                          if (timeLeft % 60 === 0) {
-                              let minutesLeft = Math.floor(timeLeft / 60);
-                              updateTimerInDatabase(minutesLeft, timeLeft % 60);
-                          }
-                      } else {
-                          clearInterval(timer);
-                          self.postMessage({ type: 'finished' });
-                      }
-                  }, 1000);
+                  if (data.minutes === 3 && data.seconds === 0) {
+                      showNotification("WARNING WILDSPACE", "You only have 3 minutes left!");
+                  }
+                  
+                  if (data.minutes === 0 && data.seconds === 0) {
+                      showNotification("WILDSPACE", "Your time has ended!");
+                      // Display the message overlay with the reference number
+                      displayMessageOverlay('{{ booking_reference_number }}');
+                  }
+              } else {
+                  $('#timer').text('00:00');
               }
-          },
-          error: function(xhr, textStatus, errorThrown) {
-              
           }
       });
   }
   
-      function showNotification(title, body) {
-        if (Notification.permission === "granted") {
-          var options = {
-            body: body,
-          };
-      
-          var notification = new Notification(title, options);
-      
-        
-          notification.onclick = function () {
-            
-            notification.close();
-          };
-        }
-      }
-      
-
-  function padNumber(number) {
-      return number.toString().padStart(2, '0');
+  function displayMessageOverlay(referenceNumber) {
+      var messageOverlay = document.createElement('div');
+      messageOverlay.classList.add('message-overlay');
+  
+      var messageBox = document.createElement('div');
+      messageBox.classList.add('message-box');
+  
+      var messageHeader = document.createElement('h2');
+      messageHeader.textContent = 'Session Ended';
+  
+      var messageContent = document.createElement('p');
+      messageContent.innerHTML = 'Reference Number: ' + referenceNumber;
+  
+      var additionalText = document.createElement('p');
+      additionalText.textContent = 'To avoid overstaying charges, please go to the front desk and present your reference number to confirm that your allotted time has ended.';
+  
+      messageBox.appendChild(messageHeader);
+      messageBox.appendChild(messageContent);
+      messageBox.appendChild(additionalText);
+  
+      messageOverlay.appendChild(messageBox);
+  
+      document.body.appendChild(messageOverlay);
+  
+      $('#timer').text('00:00');
+      hideConfirmationDialog();
   }
   
-  
-  function showConfirmationDialog() {
-    var confirmationDialog = document.getElementById('confirmation-dialog');
-    var overlay = document.getElementById('overlay');
-    confirmationDialog.style.display = 'block';
-    overlay.style.display = 'block';
-  }
-  
-  
-  document.getElementById('confirm-button').addEventListener('click', confirmEndSession);
-  document.getElementById('cancel-button').addEventListener('click', cancelEndSession);
-  
-  
-  function confirmEndSession() {
+    function showNotification(title, body) {
+      if (Notification.permission === "granted") {
+        var options = {
+          body: body,
+        };
     
-    var csrfToken = getCookie('csrftoken');
+        var notification = new Notification(title, options);
+    
+      
+        notification.onclick = function () {
+          
+          notification.close();
+        };
+      }
+    }
+    
 
-    $.ajax({
-        url: '{% url "polls:end_session" %}',  
-        method: 'POST',
-        data: {session_ended: true},
-        headers: {
-            "X-CSRFToken": csrfToken  
-        },
-        success: function(data) {
-            
-            if (data.success) {
-                
-                var referenceNumber = '{{ booking_reference_number }}';
-                var messageOverlay = document.createElement('div');
-                messageOverlay.classList.add('message-overlay');
+function padNumber(number) {
+    return number.toString().padStart(2, '0');
+}
 
-                var messageBox = document.createElement('div');
-                messageBox.classList.add('message-box');
 
-                var messageHeader = document.createElement('h2');
-                messageHeader.textContent = 'Session Ended';
+function showConfirmationDialog() {
+  var confirmationDialog = document.getElementById('confirmation-dialog');
+  var overlay = document.getElementById('overlay');
+  confirmationDialog.style.display = 'block';
+  overlay.style.display = 'block';
+}
 
-                var messageContent = document.createElement('p');
-                messageContent.innerHTML = 'Reference Number: ' + referenceNumber;
 
-                var additionalText = document.createElement('p');
-                additionalText.textContent = 'To avoid overstaying charges, please go to the front desk and present your reference number to confirm that your allotted time has ended.';
+document.getElementById('confirm-button').addEventListener('click', confirmEndSession);
+document.getElementById('cancel-button').addEventListener('click', cancelEndSession);
 
-                messageBox.appendChild(messageHeader);
-                messageBox.appendChild(messageContent);
-                messageBox.appendChild(additionalText);
 
-                messageOverlay.appendChild(messageBox);
+function confirmEndSession() {
+  
+  var csrfToken = getCookie('csrftoken');
 
-                document.body.appendChild(messageOverlay);
+  $.ajax({
+      url: '{% url "polls:end_session" %}',  
+      method: 'POST',
+      data: {session_ended: true},
+      headers: {
+          "X-CSRFToken": csrfToken  
+      },
+      success: function(data) {
+          
+          if (data.success) {
+              
+              var referenceNumber = '{{ booking_reference_number }}';
+              var messageOverlay = document.createElement('div');
+              messageOverlay.classList.add('message-overlay');
 
-                
-                $('#timer').text('00:00');
+              var messageBox = document.createElement('div');
+              messageBox.classList.add('message-box');
 
-                
-                hideConfirmationDialog();
-            } else {
-                alert('Failed to end the session. Please try again.');
-            }
-        },
-        error: function(xhr, textStatus, errorThrown) {
-            console.log(xhr.responseText); 
-            alert('Failed to end the session. Please try again.');
-        }
-    });
+              var messageHeader = document.createElement('h2');
+              messageHeader.textContent = 'Session Ended';
+
+              var messageContent = document.createElement('p');
+              messageContent.innerHTML = 'Reference Number: ' + referenceNumber;
+
+              var additionalText = document.createElement('p');
+              additionalText.textContent = 'To avoid overstaying charges, please go to the front desk and present your reference number to confirm that your allotted time has ended.';
+
+              messageBox.appendChild(messageHeader);
+              messageBox.appendChild(messageContent);
+              messageBox.appendChild(additionalText);
+
+              messageOverlay.appendChild(messageBox);
+
+              document.body.appendChild(messageOverlay);
+
+              
+              $('#timer').text('00:00');
+
+              
+              hideConfirmationDialog();
+          } else {
+              alert('Failed to end the session. Please try again.');
+          }
+      },
+      error: function(xhr, textStatus, errorThrown) {
+          console.log(xhr.responseText); 
+          alert('Failed to end the session. Please try again.');
+      }
+  });
 }
 
 
@@ -241,6 +230,7 @@ function getCookie(name) {
       var cookies = document.cookie.split(';');
       for (var i = 0; i < cookies.length; i++) {
           var cookie = cookies[i].trim();
+          
           if (cookie.substring(0, name.length + 1) === (name + '=')) {
               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
               break;
@@ -252,45 +242,33 @@ function getCookie(name) {
 
 
 
+function cancelEndSession() {
+  
+  hideConfirmationDialog();
+}
+
+
+function hideConfirmationDialog() {
+  var confirmationDialog = document.getElementById('confirmation-dialog');
+  var overlay = document.getElementById('overlay');
+  confirmationDialog.style.display = 'none';
+  overlay.style.display = 'none';
+}
+
 $(document).ready(function() {
-  setInterval(updateTimerInDatabase, 1000);
+    setInterval(updateTimer, 1000);
 });
-  
-  function cancelEndSession() {
-    
-    hideConfirmationDialog();
-  }
-  
-  
-  function hideConfirmationDialog() {
-    var confirmationDialog = document.getElementById('confirmation-dialog');
-    var overlay = document.getElementById('overlay');
-    confirmationDialog.style.display = 'none';
-    overlay.style.display = 'none';
-  }
-  
- 
-  
-  
-  document.querySelector('.end-button').addEventListener('click', function() {
-    showConfirmationDialog();
-  });
 
 
-  let worker = new Worker('/static/js/timerWorker.js');
-  worker.postMessage('start');
-  worker.onmessage = function (e) {
-    if (e.data.type === 'tick') {
-      
-      document.getElementById('timer').textContent = e.data.timeLeft;
-    } else if (e.data.type === 'finished') {
-      
-      console.log('Timer finished!');
-    }
-  };
-  
-  
-  </script>
+document.querySelector('.end-button').addEventListener('click', function() {
+  showConfirmationDialog();
+});
+
+
+
+
+
+</script>
 
 </body>
 </html>
