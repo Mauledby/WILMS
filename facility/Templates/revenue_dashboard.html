@@ -171,7 +171,7 @@ select#inputGroupSelect01 {
 <!-- ---------------------------------------------- Calendar ----------------------------------------------------------- -->
 
     <div class="label-page" >Revenue Dashboard</div>
-    <div class="table">
+    <div class="table" style="padding: 0px;">
       <form method="get">
         <div class="menu" style="padding: 1rem;">
           <select name="facility" class="custom-select" id="inputGroupSelect01" style="margin-top: 2rem; padding: 2px;">
@@ -188,49 +188,48 @@ select#inputGroupSelect01 {
           <label style="margin-left: 2%; color: #606060; font-size: 20px; font-weight: 700; line-height: normal;">To:</label>
           <input name="end_date" type="date" style="margin-left: 5px">
           
-          <button type="submit" style="margin-left: 2%;">Proceed</button><br>
-          <a href="#" style=" margin-top: 20vh; margin-left: 60vw; text-decoration: underline; color: #3C3C3C; opacity: 0.8;">🖨️Statement of Revenue</a>
+          <button type="submit" class="btnproc">Proceed</button><br>
         </div>
         </form>
         <br>
-        <div style=" overflow-x: hidden; padding: 1px; margin-top: -3%; margin-bottom: 2rem; width: 100%; height: fit-content; background: transparent;">
-            <div class="menugroup" style="border: 0px solid #b81a1a;  margin-left: 5px; margin-top: 5px; padding-top: 5px; border-bottom: 0px solid #CFCFCF; width: 100%; ">                
+        <div style=" overflow-x: hidden; padding: 1px; margin-top: -3%; margin-bottom: 2rem; width: 100%; height: fit-content; background: transparent; filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));">
+            <div class="menugroup" style="  margin-left: 0px; margin-top: 5px; padding-left: 8px; padding-top: 10px; padding-bottom: 1px; border-bottom: 1px solid #CFCFCF; width: 90vw; ">                
                 <button class="dashboardrevenue">
-                <p class="label">Total Revenue</p>
-                  <h5 style="margin-top:-8%">₱{{ total_revenue|floatformat:2 }}</h5>
+                <p class="label">Total Revenue</p>  
+                  <h5 style="margin-top:-5%">₱{{ total_revenue|floatformat:2 }}</h5>
                   {% if empty %}
-                  <h5 style="margin-top:-8%">₱ 000,000.00</h5>
+                  <h5 style="margin-top:-5%">₱ 000,000.00</h5>
                   {%  endif %}
                 </button>
                 <button class="dashboardrevenue">
                   <p class="label">Total Charge Payments</p>
-                  <h5 style="margin-top:-8%">₱{{ total_charge_payments|floatformat:2 }}</h5>
+                  <h5 style="margin-top:-5%">₱{{ total_charge_payments|floatformat:2 }}</h5>
                   {% if empty %}
-                  <h5 style="margin-top:-8%">₱ 000,000.00</h5>
+                  <h5 style="margin-top:-5%">₱ 000,000.00</h5>
                   {%  endif %}
 
               </button>
                 <button class="dashboardrevenue">
                     <p class="label">Total Usage Hours</p>
-                    <h5 style="margin-top:-8%">{{ total_hours_all|floatformat:2 }}</h5>
+                    <h5 style="margin-top:-5%">{{ total_hours_all|floatformat:2 }}</h5>
                     {% if empty %}
-                    <h5 style="margin-top:-8%">00.00</h5>
+                    <h5 style="margin-top:-5%">00.00</h5>
                     {%  endif %}
   
                 </button>
                 <button class="dashboardrevenue">
                   <p class="label">Total Reservations</p>
-                  <h5 style="margin-top:-8%">{{ total_reservation}}</h5>
+                  <h5 style="margin-top:-5%">{{ total_reservation}}</h5>
                   {% if empty %}
-                  <h5 style="margin-top:-8%">None</h5>
+                  <h5 style="margin-top:-5%">None</h5>
                   {%  endif %}
   
                 </button>
                 <button class="dashboardrevenue">
                     <p class="label">Total Facilities</p>
-                    <h5 style="margin-top:-8%">{{ number_facility}}</h5>
+                    <h5 style="margin-top:-5%">{{ number_facility}}</h5>
                     {% if empty %}
-                    <h5 style="margin-top:-8%">None</h5>
+                    <h5 style="margin-top:-5%">None</h5>
                     {%  endif %}
   
                 </button>
@@ -243,7 +242,7 @@ select#inputGroupSelect01 {
             <div style="padding:2px; width: 100%;">
               <canvas id="myChart" height="300px"></canvas>
           </div>
-          <script>
+          <script style="width: 100vw; padding:2rem; height: 10vh;">
             var ctx = document.getElementById('myChart').getContext('2d');
             
     
@@ -307,7 +306,7 @@ select#inputGroupSelect01 {
             </div>
 
 
-                <script>
+                <script style="width: 100vw;">
                   var ctx = document.getElementById('revenueChart').getContext('2d');
                   var chartType = '{{ chart_type|default:"bar" }}';
           

@@ -17,7 +17,7 @@
   <!-- <link rel="stylesheet" href="general.css">
   <link rel="stylesheet" href="table.css"> -->
   <style>
-        button#koisk {
+    button#koisk {
   opacity: 1;
   z-index: 999999;
   transform: translateX(-100%);
@@ -39,7 +39,31 @@
 }
 button#koisk:hover{
   background: #ffcc01;
-  animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 2s forwards;
+  animation: slideFromRight 0.5s ease forwards;
+}
+@keyframes slideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: -2%; /* New left position after entering */
+  }
+}
+
+@keyframes slideExitRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: -2%; /* Keep consistent with the final position in slideFromLeft */
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+    margin-left: -200px; /* Return to the initial position outside the viewport */
+  }
 }
     a.menugroup {
     /* Other styles for .menugroup */
@@ -177,32 +201,7 @@ button#koisk:hover{
     margin-left: 0%;
     width: 0px; /* Adjust the width of the scrollbar */
   }
-  
-  
-  @keyframes slideFromLeft {
-    0% {
-      opacity: 0;
-      transform: translateX(-100%);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-      margin-left: 3%; /* New left position after entering */
-    }
-  }
-  
-  @keyframes slideExitLeftFadeOut {
-    0% {
-      opacity: 1;
-      transform: translateX(0);
-      margin-left: 3%; /* Keep consistent with the final position in slideFromLeft */
-    }
-    100% {
-      opacity: 0;
-      transform: translateX(-100%);
-      margin-left: -200px; /* Return to the initial position outside the viewport */
-    }
-  }
+
   
   .info {
     color: #000;
@@ -457,7 +456,7 @@ button#koisk:hover{
   </ul>
   <ul class="center" >
     <div>
-      <button class="adminlabel" id="koisk" style="left: 82%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:activate_account' %}">😺 ACTIVATION KOISK</a></button></div>
+      <button class="adminlabel" id="koisk" style="left: 82%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:activate_account' %}">😺 ACTIVATION KOISK.....................</a></button></div>
     {% if messages %}
     {% for message in messages %}
      

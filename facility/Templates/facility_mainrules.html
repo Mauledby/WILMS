@@ -58,7 +58,7 @@
     <div class="table">
       {% csrf_token %}
       <div class="margin">
-        <input type="text" class="facilabel" value="{{sfacility.facility}}" style=" font-size: larger; height: fit-content; width: 35%; margin-top: 1rem;" disabled>
+        <input type="text" class="facilabel" value="{{sfacility.facility}}" style=" font-size: larger; margin-top: 1rem; width: 40%;" disabled>
       <card class="card">
         <h5 style="font-weight: bold; margin-bottom: 1px;">Main Rules</h5>
         <table class="" style=" height: 60px; border-radius: 5px; border-spacing: 2rem; overflow: hidden;">
@@ -105,13 +105,13 @@
           <a class="set" href="{% url 'facility:setfmstatus_one' %}">Set</a>
           </button>
           <div class="vline"></div>
-          <div class="menurules">
+          <div class="menurules" style="border: 1px solid #DCDCDC;">
             <button class="mrules"style="background-color: #ffcc01;"><a href="{% url 'facility:facilityRules' sfacility.id %}" style="color: #FFFFFF; ">Main Rules</a></button>
-            <button class="srules"#ffcc01><a href="{% url 'facility:facilitysubrules' sfacility.id %}">Sub Rules</a></button>
+            <button class="srules"><a href="{% url 'facility:facilitysubrules' sfacility.id %}">Sub Rules</a></button>
             <button class="prules"><a href="{% url 'facility:facilitypromorules' sfacility.id %}">Promo Rules</a></button>
           </div>
           <!-- <form method="POST"> {% csrf_token %} -->
-          <div id="overflowTest" style="margin-left: 33rem; height: 400px; ">
+          <div id="overflowTest" style="  margin-left: 50%; height: 55vh; ">
           {% for f in addedmainrules %} 
           <button type="submit" class="btnaddrules" style="margin-left: 50%; position: relative; top: 3rem; z-index: 2;"><a href="{% url 'facility:setfmstatus' f.id %}">Add</a></button>
           <button class="btneditrules" style="margin-left: 2%; position: relative; top: 3rem; z-index: 999;"><a href="#">Edit</a></button>
@@ -138,7 +138,7 @@
             {% endfor %}
           </div>
         <!-- </form> -->
-    </div>
+    </div><br>
 <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"  type="button" class="btnrules" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Rules</button>
     <!-- <button type="submit" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Facility</button> -->
 

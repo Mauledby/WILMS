@@ -48,7 +48,32 @@
 }
 button#koisk:hover{
   background: #ffcc01;
-  animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 2s forwards;
+  animation: slideFromRight 0.5s ease forwards;
+}
+@keyframes slideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: -2%; /* New left position after entering */
+  }
+}
+
+@keyframes slideExitRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: -2%; /* Keep consistent with the final position in slideFromLeft */
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+    margin-left: -200px; /* Return to the initial position outside the viewport */
+  }
+
 }</style>
     {% block headerinclude %} {% endblock %}
   </head>
