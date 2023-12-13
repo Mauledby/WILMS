@@ -22,7 +22,7 @@ class AdminReportLogsModel(models.Model):
 class WalkinBookingModel(models.Model):
     bookingid = models.AutoField(primary_key=True);
     referenceid = models.CharField(max_length=20);
-    userid = models.CharField(max_length=20);
+    user_id = models.CharField(max_length=20);
     start_time = models.DateTimeField(null=True);
     end_time = models.DateTimeField(null=True);
     isOverstaying = models.IntegerField(null=False, default=0);
