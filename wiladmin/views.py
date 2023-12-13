@@ -11,6 +11,7 @@ from polls.models import Timer, AssignedArea, Booking
 from api.models.BookingModel import Booking as ResBooking
 from django.views import View
 from datetime import datetime
+from django.utils import timezone
 from .forms import BookGuest
 
 class AdminLoginController(View):
@@ -37,9 +38,10 @@ class AdminDashboardController(LoginRequiredMixin, View):
     login_url = 'adminlogin'
     
     def update_dashboard(request):
-        totalwalkins = WalkinBookingModel.objects.all().count()
-        reserves = ResBooking.objects.all().count()
-        guests = WalkinBookingModel.objects.filter(referenceid__contains="GUEST").count()
+        today = timezone.now().date()
+        totalwalkins = WalkinBookingModel.objects.filter(start_time__date=today).count()
+        reserves = ResBooking.objects.filter(date__exact=today).count()
+        guests = WalkinBookingModel.objects.filter(referenceid__contains="GUEST", start_time__date=today).count()
         available = 68 - totalwalkins - reserves
         walkins = totalwalkins - guests
         
@@ -49,14 +51,27 @@ class AdminDashboardController(LoginRequiredMixin, View):
             'guests':guests, 
             'available':available
             }
+        
+        print(today)
+        print(' totalwalkins:'+str(totalwalkins)+
+              ' reserves: '+str(reserves)+
+              ' guests:'+str(guests))
+        
         return JsonResponse({'dashboard_count': dashboard_count})
     
     def get(self, request):
-        totalwalkins = WalkinBookingModel.objects.all().count()
-        reserves = ResBooking.objects.all().count()
-        guests = WalkinBookingModel.objects.filter(referenceid__contains="GUEST").count()
+        today = timezone.now().date()
+        totalwalkins = WalkinBookingModel.objects.filter(start_time__date=today).count()
+        reserves = ResBooking.objects.filter(date=today).count()
+        guests = WalkinBookingModel.objects.filter(referenceid__contains="GUEST", start_time__date=today).count()
         available = 68 - totalwalkins - reserves
         walkins = totalwalkins - guests
+        
+        print(today)
+        print(' totalwalkins:'+str(totalwalkins)+
+              ' reserves: '+str(reserves)+
+              ' guests:'+str(guests))
+        
         return render(request, "wiladmin/admindashboard.html", {'walkins': walkins, 'reserves': reserves, 'guests': guests, 'available': available})
 
 class AdminWalkinDashboardController(LoginRequiredMixin, View):
@@ -205,7 +220,7 @@ class BookGuestController(LoginRequiredMixin, View):
         if form.is_valid():
             referenceid = 'A'+str(random.randint(3, 9))+'GUEST'.upper()+str(random.randint(1, 68))
             userid = request.POST.get('userid')
-            start_time = datetime.now()
+            start_time = timezone.now()
             end_time = None
             status = 'Booked'
             booking = WalkinBookingModel(referenceid = referenceid, user_id = userid, start_time = start_time, end_time = end_time, status = status)
@@ -216,8 +231,7 @@ class BookGuestController(LoginRequiredMixin, View):
             
             log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
             log.save()
-            
-            print(datetime.now())
+
         return redirect('bookguest')
     
 class ViewWorkspacesController(LoginRequiredMixin, View):
