@@ -69,12 +69,7 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
             if booking.status == "Pending":
                 booking.status = 'Booked'
                 booking.save()
-                
-<<<<<<< HEAD
                 timer = Timer(user_id=booking.userid, minutes=30, seconds=20)
-=======
-                timer = Timer(user_id=booking.user_id, minutes=0, seconds=3)
->>>>>>> 5706ee09531a48828fe55b637883a52ba9459a76
                 timer.save()
                 
                 log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
