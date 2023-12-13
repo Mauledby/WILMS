@@ -23,8 +23,8 @@
           {% for bookings in bookings %}
           <tr id="tabledata">
             <td>{{ bookings.referenceid }}</td>
-            <td>{{ bookings.userid }}</td>
-            <td>{{ bookings.schedule }}</td>
+            <td>{{ bookings.user_id }}</td>
+            <td>{{ bookings.start_time }} - {{bookings.end_time}}</td>
             {% if bookings.status == 'Pending' %}
 
             <td style="color: orange">{{ bookings.status }}</td>
