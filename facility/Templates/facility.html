@@ -1,48 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <!-- <meta name="viewport" content="width=devicewidth, initial-scale=1.0"> -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-  <meta charset="UTF-8">
-  <title>WILMS | Facility Management</title>
-  <link href={% static "icon/favicon3.ico" %} rel="shortcut icon">
-  <link href={% static "facility/general.css" %} rel="stylesheet" >
-  <!-- <link rel="stylesheet" href="general.css">
-  <link rel="stylesheet" href="table.css"> -->
-  <style>
-
-form.modal-dialog{
-  right: -12%;
-}
-table{
-  position: left;
-  width: fit-content;
-}
-button.adminlabel{
-    position: fixed;
-    display: block;
-    right: 2%;
-    width: fit-content;
-    height: 100px;
-    background: #FFCC01;
-    top: 0rem;
-    align-items: center;
-    border: none;
-    font-weight: 10px;
-    font-size: 22px;
-    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
-  }
-
-</style>
-</head>
-<body>
-
+{% block facility_content %}
   <div class="modal fade" id="staticBackdrop2">
     <form method="POST" class="modal-dialog modal-dialog-centered" id="update_faci">
       <div class="modal-content">
@@ -90,22 +48,7 @@ button.adminlabel{
             {{mform.rateperhour}}
             <label class="modalpopup">Capacity</label><br>
             {{mform.capacity}}
-            <!-- {% if mform.errors %}
-            <div class="alert alert-danger">
-                <strong>Error:</strong>
-                <ul>
-                    {% for error in mform.errors.facilityname %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    {% for error in mform.errors.rateperhour %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                    {% for error in mform.errors.capacity %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-          {% endif %} -->
+
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}">Cancel</a></button>
@@ -114,14 +57,6 @@ button.adminlabel{
           </div>
       </div>
   </form>
-
-              <!-- {% if form.errors %}
-              <ul class="error">
-                  {% for field, errors in form.errors.items %}
-                      <li>{{ field }}: {{ errors }}</li>
-                  {% endfor %}
-              </ul>
-              {% endif %} -->
 </div>
 <!---------------------------------------------------DISPLAY FACILITY-------------------------------->
 {% for f in facility %} 
@@ -145,177 +80,99 @@ button.adminlabel{
 </div>
 {% endfor %}  
 <div>
-    <div class="label-page">FACILITY</div>
-    <div class="table" style="height: 550px;">
-      <a class="rules-tab" href="{% url 'facility:facilitytable' %}">Rules Table</a>
-      <h4>Facility Table</h4><br>
-      <table class="center" cellspacing="2" style="margin-top: 3rem; width: max-width;">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Facility Name</th>
-            <th>Rate/HR</th>
-            <th>Capacity</th>
-            <th>Action</th>
-          </tr>
-        </thead>
 
-        <tbody style="height: 1px;">
-          {% for f in facility %} 
-          <tr>
-            <td>{{ f.id }}</td>
-            <td>{{ f.facilityname }}</td>
-            <td>₱{{ f.rateperhour }}</td>
-            <td>{{ f.capacity }}</td>
-            <td style="width: 20%;">
-              <button id="btnupdate" type="button" class="btndel" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" 
-                      data-facility-id="{{ f.id }}" data-facilityname="{{ f.facilityname }}" 
-                      data-rateperhour="{{ f.rateperhour }}" data-capacity="{{ f.capacity }}">
-                Edit
-              </button>
-              <button class="btndel" id="delfaci" data-bs-toggle="modal" data-bs-target="#warning-{{ f.id}}" data-facilityname="{{ f.facilityname }}"  data-facility-id="{{ f.id }}">
-                Delete
-              </button>
-            </td>
-            {% empty %}
-            <h3 style="position: absolute; margin-top: 20%; margin-left: 32%; opacity: 0.3;">No Available Facility</h3>
-          </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-        <button type="submit" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Facility</button>
-        </div>
-        </div>
-<!-- Load jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <div class="label-page">FACILITY</div>
+      <div class="table" style="height: 550px; overflow: auto;">
+        <a class="rules-tab" href="{% url 'facility:facilitytable' %}">Rules Table</a>
+        <h4>Facility Table</h4><br>
+        <table class="center" cellspacing="2" style="margin-top: 3rem; width: max-width;">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Facility Name</th>
+              <th>Rate/HR</th>
+              <th>Capacity</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-<!-- Your AJAX request script -->
-<script>
-  $(document).on("click", "#btnupdate", function() {
-    // Get the data attributes
-    var facilityId = $(this).data("facility-id");
-    var facilityName = $(this).data("facilityname");
-    var ratePerHour = $(this).data("rateperhour");
-    var capacity = $(this).data("capacity");
-    var facilityId = $(this).data("facility-id");
-    $("#facilityIdInput").val(facilityId);
-    console.log("facilityId:", facilityId);
+          <tbody style="height: 1px;">
+            {% for f in facility %} 
+            <tr>
+              <td>{{ f.id }}</td>
+              <td>{{ f.facilityname }}</td>
+              <td>₱{{ f.rateperhour }}</td>
+              <td>{{ f.capacity }}</td>
+              <td style="width: 20%;">
+                <button id="btnupdate" type="button" class="btndel" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" 
+                        data-facility-id="{{ f.id }}" data-facilityname="{{ f.facilityname }}" 
+                        data-rateperhour="{{ f.rateperhour }}" data-capacity="{{ f.capacity }}">
+                  Edit
+                </button>
+                <button class="btndel" id="delfaci" data-bs-toggle="modal" data-bs-target="#warning-{{ f.id}}" data-facilityname="{{ f.facilityname }}"  data-facility-id="{{ f.id }}">
+                  Delete
+                </button>
+              </td>
+              {% empty %}
+              <h3 style="position: absolute; margin-top: 20%; margin-left: 32%; opacity: 0.3;">No Available Facility</h3>
+            </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+          <button type="submit" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Facility</button>
+          </div>
+         
+          </div>
+  <!-- Load jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    // Log facilityId to the console for debugging
-    // console.log(facilityId);
+  <!-- Your AJAX request script -->
+  <script>
+    $(document).on("click", "#btnupdate", function() {
+      // Get the data attributes
+      var facilityId = $(this).data("facility-id");
+      var facilityName = $(this).data("facilityname");
+      var ratePerHour = $(this).data("rateperhour");
+      var capacity = $(this).data("capacity");
+      var facilityId = $(this).data("facility-id");
+      $("#facilityIdInput").val(facilityId);
+      console.log("facilityId:", facilityId);
 
-    // Set the values as default values in the modal form
-    $("#staticBackdrop2 input[name='facilityname']").val(facilityName);
-    $("#staticBackdrop2 input[name='rateperhour']").val(ratePerHour);
-    $("#staticBackdrop2 input[name='capacity']").val(capacity);
+      // Log facilityId to the console for debugging
+      // console.log(facilityId);
 
-    // Show the modal
-    $("#staticBackdrop2").modal("show");
-  });
-</script>
+      // Set the values as default values in the modal form
+      $("#staticBackdrop2 input[name='facilityname']").val(facilityName);
+      $("#staticBackdrop2 input[name='rateperhour']").val(ratePerHour);
+      $("#staticBackdrop2 input[name='capacity']").val(capacity);
 
-<!-- Your AJAX request script -->
-<script>
-  $.ajax({
-      type: "POST",
-      url: "/facility",
-      data: {
-          facilityId: facilityId,
-          facilityname: updatedFacilityName,  // Include other updated fields
-          rateperhour: updatedRatePerHour,
-          capacity: updatedCapacity
-      },
-      success: function(response) {
-          // Handle the response from the server if needed
-      },
-      error: function(error) {
-          // Handle any errors if the AJAX request fails
-      }
-  });
-</script>
+      // Show the modal
+      $("#staticBackdrop2").modal("show");
+    });
+  </script>
 
-
-<!-------------------------------------------------------------NAVIGATION BAR---------------------------------------------------------------->
-<nav class="vertical">
-  <div class="avatar">
-    <img src="{% static 'media/avatar1.png' %}" alt="Profile Picture">
-  </div>
-  <ul>
-    <li>
-      <ul>
-      </ul>
-    </li>
-    <li><a href="{% url 'facility:facility' %}" class="nav1" style=" background-color: #ffcc01; color: black;">Facility Management</a>
-
-      <ul class="drpdwn1">
-        <li><a href="{% url 'facility:facility' %}" class="drp1" style=" background-color: #ffcc01; color: black;">Facility</a></li>
-        <li><a  href="{% url 'facility:usertable' %}" class="drp1" >User</a></li>
-        <li><a href="{% url 'facility:calendar' %}" class="drp1">Calendar</a></li>
-      </ul>
-    </li>
-    <li><a href="{% url 'facility:revenuedashboard' %}" class="nav2">Revenue</a>
-      <ul class="drpdwn2">
-        <li><a href="{% url 'facility:revenuedashboard' %}" class="drp2">Dashboard</a></li>
-        <li><a href="{% url 'facility:revenuereport' %}" class="drp2">Reports</a></li>
-      </ul></li>
-    <li><a href="{% url 'facility:settingfacility' %}" class="nav3">Rules Summary</a></li>
-  </ul>
-</nav>
-<!-- horizontal pane for navbar -->
+  <!-- Your AJAX request script -->
+  <script>
+    $.ajax({
+        type: "POST",
+        url: "/facility",
+        data: {
+            facilityId: facilityId,
+            facilityname: updatedFacilityName,  // Include other updated fields
+            rateperhour: updatedRatePerHour,
+            capacity: updatedCapacity
+        },
+        success: function(response) {
+            // Handle the response from the server if needed
+        },
+        error: function(error) {
+            // Handle any errors if the AJAX request fails
+        }
+    });
+  </script>
 
 
-<!-- kirk eh base lng cguro ni sa tanan na app tas eh extend'2 lng pwede bana? -->
-<nav class="horizontal">
-  <ul class="left">
-    <li><a href="#"><img src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
-  </ul>
-  <ul class="center" >
+  <!-------------------------------------------------------------NAVIGATION BAR---------------------------------------------------------------->
 
-    {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == 'error' %}
-        
-          <div class="center" style="position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
-          justify-content: center; align-items: center; ">
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
-            </div>
-        {% elif message.tags == 'success' %}
-        <div style="position: fixed; z-index: 999; width: 100%;" >
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}</div>
-        {% elif message.tags == 'warning' %}
-        <div style="position: fixed; z-index: 999; width: 100%;" >
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}</div>
-        {% elif message.tags == 'info' %}
-        <div style="position: fixed; z-index: 999; width: 100%;" >
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {{ message }}</div>
-        {% endif %} 
-      {% endfor %}
-      {% endif %}
-
-<!-- <li>
-<input type="text" class="search-bar"placeholder="Search...">
-<button type="submit" class="search-btn">Search</button></li> -->
-<li></li>
-</ul>
-<ul class="right">
-  <button class="adminlabel" style="left:49%;"><a class="menugroup" href="#">Home</a></button>
-  <button class="adminlabel" style="left:55%;"><a style="color: white; " class="menugroup" href="#">Facility</a></button>
-  <button class="adminlabel" style="left:62%; border: 0px;"><a class="menugroup" href="#">Booking</a></button>
-  <button class="adminlabel" style="left:70%;"><a class="menugroup" href="#">Wallet</a></button>
-  <button class="adminlabel" style="left:77%;"><a class="menugroup" href="#">Crowd Control</a></button>
-  <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="#">Logout</a></button>
-</ul>
-  
-</nav> 
-</body>
-</html>
+{% endblock %}
 

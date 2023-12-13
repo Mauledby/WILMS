@@ -29,7 +29,7 @@ class Facility_MainRules(models.Model):
     num_pc = models.IntegerField(blank=False, default=0)
     num_attendies = models.IntegerField(blank=False)
     description = models.CharField(max_length=255,null=False)
-    rate = models.IntegerField(blank=False, default=0)
+    rate = models.FloatField()
     status = models.BooleanField(default=0)
 
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
@@ -146,6 +146,7 @@ class Setting_Facility(models.Model):
     mainrules = models.ForeignKey(Facility_MainRules_set, null=True, on_delete=models.CASCADE)
     promorules = models.ForeignKey(Facility_PromoRules_set, null=True, on_delete=models.CASCADE)
     subrules = models.ForeignKey(Facility_SubRules_set, null=True, on_delete=models.CASCADE)
+    isdeleted = models.BooleanField(default=0)
     
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
     modified_at = models.DateTimeField(default=timezone.now, null=False)
@@ -397,6 +398,7 @@ class Setting_UserType(models.Model):
     mainrules = models.ForeignKey(UserType_MainRules_set, null=True, on_delete=models.CASCADE)
     promorules = models.ForeignKey(UserType_PromoRules_set, null=True, on_delete=models.CASCADE)
     subrules = models.ForeignKey(UserType_SubRules_set, null=True, on_delete=models.CASCADE)
+    isdeleted = models.BooleanField(default=0)
     
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
     modified_at = models.DateTimeField(default=timezone.now, null=False)

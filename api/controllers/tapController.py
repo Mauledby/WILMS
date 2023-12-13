@@ -45,8 +45,26 @@ class TapController():
                 booking=Booking.objects.get(pk=attendance.booking.id)
                 attendance.isSignedIn=False
                 attendance.signOutTime=datetime.datetime.now().time()
+                
+                # convert nato ang end
+                bookingTimePlusTen =datetime.datetime.combine(datetime.datetime.now().date(),datetime.time(booking.endTime.hour,booking.endTime.minute))+datetime.timedelta(minutes=+10)
+               
                 # overstaying
-                if(booking.endTime<datetime.datetime.now().time() or booking.date<dateToday):
+                if(bookingTimePlusTen.time()<datetime.datetime.now().time() or booking.date<dateToday):
+                    print("3gred")
+                    if(booking.isOverstayingCharged==False):
+                        booking.isOverstayingCharged=True
+                        booking.save()
+                        userProfile=UserProfileInfo.objects.get(user=booking.user)
+                        # deduct sa points sa user
+                        if booking.coins==0:
+                           pointDeduction=booking.points*0.3
+                           userProfile.point_balance-=pointDeduction
+                        # deduct sa coins sa user 
+                        elif booking.points==0:
+                            coinDeduction=booking.coins*0.3
+                            userProfile.coin_balance-=coinDeduction
+                        userProfile.save()
                     attendance.isOverstaying=True                    
                     
                 else:

@@ -49,7 +49,7 @@ def is_superuser(user):
     return user.is_superuser  # Check if the user is a superuser
 
 
-@csrf_protect
+# @csrf_protect
 # @login_required
 # @user_passes_test(is_superuser)
 def get_facility(request):
@@ -248,9 +248,9 @@ def get_revenue_trans(facility_filter, start_date, end_date):
 
     return revenue_trans
 
-@csrf_protect
-@login_required
-@user_passes_test(is_superuser)
+# @csrf_protect
+# @login_required
+# @user_passes_test(is_superuser)
 def get_events(request):
     events = CalendarEvent.objects.all().order_by('id')
     event_data = []
@@ -297,64 +297,72 @@ def event_click(request, event_id):
 # from django import forms
 # from .models import Facility
 # from .forms import FacilityForm, FacilityUpdateForm
+
+
 @csrf_protect
 @login_required
 @user_passes_test(is_superuser)
 def display_facility(request):
+    # message = "try"
+    # messages.info(request, message)
     if request.method == 'POST':
+        # Handling POST requests
+        
+        # Retrieving form data from POST request
         upform = FacilityUpdateForm(request.POST)
         mform = FacilityForm(request.POST)
         f_id = request.POST.get('id')
         nfacility = request.POST.get('facilityname')
         nrateperhour = request.POST.get('rateperhour')
         ncapacity = request.POST.get('capacity')
+        firstname = request.session.get('firstname')  # Retrieving 'firstname' from session
         lim_rateperhour = 20
         lim_capacity = 300
-
+        
         if f_id is None:
             try:
-                # if mform.is_valid():
-                if Facility.objects.filter(facilityname=nfacility,isdeleted=0).exists():
-                    message = f"{nfacility} already exist"
+                # Checking if a facility with the same name already exists
+                if Facility.objects.filter(facilityname=nfacility, isdeleted=0).exists():
+                    message = f"{nfacility} already exists"
                     messages.error(request, message)
                     return redirect('facility:facility')
                 else:
+                    # Saving a new facility
                     mform.save()
-                    # new_Facility = Setting_Facility(facility=nfacility)
-                    # new_Facility.save()
                     message = "Facility added successfully"
                     messages.success(request, message)
                     return redirect('facility:facility')
             except Exception as e:
-                return JsonResponse({"error": str(e)})
+                    message = str(e)
+                    messages.error(request, message)
         else:
             try:
+                # Updating an existing facility
                 facility = get_object_or_404(Facility, id=f_id)
-                # sfacility = Setting_Facility.objects.filter(facility=facility.facilityname)
                 facility.facilityname = nfacility
                 facility.rateperhour = nrateperhour
                 facility.capacity = ncapacity
                 facility.save()
-                # new_Facility = Setting_Facility(facility=sfacility)
-                # new_Facility.save()
-                # sfacility = get_object_or_404(Setting_Facility, facility=facility.facilityname)
-                # sfacility.facilityname = nfacility
-                # sfacility.save()
                 message = "Facility updated successfully"
                 messages.success(request, message)
             except Http404:
                 return JsonResponse({"error": "Facility not found"})
             except Exception as e:
-                message = f"{nfacility} already exist"
+                message = f"{nfacility} already exists"
                 messages.error(request, message)
-
+        
         return redirect('facility:facility')
     else:
+        # Handling GET requests
+        
+        # Retrieving all facilities that are not deleted and ordering them by ID
         facility = Facility.objects.filter(isdeleted=0).order_by('id')
         upform = FacilityUpdateForm()
         mform = FacilityForm()
+        firstname = request.session.get('firstname')  # Retrieving 'firstname' from session
 
-    return render(request, 'facility.html', {'facility': facility, 'upform': upform, 'mform': mform})
+    # Rendering the 'facility.html' template with the retrieved data
+    return render(request, 'facility.html', {'facility': facility, 'upform': upform, 'mform': mform, 'firstname': firstname})
 
 
 
@@ -430,6 +438,7 @@ def process_transaction(request):
 @login_required
 @user_passes_test(is_superuser)
 def rules_facility(request):
+    
     if request.method == 'POST':
         forms = TransactionForm(request.POST)
         if forms.is_valid():
@@ -455,37 +464,43 @@ def rules_facility(request):
 @user_passes_test(is_superuser)
 def delete_facility(request, id):
 
-    f_id = request.POST.get('id')
+    faci = Facility.objects.get(pk=id)
     try:
         facility = Facility.objects.filter(id=id)
+        set_fac = Setting_Facility.objects.filter(facility=id)
         facility.update(isdeleted=1)
+        set_fac.update(isdeleted=1)
+        message = f"{faci.facilityname}is deleted and move to recycle bin"
+        messages.info(request, message)
+        
     except Facility.DoesNotExist:
         # Handle the case where the Facility does not exist
         pass
 
     return redirect(reverse('facility:facility'))
 
-@csrf_protect
-@login_required
-@user_passes_test(is_superuser)
-def display_calendar(request):
-     return render(request, 'calendar.html')
+
 
 @csrf_protect
 @login_required
 @user_passes_test(is_superuser)
 def display_setting_facility(request):
+    firstname = request.session.get('firstname')
     facility = Facility.objects.filter(isdeleted=0).order_by('id')
-    setting_facility = Setting_Facility.objects.all().order_by('id')
-    setting_usertype = Setting_UserType.objects.all().order_by('id')
+    del_facility = Facility.objects.filter(isdeleted=1).order_by('id')
+    del_setting_facility = Setting_Facility.objects.filter(isdeleted=1).order_by('id')
+    setting_facility = Setting_Facility.objects.filter(isdeleted=0).order_by('id')
+    setting_usertype = Setting_UserType.objects.filter(isdeleted=0).order_by('id')
     event = CalendarEvent.objects.all().order_by('id')
     # facility = Setting_Facility.objects.all().filter(facility=setting_facility)
     # fmainrules = Facility_MainRules_set.objects.all().filter(facility=facility).order_by('-modified_at')
     return render(request, 'setting.html', {'setting_facility': setting_facility,
            'facility':facility,
            'setting_usertype':setting_usertype,
-           'event':event
-
+           'event':event,
+            'firstname':firstname,
+            'del_facility':del_facility,
+            'del_setting_facility':del_setting_facility
 
         })
 
@@ -493,29 +508,26 @@ def display_setting_facility(request):
 @login_required
 @user_passes_test(is_superuser)
 def displayall_setting_facility(request):
-    setting_facility = Setting_Facility.objects.all().order_by('id')
+    firstname = request.session.get('firstname')
+    setting_facility = Setting_Facility.objects.filter(isdeleted=0).order_by('id')
     nfacility = request.POST.get('facility')
+    
 
     if request.method == 'POST':
         forms = RulesFacilityForm(request.POST)
         if forms.is_valid():
-            # Check if a record with the same facility already exists
             facility = forms.cleaned_data['facility']
             if not Setting_Facility.objects.filter(facility=facility).exists():
-                # If no record with the same facility exists, save the new record
                 forms.save()
             else:
-                # Handle the case where a record with the same facility already exists
-                # You can display an error message or perform another action here
-                # For example, you can add an error message to the form
-                message = f"This facility already exist"
+                message = f" This facility already exist."
                 messages.warning(request, message)
                 
 
     else:
         # Set the initial value of the 'facility' field in the form
         forms = RulesFacilityForm() 
-    return render(request, 'facility_table.html', {'setting_facility': setting_facility, 'forms': forms})
+    return render(request, 'facility_table.html', {'setting_facility': setting_facility, 'forms': forms, 'firstname':firstname})
 
 
 @csrf_protect
@@ -610,7 +622,7 @@ def is_capacity_within_limit(capacity):
 @user_passes_test(is_superuser)
 def user_create(request):
     template = 'user.html'
-
+    firstname = request.session.get('firstname')
     user_list = User.objects.all().order_by('-id')
 
     if request.method == 'POST':
@@ -624,13 +636,14 @@ def user_create(request):
         user_type = UserTypeForm()
         user = UserForm()
 
-    return render(request, template,{'user':user,'user_type':user_type, 'user_list':user_list})
+    return render(request, template,{'user':user,'user_type':user_type, 'user_list':user_list, 'firstname':firstname})
 
 @csrf_protect
 @login_required
 @user_passes_test(is_superuser)
 def display_fmrules(request, id):
     facility = get_object_or_404(Setting_Facility, pk=id)
+    firstname = request.session.get('firstname')
     if request.method == 'POST':
         upform = FacilityUpdateForm(request.POST, instance=facility)
         new_facility = request.POST.get('facilityname') 
@@ -653,13 +666,14 @@ def display_fmrules(request, id):
         facility = get_object_or_404(Facility, pk=id)
         upform = FacilityUpdateForm(instance=facility)
 
-    return render(request, 'update_facility.html',{'upform': upform, 'facility': facility})
+    return render(request, 'update_facility.html',{'upform': upform, 'facility': facility, 'firstname':firstname})
 
 
 @csrf_protect
 @login_required
 @user_passes_test(is_superuser)
 def display_facility_mainrules(request, id):
+    firstname = request.session.get('firstname')
     sfacility = get_object_or_404(Setting_Facility, pk=id)
     request.session['faci_id'] = sfacility.pk
     request.session['facility'] = sfacility.facility_id
@@ -682,7 +696,8 @@ def display_facility_mainrules(request, id):
     'mform': mform,
     'fmainrules': fmainrules, 
     'fsubrules':fsubrules,
-    'fpromorules':fpromorules
+    'fpromorules':fpromorules,
+    'firstname':firstname
     })
 # from django.http import HttpResponseRedirect
 # from django.urls import reverse
@@ -694,6 +709,7 @@ def display_facility_mainrules(request, id):
 def usertypemainrules_back(request):
     user_id = request.session.get('user_type_id')
     user_type = request.session.get('user_type')
+    
 
     if UserType_MainRules_set.objects.filter(user_type=user_type).exists():
         if UserType_MainRules_set.objects.filter(status=0):
@@ -748,52 +764,42 @@ def usertypemainrules_back(request):
 @user_passes_test(is_superuser)
 def facilitymainrules_back(request):
     faci_id = request.session.get('faci_id')
-    facility = request.session.get('facility')
+    facility = request.session.get('facility') 
 
-    if Facility_MainRules_set.objects.filter(facility=facility).exists():
+    if faci_id is None:
+        message = "Facility ID is missing."
+        messages.error(request, message)
+        return HttpResponseRedirect(reverse('settingfacility'))
+
+    main_rules_exist = Facility_MainRules_set.objects.filter(facility=facility).exists()
+    sub_rules_exist = Facility_SubRules_set.objects.filter(facility=facility).exists()
+    promo_rules_exist = Facility_PromoRules_set.objects.filter(facility=facility).exists()
+
+    if not main_rules_exist or Facility_MainRules_set.objects.filter(status=0).exists():
         if Facility_MainRules_set.objects.filter(status=0):
-            message = f"You have to set a main rule for a Facility"
-            messages.info(request, message)
-    
-        elif Facility_MainRules_set.objects.filter(facility=facility).exists():
-            if Facility_MainRules_set.objects.filter(status=1):
-                if Facility_SubRules_set.objects.filter(facility=facility).exists():
-                    
-                    if Facility_SubRules_set.objects.filter(status=0):
-                        message = f"You have to set a sub rule for a Facility"
-                        messages.info(request, message)
+            message = "You have to set a main rule for this facility."
+            messages.warning(request, message)
+            return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
+        if not main_rules_exist:
+            return HttpResponseRedirect(reverse('facility:facilitytable'))
 
-                    elif Facility_SubRules_set.objects.filter(facility=facility).exists():
-                        if Facility_SubRules_set.objects.filter(status=1):
-                            if Facility_PromoRules_set.objects.filter(facility=facility).exists():
-                                if Facility_PromoRules_set.objects.filter(status=0):
-                                    message = f"You have to set a promo rule for a Facility"
-                                    messages.info(request, message)
+    elif not sub_rules_exist or Facility_SubRules_set.objects.filter(status=0).exists():
+        if Facility_SubRules_set.objects.filter(status=0):
+            message = "You have to set a sub rule for this facility."
+            messages.warning(request, message)
+            return HttpResponseRedirect(reverse('facility:facilitysubrules', args=[faci_id]))
+        if not sub_rules_exist:
+            return HttpResponseRedirect(reverse('facility:facilitytable'))
 
-                                elif Facility_PromoRules_set.objects.filter(facility=facility).exists():
-                                    if Facility_PromoRules_set.objects.filter(status=1):
-                                        return HttpResponseRedirect(reverse('facility:facilitytable'))
-    
-    elif not Facility_SubRules_set.objects.filter(facility=facility).exists():
-        return HttpResponseRedirect(reverse('facility:facilitytable'))
+    elif not promo_rules_exist or Facility_PromoRules_set.objects.filter(status=0).exists():
+        if Facility_PromoRules_set.objects.filter(status=0):
+            message = "You have to set a promo rule for this facility."
+            messages.warning(request, message)
+            return HttpResponseRedirect(reverse('facility:facilitypromorules', args=[faci_id]))
+        if not promo_rules_exist:
+            return HttpResponseRedirect(reverse('facility:facilitytable'))
 
-    elif not Facility_PromoRules_set.objects.filter(facility=facility).exists():
-        return HttpResponseRedirect(reverse('facility:facilitytable'))
-        
-    elif not Facility_MainRules_set.objects.filter(facility=facility).exists():
-        return HttpResponseRedirect(reverse('facility:facilitytable'))                                   
-
-
-    else:
-        return HttpResponseRedirect(reverse('facility:facilitytable'))
-
-    if faci_id is not None:
-        
-        return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
-    else:
-
-        # Handle the case when faci_id is None, e.g., by redirecting to a default URL
-        return HttpResponseRedirect(reverse('facility_mainrules.html'))
+    return HttpResponseRedirect(reverse('facility:facilitytable'))
 
 
 @csrf_protect
@@ -806,7 +812,7 @@ def facilitysubrules_back(request):
     if Facility_SubRules_set.objects.filter(facility=facility).exists():
         if Facility_SubRules_set.objects.filter(status=0):
             message = f"You have to set a sub rule for a facility"
-            messages.info(request, message)
+            messages.warning(request, message)
 
         elif Facility_SubRules_set.objects.filter(facility=facility).exists():
             if Facility_SubRules_set.objects.filter(status=1):
@@ -840,19 +846,23 @@ def facilitymainrules_set(request, id):
     status = 0
     # new_Facility = Facility_MainRules_set(facility=newfacility, title=title, description=description, rate=rate, status=status)
     if Facility_MainRules_set.objects.filter(facility=facility).exists():
+        rules_count = Facility_MainRules_set.objects.filter(facility=facility, status=0).count()
         # Facility exists, check if title is different
         if Facility_MainRules_set.objects.filter(status=1):
-            message = f"You have to remove the existing rule first to add new rule"
+            message = f"You have to remove the existing set rule first to add new rule"
             messages.warning(request, message)
 
         elif not Facility_MainRules_set.objects.filter(title=title).exists():
             if Facility_MainRules_set.objects.filter(status=1):
-                message = f"You have to remove the existing rule first to add new rule"
+                message = f"Count: {rules_count} You have to remove the existing set rule first to add new rule"
                 messages.warning(request, message)
             else:
                 new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
                 new_Facility.save()
 
+        elif rules_count > 1:
+            message = f"Count: {rules_count}You have to remove the existing set rule first to add new rule"
+            messages.warning(request, message) 
     # elif Facility_MainRules_set.objects.filter(facility=facility).exists():
     #     if Facility_MainRules_set.objects.filter(status=0).exists():
     #         if not Facility_MainRules_set.objects.filter(title=title).exists():
@@ -861,6 +871,7 @@ def facilitymainrules_set(request, id):
     else:
         # Facility doesn't exist, check if title exists
         if Facility_MainRules_set.objects.filter(title=title).exists():
+            # f" already exists"
             new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
             new_Facility.save()
 
@@ -887,6 +898,7 @@ def is_setfacilitymainrules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
 
+    facility_list = Facility_MainRules_set.objects.filter(facility=facility)
     # Retrieve all rule sets
     mainrule_list = Facility_MainRules_set.objects.filter(facility=facility)
     subrule_list = Facility_SubRules_set.objects.filter(facility=facility)
@@ -918,6 +930,7 @@ def is_setfacilitymainrules_status(request):
         promorule = None  # or set to an appropriate default value
 
     # Update the status for all matching instances
+    
     mainrules_list.update(status=1)
     subrules_list.update(status=1)
     promorules_list.update(status=1)
@@ -943,7 +956,11 @@ def is_setfacilitymainrules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
 
+    # facilities = get_object_or_404(Facility, facilityname=facility)
+    main_rules = Facility_MainRules_set.objects.filter(facility=facility).first()
+    promo_rules = Facility_PromoRules_set.objects.filter(facility=facility).first()
     # Retrieve all rule sets
+    facility_list = Facility.objects.get(id=facility)
     mainrule_list = Facility_MainRules_set.objects.filter(facility=facility)
     subrule_list = Facility_SubRules_set.objects.filter(facility=facility)
     promorule_list = Facility_PromoRules_set.objects.filter(facility=facility)
@@ -955,11 +972,15 @@ def is_setfacilitymainrules_status(request):
 
     setting_list = Setting_Facility.objects.filter(facility=facility)
 
+    
 
-
+    
     # Check if subrule_list is not empty
     if mainrule_list.exists():
             mainrule = request.POST.get('mainrule', mainrule_list.first().id)
+            new_rate = main_rules.rate
+            facility_list.rateperhour = new_rate
+            facility_list.save()
     else:
         mainrule = None 
 
@@ -970,10 +991,14 @@ def is_setfacilitymainrules_status(request):
 
     if promorule_list.exists():
         promorule = request.POST.get('promorule', promorule_list.first().id)
+        new_rate = promo_rules.new_rate
+        facility_list.rateperhour = new_rate
+        facility_list.save()
     else:
         promorule = None  # or set to an appropriate default value
 
     # Update the status for all matching instances
+
     mainrules_list.update(status=1)
     subrules_list.update(status=1)
     promorules_list.update(status=1)
@@ -1034,7 +1059,7 @@ def delete_facilitysubrules(request, id):
     facility.delete()
 
     if faci_id is not None:
-        return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
+        return HttpResponseRedirect(reverse('facility:facilitysubrules', args=[faci_id]))
     else:
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
@@ -1050,7 +1075,7 @@ def delete_facilitypromorules(request, id):
     facility.delete()
 
     if faci_id is not None:
-        return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
+        return HttpResponseRedirect(reverse('facility:facilitypromorules', args=[faci_id]))
     else:
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
@@ -1062,6 +1087,7 @@ def delete_facilitypromorules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def display_facility_subrules(request, id):
+    firstname = request.session.get('firstname')
     sfacility = get_object_or_404(Setting_Facility, pk=id)
     request.session['faci_id'] = sfacility.pk
     request.session['facility'] = sfacility.facility_id
@@ -1086,7 +1112,8 @@ def display_facility_subrules(request, id):
         'sform': sform,
         'fmainrules': fmainrules, 
         'fsubrules':fsubrules,
-        'fpromorules':fpromorules
+        'fpromorules':fpromorules,
+        'firstname':firstname
     })
 
 # is_setfacilitysubrules_status
@@ -1097,7 +1124,11 @@ def is_setfacilitysubrules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
 
+    # facilities = get_object_or_404(Facility, facilityname=facility)
+    main_rules = Facility_MainRules_set.objects.filter(facility=facility).first()
+    promo_rules = Facility_PromoRules_set.objects.filter(facility=facility).first()
     # Retrieve all rule sets
+    facility_list = Facility.objects.get(id=facility)
     mainrule_list = Facility_MainRules_set.objects.filter(facility=facility)
     subrule_list = Facility_SubRules_set.objects.filter(facility=facility)
     promorule_list = Facility_PromoRules_set.objects.filter(facility=facility)
@@ -1109,11 +1140,15 @@ def is_setfacilitysubrules_status(request):
 
     setting_list = Setting_Facility.objects.filter(facility=facility)
 
+    
 
-
+    
     # Check if subrule_list is not empty
     if mainrule_list.exists():
             mainrule = request.POST.get('mainrule', mainrule_list.first().id)
+            new_rate = main_rules.rate
+            facility_list.rateperhour = new_rate
+            facility_list.save()
     else:
         mainrule = None 
 
@@ -1124,10 +1159,14 @@ def is_setfacilitysubrules_status(request):
 
     if promorule_list.exists():
         promorule = request.POST.get('promorule', promorule_list.first().id)
+        new_rate = promo_rules.new_rate
+        facility_list.rateperhour = new_rate
+        facility_list.save()
     else:
         promorule = None  # or set to an appropriate default value
 
     # Update the status for all matching instances
+
     mainrules_list.update(status=1)
     subrules_list.update(status=1)
     promorules_list.update(status=1)
@@ -1141,10 +1180,10 @@ def is_setfacilitysubrules_status(request):
     messages.success(request, message)
 
     if faci_id is not None:
-        return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
+        return HttpResponseRedirect(reverse('facility:facilitysubrules', args=[faci_id]))
     else:
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
-        return HttpResponseRedirect(reverse('facility_mainrules.html'))
+        return HttpResponseRedirect(reverse('facility_subrules.html'))
 
 @csrf_protect
 @login_required
@@ -1218,6 +1257,7 @@ def delete_setfacilitysubrules_status(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def display_facility_promorules(request, id):
+    firstname = request.session.get('firstname')
     sfacility = get_object_or_404(Setting_Facility, pk=id)
     request.session['faci_id'] = sfacility.pk
     request.session['facility'] = sfacility.facility_id
@@ -1242,7 +1282,8 @@ def display_facility_promorules(request, id):
         'pform': pform,
         'fmainrules': fmainrules, 
         'fsubrules':fsubrules,
-        'fpromorules':fpromorules
+        'fpromorules':fpromorules,
+        'firstname':firstname
     })
 
 # is_setfacilitysubrules_status
@@ -1252,11 +1293,59 @@ def display_facility_promorules(request, id):
 def is_setfacilitypromorules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
+
+    # facilities = get_object_or_404(Facility, facilityname=facility)
+    main_rules = Facility_MainRules_set.objects.filter(facility=facility).first()
+    promo_rules = Facility_PromoRules_set.objects.filter(facility=facility).first()
+    # Retrieve all rule sets
+    facility_list = Facility.objects.get(id=facility)
+    mainrule_list = Facility_MainRules_set.objects.filter(facility=facility)
+    subrule_list = Facility_SubRules_set.objects.filter(facility=facility)
+    promorule_list = Facility_PromoRules_set.objects.filter(facility=facility)
+
+    # Filter rule sets by facility
+    mainrules_list = Facility_MainRules_set.objects.filter(facility=facility)
+    subrules_list = Facility_SubRules_set.objects.filter(facility=facility)
     promorules_list = Facility_PromoRules_set.objects.filter(facility=facility)
+
+    setting_list = Setting_Facility.objects.filter(facility=facility)
+
+    
+
+    
+    # Check if subrule_list is not empty
+    if mainrule_list.exists():
+            mainrule = request.POST.get('mainrule', mainrule_list.first().id)
+            new_rate = main_rules.rate
+            facility_list.rateperhour = new_rate
+            facility_list.save()    
+    else:
+        mainrule = None 
+
+    if subrule_list.exists():
+        subrule = request.POST.get('subrule', subrule_list.first().id)
+    else:
+        subrule = None 
+
+    if promorule_list.exists():
+        promorule = request.POST.get('promorule', promorule_list.first().id)
+        new_rate = promo_rules.new_rate
+        facility_list.rateperhour = new_rate
+        facility_list.save()
+    else:
+        promorule = None  # or set to an appropriate default value
+
     # Update the status for all matching instances
+
+    mainrules_list.update(status=1)
+    subrules_list.update(status=1)
     promorules_list.update(status=1)
-    # promorules.save()
-    message = f"The status for {promorules_list.count()} facilities with the name {facility} has been updated to 1."
+
+    # Update the settings in a single call
+    setting_list.update(mainrules=mainrule, subrules=subrule, promorules=promorule)
+
+    # mainrules.save()
+    message = f"Rules successfully set."
 
     messages.success(request, message)
 
@@ -1343,6 +1432,7 @@ def delete_setfacilitypromorules_status(request, id):
 @user_passes_test(is_superuser)
 def display_facility_promo(request, id):
     sfacility = get_object_or_404(Setting_Facility, pk=id)
+    firstname = request.session.get('firstname')
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
     template = 'facility_promorules.html'
@@ -1358,13 +1448,14 @@ def display_facility_promo(request, id):
         # Set the initial value of the 'facility' field in the form
         pform = FacilitySubRulesForm(initial={'facility': sfacility.facility}) 
 
-    return render(request, template, {'sfacility': sfacility, 'fpromorules': fpromorules, 'addedpromorules': addedpromorules,'pform': pform})
+    return render(request, template, {'sfacility': sfacility, 'fpromorules': fpromorules, 'addedpromorules': addedpromorules,'pform': pform, 'firstname':firstname})
 
 
 @csrf_protect
 @login_required
 @user_passes_test(is_superuser)
 def revenue_dashboard(request):
+    firstname = request.session.get('firstname')
     transactions = Transaction.objects.all()
     chart_type_form = ChartTypeForm(request.GET or None)
     facilityt = Facility.objects.filter(isdeleted=0).order_by('id')
@@ -1464,6 +1555,7 @@ def revenue_dashboard(request):
             'number_facility':number_facility,
             'total_charge_payments':total_charge_payments,
             'labels': labels,
+            'firstname':firstname
 
         })
 
@@ -1471,6 +1563,7 @@ def revenue_dashboard(request):
 @login_required
 @user_passes_test(is_superuser)
 def revenue_report(request):
+    firstname = request.session.get('firstname')
     facilityt = Facility.objects.all().order_by('isdeleted')
     facility_filter = request.GET.get('facility')
     revenue_trans = Transaction.objects.all().order_by('-id')
@@ -1517,7 +1610,7 @@ def revenue_report(request):
                 'facility_revenue': facility_revenue,
             }
 
-    return render(request, 'revenue_report.html', {'revenue_trans': revenue_trans, 'facility_stats': facility_stats, 'facilityt': facilityt})
+    return render(request, 'revenue_report.html', {'revenue_trans': revenue_trans, 'facility_stats': facility_stats, 'facilityt': facilityt,'firstname':firstname })
 
 
 
@@ -1605,6 +1698,7 @@ def revenue_report(request):
 @login_required
 @user_passes_test(is_superuser)
 def display_calendar(request):
+    firstname = request.session.get('firstname')
     event = CalendarEvent.objects.all().order_by('start')
     facility_filter = request.GET.get('facility')
     request.session['facility'] = facility_filter
@@ -1627,7 +1721,7 @@ def display_calendar(request):
         if calform.is_valid():
             calform.save()        # Process your POST data here
 
-    return render(request, template, {'calform': calform, 'event': event, 'facility': facility, 'typesched': typesched})
+    return render(request, template, {'calform': calform, 'event': event, 'facility': facility, 'typesched': typesched, 'firstname':firstname})
 
 
 @csrf_protect
@@ -1644,6 +1738,7 @@ def delete_event(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def display_calendarview(request):
+    firstname = request.session.get('firstname')
     if request.method == 'POST':
         # Handle the form submission here
         pass  # Replace with your form handling logic
@@ -1655,9 +1750,9 @@ def display_calendarview(request):
     for event in events:
         event_data.append({
             'title': event.event_name,
-            'start': event.start_date.isoformat(),
-            'end': event.end_date.isoformat(),
-            'selected_days': event.selected_days,
+            'date': event.date,
+            'start': event.start,
+            'end': event.end,
             # 'facility': event.facility.facilityname,  # Assuming 'facility' has a 'name' field
             # 'type_sched': event.type_sched.type_sched,
         })
@@ -1666,31 +1761,40 @@ def display_calendarview(request):
         'facility': facilities,
         'event_data': event_data,
         'calform': CalendarEventForm(),
+        'firstname':firstname
     }
     
     return render(request, 'calendarview.html', context)
 
-@login_required
-@user_passes_test(is_superuser)
+
 def get_events(request):
-    # filter_facility = request.session.get('facility')
     events = CalendarEvent.objects.all().order_by('id')
     event_data = []
-    
+
     for event in events:
+        start_datetime = datetime.combine(event.date, event.start)
+        end_datetime = datetime.combine(event.date, event.end)
+
+        facility_name = event.facility.facilityname if event.facility else ''
+
+        # Access 'typesched' through the appropriate related field name
+        typesched_type = event.typesched_field.type_sched if hasattr(event, 'typesched_field') else ''
+
+        description_text = f"Facility: {facility_name}, Type: {typesched_type}"
+
         event_data.append({
             'title': event.event_name,
-            'start': event.start_date.isoformat(),
-            'end': event.end_date.isoformat(),
-            # 'facility': event.facility.facilityname,  # Assuming 'facility' has a 'name' field
-            # 'type_sched': event.type_sched.type_sched,
+            'start': start_datetime.isoformat(),
+            'end': end_datetime.isoformat(),
+            'description': description_text,
         })
-    
+
     return JsonResponse(event_data, safe=False)
 
 @login_required
 @user_passes_test(is_superuser)
 def transaction(request):
+    firstname = request.session.get('firstname')
     if request.method == 'POST':
         transform = TransactionForm(request.POST)
         if transform.is_valid():
@@ -1707,13 +1811,14 @@ def transaction(request):
         'transaction_form': transform,
     }
 
-    return render(request, 'revenue_report.html', context)
+    return render(request, 'revenue_report.html', context,{'firstname':firstname})
 
 # ---------------------------------------------------------------------------------------------------------------------
 @csrf_protect
 @login_required
 @user_passes_test(is_superuser)
 def display_usertype_mainrules(request, id):
+    firstname = request.session.get('firstname')
     suser = get_object_or_404(Setting_UserType, pk=id)
     request.session['user_type_id'] = suser.pk
     request.session['user_type'] = suser.user_type_id
@@ -1738,6 +1843,7 @@ def display_usertype_mainrules(request, id):
         'umainrules': umainrules,
         'usubrules': usubrules,
         'upromorules': upromorules,
+        'firstname': firstname
 
         })
 # from django.http import HttpResponseRedirect
@@ -1881,6 +1987,7 @@ def delete_usermainrules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def display_usertype_subrules(request, id):
+    firstname = request.session.get('firstname')
     suser = get_object_or_404(Setting_UserType, pk=id)
     request.session['user_type_id'] = suser.pk
     request.session['user_type'] = suser.user_type_id
@@ -1905,6 +2012,7 @@ def display_usertype_subrules(request, id):
         'umainrules': umainrules,
         'usubrules': usubrules,
         'upromorules': upromorules,
+        'firstname': firstname
         
         })
 
@@ -2007,6 +2115,7 @@ def delete_usersubrules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def display_usertype_promorules(request, id):
+    firstname = request.session.get('firstname')
     suser = get_object_or_404(Setting_UserType, pk=id)
     request.session['user_type_id'] = suser.pk
     request.session['user_type'] = suser.user_type_id
@@ -2036,6 +2145,7 @@ def display_usertype_promorules(request, id):
         'umainrules': umainrules,
         'usubrules': usubrules,
         'upromorules': upromorules,
+        'firstname':firstname
     })
 
 @login_required
@@ -2142,6 +2252,7 @@ def delete_userpromorules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def update_userMainRules(request, id):
+    firstname = request.session.get('firstname')
     mainrules = get_object_or_404(UserType_MainRules, pk=id)
     request.session['user_type_id'] = mainrules.pk
     
@@ -2170,7 +2281,7 @@ def update_userMainRules(request, id):
         mainrules = get_object_or_404(UserType_MainRules, pk=id) 
         upform = UserTypeMainRulesForm(instance=mainrules)
     
-    return render(request, 'update_usermainrules.html',{'upform': upform, 'mainrules':mainrules})
+    return render(request, 'update_usermainrules.html',{'upform': upform, 'mainrules':mainrules, 'firstname':firstname})
     # return HttpResponseRedirect(reverse(request,'facility:updatefacility',{'upform': upform, 'facility': facility}))
     # return render(request, 'facility.html',)
 # changed
@@ -2179,6 +2290,7 @@ def update_userMainRules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def update_userSubRules(request, id):
+    firstname = request.session.get('firstname')
     subrules = get_object_or_404(UserType_SubRules, pk=id)
     request.session['user_type_id'] = subrules.pk
     
@@ -2207,7 +2319,7 @@ def update_userSubRules(request, id):
         subrules = get_object_or_404(UserType_SubRules, pk=id) 
         upform = UserTypeSubRulesForm(instance=subrules)
     
-    return render(request, 'update_usersubrules.html',{'upform': upform, 'subrules':subrules})
+    return render(request, 'update_usersubrules.html',{'upform': upform, 'subrules':subrules,'firstname':firstname})
     # return HttpResponseRedirect(reverse(request,'facility:updatefacility',{'upform': upform, 'facility': facility}))
     # return render(request, 'facility.html',)
 # changed
@@ -2216,6 +2328,7 @@ def update_userSubRules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def update_userPromoRules(request, id):
+    firstname = request.session.get('firstname')
     promorules = get_object_or_404(UserType_PromoRules, pk=id)
     request.session['user_type_id'] = promorules.pk
     
@@ -2244,7 +2357,7 @@ def update_userPromoRules(request, id):
         promorules = get_object_or_404(UserType_PromoRules, pk=id) 
         upform = UserTypePromoRulesForm(instance=promorules)
     
-    return render(request, 'update_userpromorules.html',{'upform': upform, 'promorules':promorules})
+    return render(request, 'update_userpromorules.html',{'upform': upform, 'promorules':promorules,'firstname':firstname})
     # return HttpResponseRedirect(reverse(request,'facility:updatefacility',{'upform': upform, 'facility': facility}))
     # return render(request, 'facility.html',)
 # changed
@@ -2252,7 +2365,8 @@ def update_userPromoRules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def displayall_setting_usertype(request):
-    setting_usertype = Setting_UserType.objects.all().order_by('id')    
+    setting_usertype = Setting_UserType.objects.all().order_by('id')   
+    firstname = request.session.get('firstname') 
 
     if request.method == 'POST':
         forms = RulesUserTypeForm(request.POST)
@@ -2274,7 +2388,7 @@ def displayall_setting_usertype(request):
         # Set the initial value of the 'facility' field in the form
         forms = RulesUserTypeForm() 
 
-    return render(request, 'usertype_table.html', {'setting_usertype': setting_usertype, 'forms':forms})
+    return render(request, 'usertype_table.html', {'setting_usertype': setting_usertype, 'forms':forms, 'firstname':firstname})
 
 @login_required
 @user_passes_test(is_superuser)

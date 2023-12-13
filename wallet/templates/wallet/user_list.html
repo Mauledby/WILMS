@@ -89,6 +89,7 @@
 
                 <th>UserType</th>
                 <th>Change User Type</th>
+                <th>Account Status</th>
               </tr>
             </thead>
             <tbody>
@@ -129,6 +130,20 @@
                     data-acctype="{% if user.user.is_superuser %}Superuser{% elif user.user.is_staff %}Teacher User{% else %}Regular User{% endif %}"
                   >
                     Change Account Type
+                  </button>
+                </td>
+                <td>
+                <button
+                    class="btn btn-primary accountStatusButton"
+                    style="background-color: #9c7b16"
+                    data-id="{{ user.user.id }}"
+                    data-recipient="{{ user.user.id }}"
+                    data-firstname="{{user.first_name}}"
+                    data-lastname="{{user.last_name}}"
+                    data-pbal="{{user.point_balance}}"
+                    data-acctype="{% if user.user.is_superuser %}Superuser{% elif user.user.is_staff %}Teacher User{% else %}Regular User{% endif %}"
+                  >
+                    Change Account Status
                   </button>
                 </td>
               </tr>
@@ -249,6 +264,48 @@
         </div>
       </div>
     </div>
+
+    <!-- disable account status modal -->
+    <div class="modal fade" id="accountStatusModal" tabindex="-1" role="dialog" aria-labelledby="accountStatusModalLabel" aria-hidden="true"data-user-id="{{ user.user.id }}">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="accountStatusModalLabel">Account Status</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <p>Current Status: <span id="currentStatus"></span></p>
+                  <button
+                  id="enableAccountBtn"
+                  class="btn btn-success"
+                  data-id="{{ user.user.id }}"
+                  data-recipient="{{ user.user.id }}"
+                  data-firstname="{{ user.first_name }}"
+                  data-lastname="{{ user.last_name }}"
+                  data-pbal="{{ user.point_balance }}"
+                  data-acctype="{% if user.user.is_superuser %}Superuser{% elif user.user.is_staff %}Teacher User{% else %}Regular User{% endif %}">
+                  Enable Account
+              </button>
+              <button
+                  id="disableAccountBtn"
+                  class="btn btn-danger"
+                  data-id="{{ user.user.id }}"
+                  data-recipient="{{ user.user.id }}"
+                  data-firstname="{{ user.first_name }}"
+                  data-lastname="{{ user.last_name }}"
+                  data-pbal="{{ user.point_balance }}"
+                  data-acctype="{% if user.user.is_superuser %}Superuser{% elif user.user.is_staff %}Teacher User{% else %}Regular User{% endif %}">
+                  Disable Account
+              </button>
+        
+                  
+                  
+              </div>
+          </div>
+      </div>
+  </div>
 
     <!-- actionsModal -->
     <div class="modal" id="actionsModal" tabindex="-1" role="dialog">
@@ -449,6 +506,13 @@
             contentType: false,
             success: function (response) {
               var awardedPoints = parseFloat($("#points").val());
+              if (awardedPoints < 0) {
+              // Display an error message or perform any other necessary actions
+              window.alert(
+                "\nPoints must be non-negative.\n"
+              );
+              return;
+              }
               var recipientID = $("#recipient").val();
               var senderID = $("#sender").val();
               var recipientName = response.recipient_name; // Access the concatenated name from the JSON response
@@ -557,6 +621,103 @@
           },
         });
       });
+
+
+
+      
+      $(document).on("click", ".accountStatusButton", function () {
+    var recipient = $(this).data("recipient");
+    var id = $(this).data("id");
+    var firstName = $(this).data("firstname");
+    var lastName = $(this).data("lastname");
+
+    $("#accountStatusModalLabel").text("Account Status - " + firstName + " " + lastName);
+    $("#currentStatus").text("");
+    
+    // Show the enable and disable buttons
+    $("#enableAccountBtn").show();
+    $("#disableAccountBtn").show();
+
+    // Attach data attributes to the enable and disable buttons
+    $("#enableAccountBtn").data({
+        id: id,
+        action: 'enable',  // You can add more data attributes if needed
+    });
+
+    $("#disableAccountBtn").data({
+        id: id,
+        action: 'disable',  // You can add more data attributes if needed
+    });
+
+    // Your existing code...
+    // Open the modal, retrieve current status, etc.
+    $.ajax({
+        type: "GET",
+        url: "/wallet/get_user_status/" + id + "/",
+        success: function (data) {
+            $("#currentStatus").text(data.status);
+
+            if (data.status === "Active") {
+                $("#enableAccountBtn").hide();
+            } else {
+                $("#disableAccountBtn").hide();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        },
+    });
+
+    $("#accountStatusModal").modal("show");
+});
+
+// Enable Account Button Click Event
+$(document).on("click", "#enableAccountBtn", function () {
+    // Retrieve data attributes from the button
+    var id = $(this).data("id");
+    var action = $(this).data("action");
+
+    // Call the function to update account status
+    updateAccountStatus(action, id);
+});
+
+// Disable Account Button Click Event
+$(document).on("click", "#disableAccountBtn", function () {
+    // Retrieve data attributes from the button
+    var id = $(this).data("id");
+    var action = $(this).data("action");
+
+    // Call the function to update account status
+    updateAccountStatus(action, id);
+});
+
+function updateAccountStatus(action, user_id) {
+    console.log(user_id);
+
+    $.ajax({
+        type: "POST",
+        url: "/wallet/account_status/" + user_id + "/",
+        data: {
+            action: action,
+            csrfmiddlewaretoken: csrf_token,
+            user_id: user_id,  // Add this line to ensure user_id is passed in the request
+        },
+        success: function (data) {
+            if (data.success) {
+                alert("Account status updated successfully.");
+                $("#accountStatusModal").modal("hide");
+                // Perform additional actions or updates as needed
+            } else {
+                alert("Failed to update account status.");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        },
+    });
+}
+
+
     </script>
     {% endblock %}
   </div>

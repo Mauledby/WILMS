@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from api.views import ReactAppView
 from wallet import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,7 +15,7 @@ urlpatterns = [
     path('walletAPI/', include(('walletAPI.urls', 'walletAPI'), namespace='walletAPI')),
     path('polls/', include(('polls.urls', 'polls'), namespace='polls')),
     path('wiladmin/', include('wiladmin.urls')),
-    path('api/',include('api.urls')),
+    path('api/', include(('api.urls', 'api'), namespace='api')),
     path('' , views.IndexView.as_view(), name='index'),
     path('facility/', include('facility.urls')),
 
@@ -32,7 +33,16 @@ urlpatterns = [
 
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='wallet/password_reset_complete.html'), name='password_reset_complete'),
 
-
+# for api front end
+    path('booking/login/', ReactAppView.as_view(), name='login'),
+    # path('', ReactAppView.as_view(), name='login'),  # Uncomment this line if you want / to point to the login page
+    path('booking/tracker/', ReactAppView.as_view(), name='tracker'),
+    path('booking/calendar/', ReactAppView.as_view(), name='calendar'),
+    path('booking/logs/', ReactAppView.as_view(), name='attendance_logs'),
+    path('booking/bookings/', ReactAppView.as_view(), name='my_reservations'),
+    path('attendance/', ReactAppView.as_view(), name='attendance'),
+    path('booking/attendance/', ReactAppView.as_view(), name='booking_attendance'),
+    path('react/', ReactAppView.as_view(), name='react_app'),
 
 
     

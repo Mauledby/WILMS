@@ -368,6 +368,7 @@ nav.horizontal {
   /* Other styles for .menugroup */
   /* ... */
   color:#fff;
+  font-size: 21px;
   padding-bottom: 10px;
   filter: drop-shadow(0px 4px 2px rgba(0, 0, 0, 0.25));
   border-bottom: 0.5px solid rgba(0, 0, 0, 0);
@@ -418,27 +419,144 @@ button.btn-primary{
     cursor: pointer;
   }
   *::-webkit-scrollbar-thumb {
+    opacity: 0;
   background-color: #ffcc0186; /* Change the color of the scrollbar thumb */
   border-radius: 5px; /* Add rounded corners to the scrollbar thumb */
 }
 
 /* Optional: Style the scrollbar track */
 *::-webkit-scrollbar-track {
+  opacity: 0;
   background-color: #e8e1ae; /* Change the color of the scrollbar track */
 }
 
 /* Optional: Style the scrollbar itself */
 *::-webkit-scrollbar {
+  opacity: 0;
   margin-left: 0%;
-  width: 5px; /* Adjust the width of the scrollbar */
+  width: 0px; /* Adjust the width of the scrollbar */
 }
 
-    </style>
 
+@keyframes slideFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: 3%; /* New left position after entering */
+  }
+}
+
+@keyframes slideExitLeftFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: 3%; /* Keep consistent with the final position in slideFromLeft */
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+    margin-left: -200px; /* Return to the initial position outside the viewport */
+  }
+}
+
+.info {
+    color: #000;
+    background: rgba(246, 247, 231, 0.9); 
+    border-top: 13px solid #e8e800;
+    justify-content: center;
+    margin-top: 25%;
+    margin-left: 47%;
+    align-items: center;
+    padding: 20px; 
+    border-radius: 5px;
+    animation: slideFromLeft 0.5s ease forwards;
+  }
+
+.warning {
+  position: fixed;
+  border-left: 13px solid #e8e800;
+  color: rgb(232, 214, 214);
+  background: rgba(74, 67, 67, 0.748);  
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  justify-content: center;
+  width: fit-content;
+  margin-top: 43%;
+   /* Initial position outside the viewport */
+  align-items: center;
+  padding: 20px; 
+  border-radius: 5px;
+  opacity: 0; /* Start with zero opacity */
+  animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 2s forwards;
+}
+
+.error {
+  position: fixed;
+  border-left: 13px solid #6f0000;
+  color: rgb(232, 214, 214);
+  background: rgba(74, 67, 67, 0.748);  
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  justify-content: center;
+  width: fit-content;
+  margin-top: 43%;
+   /* Initial position outside the viewport */
+  align-items: center;
+  padding: 20px; 
+  border-radius: 5px;
+  opacity: 0; /* Start with zero opacity */
+  animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 2s forwards;
+  
+}
+    </style>
 
   </head>
   <body>
-
+    <ul class="center" >
+      {% if request.user.is_authenticated %}{% if not request.user.is_superuser %}
+      {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'info' %}
+          
+        <div class="center" id="overlay" style="position: fixed;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(5, 4, 0, 0.5);
+          z-index: 99999999;
+          opacity: 1;
+          transition: opacity 5s ease;">
+        <ul style="list-style: none; text-align: center; width: 100%; margin-left: 40%;">
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="width: 40%; height: auto; word-wrap: break-word;  margin: 0 auto; text-align: center;">
+              <div style="background-color: #ffcc01b6; width: 100%; padding: 1rem; border: 0px; "><h4 style="margin:1px; font-size: 16px;">😺 You are registered!</h4></div>
+              <br>{{ message }}
+              {% for sf in facility %}
+              {% for dp in display %}
+              
+              {{ dp.description }}{{sf.facility.id}}{{ dp.facility}}
+              {% endfor %}
+          {% endfor %}
+                <br>
+                <button style="margin-top: 10%;" type="button" class="btn btn-secondary" onclick="window.location.href='/wallet/user_login'">OK</button>
+            </li>
+        </ul>
+    </div>
+    {% endif %} 
+    {% endfor %}
+    {% endif %}
+    {% endif %}{% endif %}
+    <script>
+        function closeOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+    </script></ul>
 
     <section class="banner-container">
       <div class="banner">
@@ -530,7 +648,7 @@ button.btn-primary{
       </div>
     </div>
     <nav class="horizontal">
-      <ul class="left" style="margin-left: 5rem;">
+      <ul class="left" style="margin-left: 2rem;">
         <li>
         <a href="{% url 'wallet:index' %}"><img style="background-color: #fac004; padding: 5px; border-radius: 5px;" src="{% static 'media/WILMS.png' %}" alt="Home"></a></li>
       </ul>
@@ -538,30 +656,19 @@ button.btn-primary{
     
         {% if messages %}
         {% for message in messages %}
-          {% if message.tags == 'error' %}
-            
-              <div class="center" style="position: fixed;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background-color: rgba(5, 4, 0, 0.5);  z-index: 999; opacity: 1; transition: opacity 5s ease; 
-              justify-content: center; align-items: center; ">
+         
+            {% if message.tags == 'success' %}
+            <div>
                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}<br><button style="margin-top: 1rem; margin-left: 30%" type="button" class="btn btn-secondary" data-bs-dismiss="modal"><a href="{% url 'facility:facility' %}" style="padding: 2px;">Cancel</a></button></li>
-                </div>
-            {% elif message.tags == 'success' %}
-            <div style="position: fixed; z-index: 999; width: 100%;" >
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}</div>
+                  <h4 style="margin:1px; font-size: 16px;">✅ Success!</h4>{{ message }}</div>
             {% elif message.tags == 'warning' %}
-            <div style="position: fixed; z-index: 999; width: 100%;" >
+            <div>
                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}</div>
-            {% elif message.tags == 'info' %}
-            <div style="position: fixed; z-index: 999; width: 100%;" >
+                <h4 style="margin:1px; font-size: 16px;">⚠️ Warning!</h4>{{ message }}</div>
+            {% elif message.tags == 'error' %}
+            <div>
                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}</div>
+                  <h4 style="margin:1px; font-size: 16px;">⛔ Oops!</h4>{{ message }}</div>
             {% endif %} 
           {% endfor %}
           {% endif %}
@@ -569,47 +676,56 @@ button.btn-primary{
     </ul>
     <ul class="right">
       {% if not request.user.is_authenticated %}
-      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="/wallet/register">Register</a></button>
-      <button class="adminlabel" id="loginBtn" style="width: fit-content; left:85%;" ><a id="loginBtn" class="menugroup" href="#">Login</a></button>
+      <button class="adminlabel" style="left:78%;"><a class="menugroup" href="/wallet/register">REGISTER</a></button>
+      <button class="adminlabel" id="loginBtn" style="width: fit-content; left:87%;" ><a id="loginBtn" class="menugroup" data-bs-target="" href="#">LOGIN</a></button>
       {% endif %} 
       {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
-      <button class="adminlabel" style="left:49%;"><a class="menugroup" href="{% url 'wallet:index' %}">Home</a></button>
-      <button class="adminlabel" style="left:55%;"><a class="menugroup" href="{% url 'facility:facility' %}">Facility</a></button>
-      <button class="adminlabel" style="left:62%; border: 0px;"><a class="menugroup" href="{% url 'polls:user_dashboard' %}">Booking</a></button>
-      <button class="adminlabel" style="left:70%;"><a class="menugroup" href="{% url 'wallet:dashboard' %}">Wallet</a></button>
-      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="#">Crowd Control</a></button>
-      <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
+      <button class="adminlabel" style="left:46%;"><a class="menugroup" href="{% url 'wallet:index' %}">HOME</a></button>
+      <button class="adminlabel" style="left:52%;"><a class="menugroup" href="{% url 'facility:facility' %}">FACILITY</a></button>
+      <button class="adminlabel" style="left:60%; border: 0px;"><a class="menugroup" href="#">BOOKING</a></button>
+      <button class="adminlabel" style="left:68%;"><a class="menugroup" href="{% url 'wallet:dashboard' %}">WALLET</a></button>
+      <button class="adminlabel" style="left:75%;"><a class="menugroup" href="{% url 'admindashboard' %}">CROWD CONTROL</a></button>
+      <button class="adminlabel" style="width: fit-content;left:90%;" ><a class="menugroup" style=" color: #f5f2e9;" href="{% url 'wallet:logout' %}">LOGOUT</a></button>
       {% else %}
-      <button class="adminlabel" style="left:70%;"><a class="menugroup" href="{% url 'wallet:usrdashboard' %}">Wallet</a></button>
-      <button class="adminlabel" style="left:77%;"><a class="menugroup" href="{% url 'polls:user_dashboard' %}">Polls</a></button>
-      <button class="adminlabel" style="width: fit-content;left:89%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">Logout</a></button>
+      <button class="adminlabel" style="left:56%;"><a class="menugroup" href="{% url 'wallet:index' %}">HOME</a></button>
+      <button class="adminlabel" style="left:63%;"><a class="menugroup" href="{% url 'wallet:index' %}">BOOKING</a></button>
+      <button class="adminlabel" style="left:72%;"><a class="menugroup" href="{% url 'wallet:usrdashboard' %}">WALLET</a></button>
+      <button class="adminlabel" style="left:80%;"><a class="menugroup" href="{% url 'polls:user_dashboard' %}">POLLS</a></button>
+      <button class="adminlabel" style="width: fit-content;left:87%;" ><a class="menugroup" style=" color: #5b4705;" href="{% url 'wallet:logout' %}">LOGOUT</a></button>
       {% endif %} {% endif %}
     </ul>
       
     </nav> 
     <script>
+      function closeOverlay() {
+          document.getElementById('overlay').style.display = 'none';
+      }
+  </script>
+    <script>
       $(document).ready(function () {
         $(window).scroll(function () {
           if ($(this).scrollTop() > 30) {
             // Adjust the scroll position where the navbar becomes sticky
-            $(".navbar").addClass("sticky");
+            $(".horizontal").addClass("sticky");
           } else {
-            $(".navbar").removeClass("sticky");
+            $(".horizontal").removeClass("sticky");
           }
         });
       });
 
       //toggle menu
       $(".menu-btn").click(function () {
-        $(".navbar .menu").toggleClass("active");
+        $(".horizontal .menu").toggleClass("active");
         $(".menu-btn i").toggleClass("active");
       });
 
       $("#loginBannerBtn").click(function () {
         $("#loginModal").show();
+        console.log('clicked')
       });
 
       $("#loginBtn").click(function () {
+        console.log('clicked')
         $("#loginModal").show();
       });
 
@@ -617,6 +733,7 @@ button.btn-primary{
         $("#loginModal").hide();
       });
     </script>
+
 
 
 
