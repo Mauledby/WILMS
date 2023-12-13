@@ -63,29 +63,216 @@
           {% endfor %}
         </div>
 
-        <table class="user-list">
+        <div class="user-list-tables">
+          
+          <table class="user-list">
             <thead>
               <tr>
-                <th scope="col" colspan="3">Users</th>
+                <th scope="col" colspan="3">A1</th>
               </tr>
             </thead>
             <tbody>
-              {% if area != NONE %} {% for area in area %}
+
+              {% for reserve_userA1 in reserve_users.reserve_users_A1 %}
               <tr>
-                <td>{{ area.userid }}</td>
-                <td>{{ area.schedule }}</td>
-                <td>{{ area.referenceid }}</td>
+                <td>{{ reserve_userA1.user_id }}</td>
               </tr>
-              {% endfor %} {% else %}
-  
+              {% endfor %}
+              
+              {% for walkin_userA1 in walkin_users.walkin_users_A1 %}
               <tr>
-                <td>Select Area</td>
+                <td>{{ walkin_userA1.user_id }}</td>
               </tr>
-  
-              {% endif %}
+              {% endfor %}
+
             </tbody>
           </table>
 
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A2</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA2 in reserve_users.reserve_users_A2 %}
+              <tr>
+                <td>{{ reserve_userA2.user_id }}</td>
+              </tr>
+              {% endfor %}
+              
+              {% for walkin_userA2 in walkin_users.walkin_users_A2 %}
+              <tr>
+                <td>{{ walkin_userA2.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A3</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA3 in reserve_users.reserve_users_A3 %}
+              <tr>
+                <td>{{ reserve_userA3.user_id }}</td>
+              </tr>
+              {% endfor %}
+              
+              {% for walkin_userA3 in walkin_users.walkin_users_A3 %}
+              <tr>
+                <td>{{ walkin_userA3.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A4</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA4 in reserve_users.reserve_users_A4 %}
+              <tr>
+                <td>{{ reserve_userA4.user_id }}</td>
+              </tr>
+              {% endfor %}
+              
+              {% for walkin_userA4 in walkin_users.walkin_users_A4 %}
+              <tr>
+                <td>{{ walkin_userA4.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A5</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA5 in reserve_users.reserve_users_A5 %}
+              <tr>
+                <td>{{ reserve_userA5.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+              {% for walkin_userA5 in walkin_users.walkin_users_A5 %}
+              <tr>
+                <td>{{ walkin_userA5.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A6</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA6 in reserve_users.reserve_users_A6 %}
+              <tr>
+                <td>{{ reserve_userA6.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+              {% for walkin_userA6 in walkin_users.walkin_users_A6 %}
+              <tr>
+                <td>{{ walkin_userA6.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A7</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA7 in reserve_users.reserve_users_A7 %}
+              <tr>
+                <td>{{ reserve_userA7.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+              {% for walkin_userA7 in walkin_users.walkin_users_A7 %}
+              <tr>
+                <td>{{ walkin_userA7.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A8</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA8 in reserve_users.reserve_users_A8 %}
+              <tr>
+                <td>{{ reserve_userA8.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+              {% for walkin_userA8 in walkin_users.walkin_users_A8 %}
+              <tr>
+                <td>{{ walkin_userA8.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+          <table class="user-list">
+            <thead>
+              <tr>
+                <th scope="col" colspan="3">A9</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for reserve_userA9 in reserve_users.reserve_users_A9 %}
+              <tr>
+                <td>{{ reserve_userA9.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+              {% for walkin_userA9 in walkin_users.walkin_users_A9 %}
+              <tr>
+                <td>{{ walkin_userA9.user_id }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+        </div>
       </div>
     </div>
   </div>

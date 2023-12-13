@@ -70,28 +70,28 @@ class AdminWalkinDashboardController(LoginRequiredMixin, View):
                 booking.status = 'Booked'
                 booking.save()
                 
-                timer = Timer(user_id=booking.userid, minutes=0, seconds=3)
+                timer = Timer(user_id=booking.user_id, minutes=0, seconds=3)
                 timer.save()
                 
-                log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.start_time, endtime="", status='Booked')
+                log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
                 log.save()
             
             else:
                 booking.delete()
                 
-                usertimer = Timer.objects.get(pk=str(booking.userid))
+                usertimer = Timer.objects.get(pk=str(booking.user_id))
                 usertimer.delete()
                 
                 assignedarea = AssignedArea.objects.filter(reference_number=booking.referenceid)
                 assignedarea.delete()
                 
-                log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.start_time,endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
+                log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time,endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
                 log.save()
                 
         except Timer.DoesNotExist:
             assignedarea = AssignedArea.objects.filter(reference_number=booking.referenceid)
             assignedarea.delete()
-            log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.start_time,endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
+            log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time,endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
             log.save()
             return redirect('walkindashboard')
     
@@ -194,7 +194,7 @@ class BookGuestController(LoginRequiredMixin, View):
         userid = '18-0107-262'
         schedule = str(datetime.now().strftime("%d/%m/%Y, %H:%M"))
         status = 'Booked'
-        booking = WalkinBookingModel(referenceid = referenceid, userid = userid, schedule = schedule, status = status)
+        booking = WalkinBookingModel(referenceid = referenceid, user_id = userid, schedule = schedule, status = status)
         booking.save()
     
     def get(self, request):
@@ -209,13 +209,13 @@ class BookGuestController(LoginRequiredMixin, View):
             start_time = datetime.now()
             end_time = None
             status = 'Booked'
-            booking = WalkinBookingModel(referenceid = referenceid, userid = userid, start_time = start_time, end_time = end_time, status = status)
+            booking = WalkinBookingModel(referenceid = referenceid, user_id = userid, start_time = start_time, end_time = end_time, status = status)
             booking.save()
             
             reference = AssignedArea(reference_number=referenceid, area_id=referenceid[:2])
             reference.save()
             
-            log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.userid, starttime=booking.start_time, endtime="", status='Booked')
+            log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
             log.save()
             
             print(datetime.now())
@@ -283,8 +283,52 @@ class ViewWorkspacesController(LoginRequiredMixin, View):
     def get(self, request):
         
         area_count = self.GetAreaCount
+        walkin_users_A1 = WalkinBookingModel.objects.filter(referenceid__contains="A1")
+        walkin_users_A2 = WalkinBookingModel.objects.filter(referenceid__contains="A2")
+        walkin_users_A3 = WalkinBookingModel.objects.filter(referenceid__contains="A3")
+        walkin_users_A4 = WalkinBookingModel.objects.filter(referenceid__contains="A4")
+        walkin_users_A5 = WalkinBookingModel.objects.filter(referenceid__contains="A5")
+        walkin_users_A6 = WalkinBookingModel.objects.filter(referenceid__contains="A6")
+        walkin_users_A7 = WalkinBookingModel.objects.filter(referenceid__contains="A7")
+        walkin_users_A8 = WalkinBookingModel.objects.filter(referenceid__contains="A8")
+        walkin_users_A9 = WalkinBookingModel.objects.filter(referenceid__contains="A9")
+        
+        reserve_users_A1 = ResBooking.objects.filter(referenceNo="A1")
+        reserve_users_A2 = ResBooking.objects.filter(referenceNo="A2")
+        reserve_users_A3 = ResBooking.objects.filter(referenceNo="A3")
+        reserve_users_A4 = ResBooking.objects.filter(referenceNo="A4")
+        reserve_users_A5 = ResBooking.objects.filter(referenceNo="A5")
+        reserve_users_A6 = ResBooking.objects.filter(referenceNo="A6")
+        reserve_users_A7 = ResBooking.objects.filter(referenceNo="A7")
+        reserve_users_A8 = ResBooking.objects.filter(referenceNo="A8")
+        reserve_users_A9 = ResBooking.objects.filter(referenceNo="A9")
+        
+        
+        walkin_users = {
+            'walkin_users_A1': walkin_users_A1,
+            'walkin_users_A2': walkin_users_A2,
+            'walkin_users_A3': walkin_users_A3,
+            'walkin_users_A4': walkin_users_A4,
+            'walkin_users_A5': walkin_users_A5,
+            'walkin_users_A6': walkin_users_A6,
+            'walkin_users_A7': walkin_users_A7,
+            'walkin_users_A8': walkin_users_A8,
+            'walkin_users_A9': walkin_users_A9
+        }
+        
+        reserve_users = {
+            'reserve_users_A1': reserve_users_A1,
+            'reserve_users_A2': reserve_users_A2,
+            'reserve_users_A3': reserve_users_A3,
+            'reserve_users_A4': reserve_users_A4,
+            'reserve_users_A5': reserve_users_A5,
+            'reserve_users_A6': reserve_users_A6,
+            'reserve_users_A7': reserve_users_A7,
+            'reserve_users_A8': reserve_users_A8,
+            'reserve_users_A9': reserve_users_A9,
+        }
 
-        return render(request, 'wiladmin/workspaces.html', {'area_count': area_count})
+        return render(request, 'wiladmin/workspaces.html', {'area_count': area_count, 'walkin_users':walkin_users, 'reserve_users': reserve_users})
     
     def post(self, request, areaid):
         area_count = self.GetAreaCount
@@ -292,6 +336,7 @@ class ViewWorkspacesController(LoginRequiredMixin, View):
         return render(request, 'wiladmin/workspaces.html', {'area':area, 'area_count':area_count, 'area_id':areaid})
 
 class TestController(View):
+    
     
     def get(self, request):
         return render(request, 'wiladmin/test.html')
