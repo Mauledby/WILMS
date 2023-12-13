@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import random
 from django.db import connection
 from django.http import JsonResponse
@@ -27,10 +27,10 @@ class FacilityMapController:
         reference.save()
 
         user_id = request.user.id
-        schedule = datetime.now().strftime("%d/%m/%Y, %H:%M")
+        start_time =  timezone.now()
         status = "Pending"
         
-        booking = WalkinBookingModel(referenceid = reference_number, userid=user_id, schedule=schedule, status=status)
+        booking = WalkinBookingModel(referenceid = reference_number, user_id=user_id, start_time=start_time, status=status)
         booking.save()
 
         return JsonResponse({'reference_number': reference_number})

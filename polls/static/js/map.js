@@ -167,4 +167,6 @@
         setInterval(updateBookingInfo, 2000);
         
         window.onload = updateBookingInfo;
+
+        
     
