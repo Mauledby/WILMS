@@ -69,7 +69,7 @@
 .slideFromLeftAnimation {
   animation: slideFromLeft 0.5s ease forwards;
 }
-    button#koisk {
+button#koisk {
   opacity: 1;
   z-index: 999999;
   transform: translateX(-100%);
@@ -82,11 +82,11 @@
             filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
             justify-content: left;
             width: max-content;
-            margin-top: 43%;
+            margin-top: 40%;
             height: max-content;
              /* Initial position outside the viewport */
             align-items: center;
-            padding: 15px; 
+            padding: 20px; 
             border-radius: 15px;
 }
 button#koisk:hover{
@@ -101,7 +101,7 @@ button#koisk:hover{
   100% {
     opacity: 1;
     transform: translateX(0);
-    margin-left: -2%; /* New left position after entering */
+    margin-left: -17vw; /* New left position after entering */
   }
 }
 
@@ -109,18 +109,13 @@ button#koisk:hover{
   0% {
     opacity: 1;
     transform: translateX(0);
-    margin-left: -2%; /* Keep consistent with the final position in slideFromLeft */
+    margin-left: 1vw; /* Keep consistent with the final position in slideFromLeft */
   }
   100% {
     opacity: 0;
     transform: translateX(-100%);
     margin-left: -200px; /* Return to the initial position outside the viewport */
   }
-}
-/* When the koisk button is visible */
-button#koisk.visible {
-  opacity: 1;
-  transform: translateX(0%);
 }
 /* Initially hide the koisk button */
 
@@ -453,7 +448,7 @@ a.menugroup {
       </ul>
       <ul class="center" >
         <div>
-            <button class="adminlabel" id="koisk" style="left: 82%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:activate_account' %}">😺 ACTIVATION KOISK</a></button></div>
+          <button id="koisk" style="left: 100%; width: 30vw; text-align: left;"><a style="font-weight: 800; font-size: 21px;" href="{% url 'wallet:activate_account' %}">😺 ACTIVATION KOISK</a></button></div>
         {% if messages %}
         {% for message in messages %}
          

@@ -10,10 +10,16 @@
           </div>
           <div class="modal-body">
             {% csrf_token %}
-            <input list="user_type" name="user_type" placeholder="Choose Type of Schedule"/>
+            <!-- <input list="user_type" name="user_type" placeholder="Choose Type of Schedule"/>
             <datalist id="user_type">
               <option value = "{{ forms.user_type }} ">
-            </datalist>
+            </datalist> -->
+            <select name="user_type" id="inputGroupSelect01">
+              <option name="user_type" type="submit" value="">All</option>
+              {% for u in usertype %}
+              <option name="user_type" type="submit"  value ="{{u.pk}}">{{u.user_type}}</option>
+              {% endfor %}
+            </select>
              
           </div>
           <div class="modal-footer">
@@ -26,7 +32,7 @@
 
 <!-- BUTTON TO ADD FACILITY -->
     <!-- <button type="submit" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Facility</button> -->
-    <div class="label-page">User</div>
+    <div class="label-page" style="padding: 10px;">User</div>
     <div class="table">
       <h3 style="font-weight: 50px; ">User Type Rules Table</h3><br>
       <table class="center" cellspacing="2" style="display: center; padding:0; height: 100vh; overflow: auto;">

@@ -24,11 +24,11 @@
 }
 
 .column1 {
-  flex: 30%;
+  flex: 40%;
 }
 
 .column2 {
-  flex: 70%;
+  flex: 60%;
 }
 
 .two-column-in {
@@ -196,14 +196,14 @@ select#inputGroupSelect01 {
             <div class="menugroup" style="  margin-left: 0px; margin-top: 5px; padding-left: 8px; padding-top: 10px; padding-bottom: 1px; border-bottom: 1px solid #CFCFCF; width: 90vw; ">                
                 <button class="dashboardrevenue">
                 <p class="label">Total Revenue</p>  
-                  <h5 style="margin-top:-5%">₱{{ total_revenue|floatformat:2 }}</h5>
+                  <h5 style="margin-top:-5%">₱{{ total_revenue_points|floatformat:2 }}</h5>
                   {% if empty %}
                   <h5 style="margin-top:-5%">₱ 000,000.00</h5>
                   {%  endif %}
                 </button>
                 <button class="dashboardrevenue">
                   <p class="label">Total Charge Payments</p>
-                  <h5 style="margin-top:-5%">₱{{ total_charge_payments|floatformat:2 }}</h5>
+                  <h5 style="margin-top:-5%">₱{{ total_revenue_coins|floatformat:2 }}</h5>
                   {% if empty %}
                   <h5 style="margin-top:-5%">₱ 000,000.00</h5>
                   {%  endif %}
@@ -301,27 +301,36 @@ select#inputGroupSelect01 {
                       {{ chart_type_form }}
                       <button type="submit">Update Chart</button>
                   </form>
-                  <canvas id="revenueChart" height="200px"></canvas>
+                  <canvas id="revenuepoints" height="200px"></canvas>
 
             </div>
+            <div class="columni column2">
+                
+              <form method="get" hidden>
+                  {{ chart_type_form }}
+                  <button type="submit">Update Chart</button>
+              </form>
+              <canvas id="revenuecoins" height="200px"></canvas>
+
+        </div>
 
 
                 <script style="width: 100vw;">
-                  var ctx = document.getElementById('revenueChart').getContext('2d');
+                  var ctx = document.getElementById('revenuepoints').getContext('2d');
                   var chartType = '{{ chart_type|default:"bar" }}';
           
                   var data = {
                       labels: {{ labels|safe }},
                       datasets: [{
-                          label: 'Revenue',
-                          data: {{ data_values|safe }},
+                          label: 'Points',
+                          data: {{ data_values_points|safe }},
                           backgroundColor: 'rgba(75, 192, 192, 0.2)',
                           borderColor: 'rgba(75, 192, 192, 1)',
                           borderWidth: 1
                       }]
                   };
           
-                  var revenueChart = new Chart(ctx, {
+                  var revenuepoints = new Chart(ctx, {
                       type: chartType,
                       data: data,
                       options: {
@@ -339,6 +348,36 @@ select#inputGroupSelect01 {
         </div>
         <br>
     </div>
+    
+    <script style="width: 100vw;">
+      var ctx = document.getElementById('revenuecoins').getContext('2d');
+      var chartType = '{{ chart_type|default:"bar" }}';
+
+      var data = {
+          labels: {{ labels|safe }},
+          datasets: [{
+              label: 'Coins',
+              data: {{ data_values_coins|safe }},
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+          }]
+      };
+
+      var revenuecoins = new Chart(ctx, {
+          type: chartType,
+          data: data,
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+          }
+      });
+  </script>
     
 
   <!-------------------------------------------------------------NAVIGATION BAR---------------------------------------------------------------->

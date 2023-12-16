@@ -130,6 +130,7 @@
                                       <td>{{ f.facilityname }}</td>
                                       <td>₱{{ f.rateperhour }}</td>
                                       <td>{{ f.capacity }}</td>
+                                      <td><button class="btndel" id="delfaci"><a href="{% url 'facility:restoreFacility' f.id %}">Restore</a></button></td>
                                       {% empty %}
                                       <tr>No Available Facility</tr>
                                     </tr>

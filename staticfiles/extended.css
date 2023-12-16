@@ -1,0 +1,168 @@
+.menugroup {
+  /* Other styles for .menugroup */
+  /* ... */
+  color:#fff;
+  padding-bottom: 34.5px;
+  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0);
+  transition: border-bottom 0.3s ease; /* Change expand to ease */
+  }
+  a{
+    text-decoration: none;
+    color: #000000;
+}
+a:hover{
+  text-decoration: none;
+  color: #000000;
+}
+  .menugroup:hover {
+  color: #000000;
+  border-bottom: 1px solid rgba(64, 45, 0, 0.8);
+  
+  }
+nav.horizontal {
+  position: fixed;
+  display:block;
+  width: 100%;
+  background-color: #fecc00;
+  height:100px;
+  overflow: hidden;
+  top: 0px;
+  left: 0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+
+
+nav.horizontal ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.horizontal li {
+  float: left;
+}
+
+nav.horizontal li a {
+  display: block;
+  color: #333;
+  text-align: center;
+  padding: 14px 16px;
+  height: 100px;
+  text-decoration: none;
+}
+
+nav.horizontal li a:hover {
+  color: #333;
+}
+
+nav.horizontal ul.right {
+  float: right;
+}
+nav.horizontal ul.left{
+  float: left;
+}
+nav.horizontal ul.center{
+  float: center;
+}
+nav.horizontal li a img {
+  top: 0rem;
+  align-items: center;
+  width: 200px;
+  height: flex;
+  margin-right: 10px;
+  right: 20rem;
+  align-items: center;
+}
+
+button.adminlabel{
+  position: fixed;
+  display: block;
+  right: 2%;
+  width: fit-content;
+  height: 100px;
+  background: #ffcc0100;
+  top: 0rem;
+  align-items: center;
+  border: none;
+  font-weight: bolder;
+  font-size: 22px;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+}
+
+button{
+width: auto;
+align-items: center;
+height: 30px;
+background: #FFCC01;
+box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+border-radius: 5px;
+border: none;
+text-decoration: none;
+padding-inline: 15px;
+}
+
+button.btn-primary{
+  width: fit-content;
+  height: 36.41px;
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+  
+  background-color: #ffcc01;
+  border: none;
+  border-radius: 5px;
+}
+button.btn-primary:hover{
+  color: #FFCD02;
+  background: #FFFFFF;
+}
+button:hover{
+  cursor: pointer;
+}
+*::-webkit-scrollbar-thumb {
+background-color: #ffcc0186; /* Change the color of the scrollbar thumb */
+border-radius: 5px; /* Add rounded corners to the scrollbar thumb */
+}
+
+/* Optional: Style the scrollbar track */
+*::-webkit-scrollbar-track {
+background-color: #e8e1ae; /* Change the color of the scrollbar track */
+}
+
+/* Optional: Style the scrollbar itself */
+*::-webkit-scrollbar {
+margin-left: 0%;
+width: 5px; /* Adjust the width of the scrollbar */
+}
+div.table{
+position: absolute;
+width: auto;
+height: 100%; 
+padding-bottom: 5rem;
+left: 19%;
+right: 3%;
+top: 27%;
+padding-inline: 5%;
+background: #FFFFFF;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+flex-direction: row;
+}
+.label-page{
+position: absolute;
+display: block;
+width: auto;
+height: 71px;
+left: 19%;
+right: 3%;
+top: 17%;
+font-weight: 700;
+font-size: 32px;
+color: #000000;
+float: left;
+padding: 15px;
+
+background: #FFCC01;
+box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+}

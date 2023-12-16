@@ -49,7 +49,8 @@
     font-size: 22px;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
   }
-            button#koisk {
+
+  button#koisk {
   opacity: 1;
   z-index: 999999;
   transform: translateX(-100%);
@@ -62,16 +63,40 @@
             filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
             justify-content: left;
             width: max-content;
-            margin-top: 43%;
+            margin-top: 40%;
             height: max-content;
              /* Initial position outside the viewport */
             align-items: center;
-            padding: 15px; 
+            padding: 20px; 
             border-radius: 15px;
 }
 button#koisk:hover{
   background: #ffcc01;
-  animation: slideFromLeft 0.5s ease forwards, slideExitLeftFadeOut 1s 2s forwards;
+  animation: slideFromRight 0.5s ease forwards;
+}
+@keyframes slideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: -17vw; /* New left position after entering */
+  }
+}
+
+@keyframes slideExitRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    margin-left: 1vw; /* Keep consistent with the final position in slideFromLeft */
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+    margin-left: -200px; /* Return to the initial position outside the viewport */
+  }
 }
       /* #loginBtn {
         width: 70px;
@@ -524,10 +549,11 @@ button.btn-primary{
     border-top: 13px solid #e8e800;
     justify-content: center;
     margin-top: 25%;
-    margin-left: 47%;
+    margin-left: 0%;
     align-items: center;
-    padding: 20px; 
+    padding: 10px; 
     border-radius: 5px;
+    width: 70vw;
     animation: slideFromLeft 0.5s ease forwards;
   }
 
@@ -588,18 +614,32 @@ button.btn-primary{
           z-index: 99999999;
           opacity: 1;
           transition: opacity 5s ease;">
-        <ul style="list-style: none; text-align: center; width: 100%; margin-left: 40%;">
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="width: 40%; height: auto; word-wrap: break-word;  margin: 0 auto; text-align: center;">
-              <div style="background-color: #ffcc01b6; width: 100%; padding: 1rem; border: 0px; "><h4 style="margin:1px; font-size: 16px;">😺 You are registered!</h4></div>
-              <br>{{ message }}
-              {% for sf in facility %}
-              {% for dp in display %}
-              
-              {{ dp.description }}{{sf.facility.id}}{{ dp.facility}}
-              {% endfor %}
-          {% endfor %}
+        <ul style="list-style: none; text-align: center; width: 100%; margin-left: 20%;">
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin-left: 10%; width: 70%; height: auto; word-wrap: break-word;  margin: 0 auto; text-align: center;">
+              <div style="background-color: #ffcc01b6; width: 100%; padding: 1rem; border: 0px; "><h4 style="margin:1px; font-size: 16px;">😺   WELCOME TO WILMS!</h4></div>
+              <br>
+              <div style="text-align: left; padding-left: 1rem;">
+              <strong><h2>{{ message }}</h2></strong>
+
+              {% if filtered_data %}
+              <ul style=" padding-left: 0.5rem;">
+                  {% for data in filtered_data %}
+                        {% if data.facility_name %}
+                        <br>
+                        <card style="right: 1px; background-color: #e8e1ae; border: 2.5px solid #ccc; height: max-content; padding: 1rem; width: 100%;">
+                        <strong>{{ data.facility_name }} :</strong>
+                        {% endif %}
+                        <strong>{{ data.dp.description }}</strong></card>
+                        <br><br>
+                      <!-- You can access other attributes of sf and dp objects as needed -->
+                  {% endfor %}
+              </ul>
+          {% else %}
+              <p>No data found</p>
+          {% endif %}
+        </div>
                 <br>
-                <button style="margin-top: 10%;" type="button" class="btn btn-secondary" onclick="window.location.href='/wallet/user_login'">OK</button>
+                <button style="margin-top: 10%; height: max-content;" type="button" class="btn btn-secondary" onclick="window.location.href='/wallet/user_login'">OK</button>
             </li>
         </ul>
     </div>
@@ -623,7 +663,7 @@ button.btn-primary{
           functions ensuring optimal user flow. Join us for a streamlined
           innovation experience.
         </p>
-        <a href="http://localhost:3000/api/login" class="btn" target="_blank">Book Now</a>
+        <a href="http://localhost:3000/booking/login" class="btn" target="_blank">Book Now</a>
       </div>
     </section>
     <div
@@ -705,7 +745,7 @@ button.btn-primary{
     <nav class="horizontal">
       {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
       <div>
-        <button class="adminlabel" id="koisk" style="left: 82%;"><a class="menugroup menugroup-action {% if 'home' in request.path %}active-link{% endif %}" href="{% url 'wallet:activate_account' %}">😺 ACTIVATION KOISK</a></div>
+        <button id="koisk" style="left: 100%; width: 30vw; text-align: left;"><a style="font-weight: 800; font-size: 21px;" href="{% url 'wallet:activate_account' %}">😺ACTIVATION KOISK</a></button></div>
         {% endif %} {% endif %}
         <ul class="left" style="margin-left: 2rem;">
         <li>

@@ -3,7 +3,7 @@ from django.views.generic.list import ListView
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse, reverse_lazy
-from facility.models import Facility_SubRules_set, Setting_Facility
+from facility.models import Facility_SubRules_set, Setting_Facility, Facility
 from wallet.forms import UserForm, UserProfileInfoForm,CoinTransactionForm, TransactionApprovalForm, UserProfileInfoUpdateForm
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponse, JsonResponse
@@ -49,14 +49,37 @@ def is_teacher_user(user):
 def is_superuser(user):
     return user.is_superuser  # Check if the user is a superuser
     
-
+# changed 12/14 3:31 am
 class IndexView(View):
     def get(self, request):
-        facility = Setting_Facility.objects.filter(isdeleted=0).order_by('-created_at')
-        display = Facility_SubRules_set.objects.all().order_by('-created_at')
-        message = "try"
-        messages.info(request, message)
-        return render(request, 'wallet/index.html',{'display':display, 'facility':facility})
+        # Fetch filtered data using database queries
+        facilities = Setting_Facility.objects.filter(isdeleted=0).order_by('-created_at')
+        displays = Facility_SubRules_set.objects.all().order_by('-created_at')
+        facility = Facility.objects.filter(isdeleted=0).order_by('-created_at')
+
+        # Filter data using database queries
+        filtered_data = []
+        for sf in facilities:
+            matching_display = displays.filter(facility=sf.facility.id).first()
+            if matching_display:
+                # Get the Facility object where facility.id matches sf.facility.id
+                matching_facility = facility.filter(id=sf.facility.id).first()
+                if matching_facility:
+                    # Append a dictionary containing 'sf', 'dp', and 'facility_name' to filtered_data
+                    filtered_data.append({
+                        'sf': sf,
+                        'dp': matching_display,
+                        'facility_name': matching_facility.facilityname
+                    })
+
+        # Check if 'description' field exists in the model
+        if hasattr(Facility_SubRules_set, 'description'):
+            # Retrieve the description from the first display record if available
+            first_display = displays.first()
+            message = "RULES"
+            messages.info(request, message)
+
+        return render(request, 'wallet/index.html', {'filtered_data': filtered_data})
 
 
 class SpecialView(View):

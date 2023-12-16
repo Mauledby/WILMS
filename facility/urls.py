@@ -10,6 +10,7 @@ urlpatterns =[
     path('facilitymanagement/updatefaci', views.display_facility, name='updatefaci'),
     path('rules', views.rules_facility, name='rules'),
     path('facilitymanagement/deleteFacility/<int:id>', views.delete_facility, name='deleteFacility'),
+    path('facilitymanagement/restoreFacility/<int:id>', views.restoreFacility, name='restoreFacility'),
     path('facilitymanagement/updateFacility/<int:id>', views.update_facility, name='updatefacility'),
     path('facilitymanagement/frules/facilitytable', views.displayall_setting_facility, name='facilitytable'), 
 
@@ -31,6 +32,7 @@ urlpatterns =[
     # path('userMainRules/<int:id>', views.display_user_mainrules, name='userMainRules'),
     path('user', views.user_create, name='user'),
     
+    path('rulessummary/<int:id>', views.restoreFacility, name='restoreFacility'),
     path('rulessummary', views.display_setting_facility, name='rulessummary'),
     path('facilitymanagement/frules/updatesettingfacility/<int:id>', views.update_setting_facility, name='settingfacility'),
 

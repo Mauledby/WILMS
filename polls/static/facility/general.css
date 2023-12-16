@@ -4,6 +4,14 @@
   margin: 0;
   padding: 0;
 }
+select#inputGroupSelect01 {
+  font-size: 12px;
+  padding: 7px;
+  width: 100%  ;
+  background: #FFFFFF;
+  border: 1px solid #DCDCDC;
+  border-radius: 5px;
+}
 /* .wrapper{
   min-height: 100%;
   margin-bottom: -50px;
@@ -606,6 +614,10 @@ filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   button[type=submit].btnproc:hover{
     background: #ffc519; 
   }
+  td.promo{
+    width:50vw; 
+    font-weight: bold;
+  }
   button[type=submit].search-btn{
     position: absolute;
     display: block;
@@ -989,7 +1001,7 @@ h4{
   margin-top: 1rem;
   position: relative;
   width: 40%;
-  height: 55vh;
+  height: 54vh;
   flex-shrink: 0;
   border-radius: 10px;
   background: #FAFAFA;
@@ -1061,8 +1073,9 @@ button.setbtn a.set:hover{
   cursor: pointer;
 }
 .menurules{
-  margin-top: -51.5%;
+  margin-top: -48.5%;
   margin-left: 50%;
+  margin-bottom: 2%;
   /* width: 459px;
   height: 52px; */
   /* flex-shrink: 0;
@@ -1117,7 +1130,7 @@ button.srules:hover{
   background-color: #ffcc01;
 }
 button.prules{
-  margin-left: -4px;
+  margin-left: -5px;
   font-size: 18px;
   padding: 1px;
   width: 33.3%;
@@ -1187,6 +1200,7 @@ h3.titletxt{
   font-style: normal;
   text-align: left;
   margin-top: 0px;
+  /* background-color: transparent; */
   background-color: #ffcc01; 
   width: auto; 
   height: 44px; 
@@ -1198,7 +1212,7 @@ h3.titletxt{
   margin-top: -10px;
   margin-left: -8px;
   position:relative;
-  width: 443px;
+  width: 100%;
   flex-shrink: 0;
   border-bottom: 1px solid #848484;
 }

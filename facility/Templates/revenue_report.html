@@ -48,15 +48,14 @@ select#inputGroupSelect01 {
 
     <div class="label-page">Revenue Reports</div>
     <div class="table">
-      <form method="get">
+      <form action="{% url 'facility:revenuereport' %}" method="GET">
         <div class="menu">
           <select name="facility" class="custom-select" id="inputGroupSelect01" style="margin-top: 2rem; padding: 2px;">
-            <option name="facility" type="submit" value="">All</option>
-            {% for f in facilityt %}
-            <option name="facility" type="submit" value="{{ f.id }}">{{ f.facilityname }}</option>
+            <option value="">All</option>
+            {% for f in facilities %}
+                <option value="{{ f.id }}">{{ f.facilityname }}</option>
             {% endfor %}
-            <!-- <input type="hidden" name="facility" value="87"> -->
-          </select>
+        </select>
       
           <label style="margin-left: 3%; color: #606060; font-size: 20px; font-weight: 700; line-height: normal;">From:</label>
           <input name="start_date" type="date" style="margin-left: 5px">
@@ -67,27 +66,30 @@ select#inputGroupSelect01 {
           <button class="btnproc" type="submit" style="margin-left: 2%;">Proceed</button>
         </div>
         <br>
-        <a type="submit" href="{% url 'facility:generate_pdf' %}" style="margin-left: 80%; text-decoration: underline; color: #3C3C3C; opacity: 0.8;">🖨️Statement of Revenue</a>
       </form>
+        <!-- <a type="submit" href="{% url 'facility:generate_pdf' %}" style="margin-left: 80%; text-decoration: underline; color: #3C3C3C; opacity: 0.8;">🖨️Statement of Revenue</a> -->
+      
         <div style="margin-top: -3%; margin-bottom: 3rem;">
-            <table class="center" cellspacing="2" style="margin-top: 3rem; width: max-width; height: 150px; overflow-y: auto;">
+            <table class="center" cellspacing="2" style="margin-top: 3rem; width: fit-content; height: 150px; overflow-y: auto;">
               <thead>
                 <tr>
-                    <th style="font-size: 17px;">Facility Name</th>
-                    <th style="font-size: 17px;">Facility Rate</th>
-                    <th style="font-size: 17px;">Number of Reservations</th>
-                    <th style="font-size: 17px;">Total Hours</th>
-                    <th style="font-size: 17px;">Facility Revenue</th>
+            <th style="font-size: 17px;">Facility Name</th>
+            <th style="font-size: 17px;">Facility Rate</th>
+            <th style="font-size: 17px;">Number of Reservations</th>
+            <th style="font-size: 17px;">Total Hours</th>
+            <th style="font-size: 17px;">Facility Revenue Points</th>
+            <th style="font-size: 17px;">Facility Revenue Coins</th>
                 </tr>
             </thead>
             <tbody>
-                {% for facility_name, stats in facility_stats.items %}
+              {% for f in facilities %}
                 <tr>
-                    <td>{{ stats.facility.facilityname }}</td>
-                    <td>{{ stats.facility.rateperhour }}</td>
-                    <td>{{ stats.num_reservations }}</td>
-                    <td>{{ stats.total_hours }}</td>
-                    <td>{{ stats.facility_revenue|floatformat:2 }}</td>
+                    <td>{{ f.facilityname}}</td>
+                    <td>{{ f.rateperhour }}</td>
+                    <td>{{ f.num_reservations }}</td>
+                    <td>{{ f.total_hours }}</td>
+                    <td>{{ f.facility_revenue_points|floatformat:2 }}</td>
+                    <td>{{ f.facility_revenue_coins|floatformat:2 }}</td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -104,36 +106,35 @@ select#inputGroupSelect01 {
             <table class="center" cellspacing="2" style="margin-top: 0rem; width: max-width; height: 200px; overflow-y: auto;">
                 <thead>
                   <tr>
-                    <th style="font-size: 12px;">TRANSACTION NUMBER</th>
-                    <th style="font-size: 12px;">TRANSACTION DATE</th>
-                    <th style="font-size: 12px;">FACILITY</th>
-                    <th style="font-size: 12px;">FACILITY FEE</th>
-                    <th style="font-size: 12px;">CUSTOMER</th>
-                    <th style="font-size: 12px;">TOTAL USAGE HOURS</th>
-                    <th style="font-size: 12px;">PAYMENT CHARGE</th>
-                    <th style="font-size: 12px;">ADDITIONAL PAYMENTS</th>
-                    <th style="font-size: 12px;">PAYMENT</th>
-                    <th style="font-size: 12px;">BOOKED DURATION</th>
-                    <th style="font-size: 12px;">TOTAL</th>
+                    <th style="font-size: 12px;">Transaction Number</th>
+                    <th style="font-size: 12px;">Transaction Date</th>
+                    <th style="font-size: 12px;">Facility Venue ID</th>
+                    <th style="font-size: 12px;">Customer User ID</th>
+                    <th style="font-size: 12px;">Date</th>
+                    <th style="font-size: 12px;">Start Time</th>
+                    <th style="font-size: 12px;">End Time</th>
+                    <th style="font-size: 12px;">Booked Duration</th>
+                    <th style="font-size: 12px;">Coins</th>
+                    <th style="font-size: 12px;">Points</th>
                   </tr>
                 </thead>
                 <tbody style="height: 1px;">
-                    {% for r in revenue_trans %}
+                  {% for booking in bookings %}
                     <tr>
-                        <td style="font-size: 12px;">{{ r.id }}</td>
-                        <td style="font-size: 12px;">{{ r.transaction_datetime }}</td>
-                        <td style="font-size: 12px;">{{ r.facility }}</td>
-                        <td style="font-size: 12px;">{{ r.facility_fee}}</td>
-                        <td style="font-size: 12px;">{{ r.customer_name }}</td>
-                        <td style="font-size: 12px;">{{ r.duration }} hours</td>
-                        <td style="font-size: 12px;">{{ r.charge_payment }}</td>
-                        <td style="font-size: 12px;">{{ r.add_payment }}</td>
-                        <td style="font-size: 12px;">{{ r.payment }}</td>
-                        <td style="font-size: 12px;">{{ r.duration_booking }} hours</td>
-                        <td style="font-size: 12px;">{{ r.total }}</td>
+                        <td style="font-size: 12px;">{{ booking.referenceNo }}</td>
+                        <td style="font-size: 12px;">{{ booking.bookDate }}</td>
+                        <td style="font-size: 12px;">{{ booking.venue_id }}</td>
+                        <td style="font-size: 12px;">{{ booking.user.id }}</td>
+                        <td style="font-size: 12px;">{{ booking.date }}</td>
+                        <td style="font-size: 12px;">{{ booking.startTime }}</td>
+                        <td style="font-size: 12px;">{{ booking.endTime }}</td>
+                        <td style="font-size: 12px;">{{ booking.duration }}</td>
+                        <td style="font-size: 12px;">{{ booking.coins }}</td>
+                        <td style="font-size: 12px;">{{ booking.points }}</td>
                         {% empty %}
                         <h3 style="position: absolute; margin-top: 20%; margin-left: 32%; opacity: 0.3;">NO TRANSACTION AT ALL</h3>
                         {% endfor %}
+                        <p>{{ total_revenue }}</p>
                     </tr>
                 </tbody>
                 </table>

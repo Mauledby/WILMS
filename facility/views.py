@@ -1,5 +1,7 @@
 import datetime
 import io
+from django.db.models.functions import ExtractMonth, ExtractYear
+from django.db.models import F, Value, CharField
 from django.shortcuts import render
 from django.db.models import Sum
 from datetime import datetime
@@ -32,7 +34,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from django.db.models import Count, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import FacilityForm, FacilityMainRulesForm, FacilityMainRulesSetForm, FacilityPromoRulesForm, FacilitySubRulesForm, FacilityUpdateForm, UserTypeMainRulesForm, UserTypePromoRulesForm, UserTypeSubRulesForm
-from .models import Facility, Facility_MainRules, Facility_MainRules_set, Facility_PromoRules, Facility_PromoRules_set, Facility_SubRules, Facility_SubRules_set, Setting_Facility, Setting_UserType, UserType_MainRules, UserType_MainRules_set, UserType_PromoRules, UserType_PromoRules_set, UserType_SubRules, UserType_SubRules_set
+from .models import Facility, Facility_MainRules, Facility_MainRules_set, Facility_PromoRules, Facility_PromoRules_set, Facility_SubRules, Facility_SubRules_set, Setting_Facility, Setting_UserType, UserType_MainRules, UserType_MainRules_set, UserType_PromoRules, UserType_PromoRules_set, UserType_SubRules, UserType_SubRules_set, Sched_Type
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, PageBreak
@@ -42,7 +44,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Setting_Facility
+from .models import Setting_Facility, User_Type
+from api.models import Booking, Attendance
 
 
 def is_superuser(user):
@@ -251,22 +254,56 @@ def get_revenue_trans(facility_filter, start_date, end_date):
 # @csrf_protect
 # @login_required
 # @user_passes_test(is_superuser)
+# def get_events(request):
+#     events = CalendarEvent.objects.all().order_by('id')
+#     event_data = []
+
+#     for event in events:
+#         event_data.append({
+#             'title': event.event_name,
+#             'start': event.date.isoformat(),
+#             'end': event.date.isoformat(),
+#             # Add other fields you want to display on the calendar
+#             # 'facility': event.facility.facilityname,
+#             # 'type_sched': event.type_sched.type_sched,
+#         })
+
+
+
+#     return JsonResponse(event_data, safe=False)
+
+
+from django.views.decorators.http import require_GET
+@require_GET
 def get_events(request):
-    events = CalendarEvent.objects.all().order_by('id')
+    requested_date = request.GET.get('date')
+
+    # Parse requested date to a datetime object
+    requested_datetime = datetime.strptime(requested_date, '%Y-%m-%d')
+
+    # Set start and end times for the requested date (assuming a full day event)
+    start_time = time(0, 0)  # Start time of the day
+    end_time = time(23, 59, 59)  # End time of the day
+
+    # Create datetime objects by combining the requested date with start and end times
+    start_datetime = datetime.combine(requested_datetime, start_time)
+    end_datetime = datetime.combine(requested_datetime, end_time)
+
+    # Query events within the date and time range
+    events = CalendarEvent.objects.filter(date=requested_datetime, start__gte=start_time, end__lte=end_time)
+    # Create a list of events in the format required by FullCalendar
     event_data = []
-    
     for event in events:
         event_data.append({
             'title': event.event_name,
-            'date':event.date,
-            'start': event.start_date.isoformat(),
-            'end': event.end_date.isoformat(),
-            # 'facility': event.facility.facilityname,  # Assuming 'facility' has a 'name' field
-            # 'type_sched': event.type_sched.type_sched,
+            'start': event.start.strftime('%Y-%m-%dT%H:%M:%S'),  # Adjust format as needed
+            'end': event.end.strftime('%Y-%m-%dT%H:%M:%S'),  # Adjust format as needed
+            # Add other event details if needed
         })
-    
-    return JsonResponse(event_data, safe=False)
 
+    print(f"Event: {event.event_name}, Start: {event.start}, End: {event.end}")
+
+    return JsonResponse(event_data, safe=False)
 
 
 @csrf_protect
@@ -309,13 +346,16 @@ def display_facility(request):
         # Handling POST requests
         
         # Retrieving form data from POST request
+        set_fac = Setting_Facility.objects.all()
         upform = FacilityUpdateForm(request.POST)
         mform = FacilityForm(request.POST)
         f_id = request.POST.get('id')
         nfacility = request.POST.get('facilityname')
         nrateperhour = request.POST.get('rateperhour')
         ncapacity = request.POST.get('capacity')
-        firstname = request.session.get('firstname')  # Retrieving 'firstname' from session
+        firstname = request.session.get('firstname') 
+        count = Facility.objects.filter(isdeleted=0).count()
+        limit_facility = 8 # Retrieving 'firstname' from session
         lim_rateperhour = 20
         lim_capacity = 300
         
@@ -328,10 +368,19 @@ def display_facility(request):
                     return redirect('facility:facility')
                 else:
                     # Saving a new facility
-                    mform.save()
-                    message = "Facility added successfully"
-                    messages.success(request, message)
-                    return redirect('facility:facility')
+                    # set_fac.facility=nfacility.id
+                    # set_fac.save()
+                    if count == limit_facility:
+                        message = "Only 8 facility available for WILMS"
+                        messages.warning(request, message)
+                        return redirect('facility:facility')
+                    else:
+                        new_facility = mform.save()
+                        Setting_Facility.objects.create(facility=new_facility)
+                        mform.save()
+                        message = "Facility added successfully"
+                        messages.success(request, message)
+                        return redirect('facility:facility')
             except Exception as e:
                     message = str(e)
                     messages.error(request, message)
@@ -470,7 +519,7 @@ def delete_facility(request, id):
         set_fac = Setting_Facility.objects.filter(facility=id)
         facility.update(isdeleted=1)
         set_fac.update(isdeleted=1)
-        message = f"{faci.facilityname}is deleted and move to recycle bin"
+        message = f"{faci.facilityname} is deleted and move to recycle bin"
         messages.info(request, message)
         
     except Facility.DoesNotExist:
@@ -485,6 +534,7 @@ def delete_facility(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def display_setting_facility(request):
+    f_id = request.POST.get('id')
     firstname = request.session.get('firstname')
     facility = Facility.objects.filter(isdeleted=0).order_by('id')
     del_facility = Facility.objects.filter(isdeleted=1).order_by('id')
@@ -503,6 +553,26 @@ def display_setting_facility(request):
             'del_setting_facility':del_setting_facility
 
         })
+def restoreFacility(request, id):
+    facility = get_object_or_404(Facility, pk=id)
+    set_fac = Setting_Facility.objects.filter(facility=id)
+    count = Facility.objects.filter(isdeleted=0).count()
+    limit_facility = 8 
+    if facility.isdeleted:
+        if count == limit_facility:
+            message = "Restricted, only 8 facility available for WILMS"
+            messages.warning(request, message)
+            return redirect('facility:rulessummary')
+        else:          
+            facility.isdeleted = False  # Set isdeleted to False for restoration
+            facility.save()  # Save the changes to the database
+            set_fac.update(isdeleted=0)
+            # Display success message
+            messages.success(request, f"Facility '{facility.facilityname}' restored successfully.")
+    else:
+        messages.error(request, f"Facility '{facility.facilityname}' is not deleted.")        
+    return redirect(reverse('facility:rulessummary'))
+    # return HttpResponseRedirect(reverse('facility:facilityRules', args=[id]))
 
 @csrf_protect
 @login_required
@@ -844,25 +914,35 @@ def facilitymainrules_set(request, id):
     description = request.POST.get('description', mainrules.description)
     rate = request.POST.get('rate', mainrules.rate)
     status = 0
+    
     # new_Facility = Facility_MainRules_set(facility=newfacility, title=title, description=description, rate=rate, status=status)
     if Facility_MainRules_set.objects.filter(facility=facility).exists():
         rules_count = Facility_MainRules_set.objects.filter(facility=facility, status=0).count()
+        
         # Facility exists, check if title is different
+ 
+
         if Facility_MainRules_set.objects.filter(status=1):
             message = f"You have to remove the existing set rule first to add new rule"
             messages.warning(request, message)
 
+        elif Facility_MainRules_set.objects.filter(title=title).exists():  
+                message = f"You have to remove the existing rule first to add new rule"
+                messages.warning(request, message)
+
         elif not Facility_MainRules_set.objects.filter(title=title).exists():
-            if Facility_MainRules_set.objects.filter(status=1):
-                message = f"Count: {rules_count} You have to remove the existing set rule first to add new rule"
+            if Facility_MainRules_set.objects.filter(status=0):
+                message = f"You have to remove the existing rule first to add new rule"
+                messages.warning(request, message)
+            elif not rules_count > 1:
+                message = f"You have to remove the existing rule first to add new rule"
                 messages.warning(request, message)
             else:
                 new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
                 new_Facility.save()
 
-        elif rules_count > 1:
-            message = f"Count: {rules_count}You have to remove the existing set rule first to add new rule"
-            messages.warning(request, message) 
+
+
     # elif Facility_MainRules_set.objects.filter(facility=facility).exists():
     #     if Facility_MainRules_set.objects.filter(status=0).exists():
     #         if not Facility_MainRules_set.objects.filter(title=title).exists():
@@ -1199,13 +1279,24 @@ def facilitysubrules_set(request, id):
     status = 0
     # new_Facility = Facility_SubRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description, rate=rate, status=status)
     if Facility_SubRules_set.objects.filter(facility=newfacility).exists():
+        rules_count = Facility_SubRules_set.objects.filter(facility=facility, status=0).count()
+        
         # Facility exists, check if title is different
+ 
+
         if Facility_SubRules_set.objects.filter(status=1):
-            message = f"You have to remove the existing rule first to add new rule"
+            message = f"You have to remove the existing set rule first to add new rule"
             messages.warning(request, message)
 
+        elif Facility_SubRules_set.objects.filter(title=title).exists():  
+                message = f"You have to remove the existing rule first to add new rule"
+                messages.warning(request, message)
+
         elif not Facility_SubRules_set.objects.filter(title=title).exists():
-            if Facility_SubRules_set.objects.filter(status=1):
+            if Facility_SubRules_set.objects.filter(status=0):
+                message = f"You have to remove the existing rule first to add new rule"
+                messages.warning(request, message)
+            elif not rules_count > 1:
                 message = f"You have to remove the existing rule first to add new rule"
                 messages.warning(request, message)
             else:
@@ -1373,13 +1464,24 @@ def facilitypromorules_set(request, id):
     status = 0
     # new_Facility = Facility_SubRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description, rate=rate, status=status)
     if Facility_PromoRules_set.objects.filter(facility=newfacility).exists():
+        rules_count = Facility_PromoRules_set.objects.filter(facility=facility, status=0).count()
+        
         # Facility exists, check if title is different
+ 
+
         if Facility_PromoRules_set.objects.filter(status=1):
-            message = f"You have to remove the existing rule first to add new rule"
+            message = f"You have to remove the existing set rule first to add new rule"
             messages.warning(request, message)
 
+        elif Facility_PromoRules_set.objects.filter(title=title).exists():  
+                message = f"You have to remove the existing rule first to add new rule"
+                messages.warning(request, message)
+
         elif not Facility_PromoRules_set.objects.filter(title=title).exists():
-            if Facility_PromoRules_set.objects.filter(status=1):
+            if Facility_PromoRules_set.objects.filter(status=0):
+                message = f"You have to remove the existing rule first to add new rule"
+                messages.warning(request, message)
+            elif not rules_count > 1:
                 message = f"You have to remove the existing rule first to add new rule"
                 messages.warning(request, message)
             else:
@@ -1450,73 +1552,216 @@ def display_facility_promo(request, id):
 
     return render(request, template, {'sfacility': sfacility, 'fpromorules': fpromorules, 'addedpromorules': addedpromorules,'pform': pform, 'firstname':firstname})
 
+# @csrf_protect
+# @login_required
+# @user_passes_test(is_superuser)
+# def revenue_dashboard(request):
+#     firstname = request.session.get('firstname')
+#     chart_type_form = ChartTypeForm(request.GET or None)
+#     revenue_trans = Booking.objects.all().order_by('-id')
+#     start_date = request.GET.get('start_date')
+#     end_date = request.GET.get('end_date')
+#     facility_id = request.GET.get('facility')
+#     facilityt = Facility.objects.filter(isdeleted=0).order_by('id')
+#     bookings = Booking.objects.all()
+#     facilities = Facility.objects.filter(isdeleted=False)
+#     months = bookings.dates('bookDate', 'month') 
+#     labelsmonth = [month.strftime('%B %Y') for month in months]
+#     facility_stats = {}
+
+#     if start_date and end_date:
+#         start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+#         end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+#         bookings = bookings.filter(date__range=(start_date, end_date))
+
+#     if facility_id:
+#         bookings = bookings.filter(venue__id=facility_id)
+#         facilities = facilities.filter(id=facility_id)
+
+#     for facility in facilities:
+#         # Count number of reservations for each facility
+#         num_reservations = Booking.objects.filter(venue_id=facility.id).count()
+#         facility.num_reservations = num_reservations
+
+#         total_hours = Booking.objects.filter(venue_id=facility.id).aggregate(total_duration=Sum('duration'))['total_duration'] or 0
+#         facility.total_hours = total_hours
+
+#         facility_revenue_points = Booking.objects.filter(venue_id=facility.id).aggregate(total_points=Sum('points'))['total_points'] or 0
+#         facility.facility_revenue_points = facility_revenue_points
+
+#         facility_revenue_coins = Booking.objects.filter(venue_id=facility.id).aggregate(total_coins=Sum('coins'))['total_coins'] or 0
+#         facility.facility_revenue_coins = facility_revenue_coins
+#         total_reservation = revenue_trans.all().count()
+#         number_facility = facilityt.all().count()
+#     for facility in facilityt: 
+#         context = {
+#             'bookings': bookings,
+#             'facilities': facilities,
+#             'firstname':firstname
+#         }
+
+
+#         facility_stats[facility.facilityname] = {
+#             'facility': facility_id,
+#             'num_reservations': num_reservations,
+#             'total_hours': total_hours,
+#             'facility_revenue_points': facility_revenue_points,
+#             'facility_revenue_coins': facility_revenue_coins,
+#         }    
+       
+#         labels = [facility_name for facility_name, stats in facility_stats.items()]
+#         # label = [facility_name for facility_name, stats in facility_stats.items()]
+#         data_values = [float(stats['facility_revenue_points']) for facility_name, stats in facility_stats.items()]
+#         background_colors = [
+#             'rgba(255, 0, 0, 0.2)',  # Red with 20% transparency
+#             'rgba(0, 0, 255, 0.2)',  # Blue with 20% transparency
+#             'rgba(255, 255, 0, 0.2)',  # Yellow with 20% transparency
+#         ]
+#         border_colors = [
+#             'rgba(255, 0, 0, 1)',  # Solid red
+#             'rgba(0, 0, 255, 1)',  # Solid blue
+#             'rgba(255, 255, 0, 1)',  # Solid yellow
+#         ]
+
+
+#         labelsmonth_json = json.dumps(labelsmonth)
+#         labels_json = json.dumps(labels)
+#         background_colors_json = json.dumps(background_colors)
+#         border_colors_json = json.dumps(border_colors)
+#         data_values_json = json.dumps(data_values)
+        
+
+#         chart_type = 'bar'  # Default chart type
+
+#         if chart_type_form.is_valid():
+#             chart_type = chart_type_form.cleaned_data.get('chart_type')
+
+#         return render(request, 'revenue_dashboard.html', {'revenue_trans': revenue_trans, 'facility_stats': facility_stats, 'facilityt': facilityt,
+#                 'labels': labels_json,
+#                 'labelsmonth': labelsmonth_json,
+#                 'data_values': data_values_json,
+#                 'background_colors': background_colors_json,
+#                 'border_colors': border_colors_json,
+#                 'chart_type': chart_type,
+#                 'chart_type_form': chart_type_form,
+#                 'total_revenue': facility_revenue_points,
+#                 'facility_revenue_coins': facility_revenue_coins,
+#                 'total_hours_all':total_hours,
+#                 'total_reservation':total_reservation,
+#                 'number_facility':number_facility,
+#                 # 'total_charge_payments':total_charge_payments,
+#                 'labels': labels,
+#                 'firstname':firstname
+
+#             })
 
 @csrf_protect
 @login_required
 @user_passes_test(is_superuser)
 def revenue_dashboard(request):
     firstname = request.session.get('firstname')
-    transactions = Transaction.objects.all()
+    transactions = Booking.objects.all()
     chart_type_form = ChartTypeForm(request.GET or None)
     facilityt = Facility.objects.filter(isdeleted=0).order_by('id')
     facility_filter = request.GET.get('facility')
-    revenue_trans = Transaction.objects.all().order_by('-id')
+    revenue_trans = Booking.objects.all().order_by('-id')
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
-    months = transactions.dates('transaction_datetime', 'month')  # Assuming 'transaction_datetime' is the correct field name
+    facilities = Facility.objects.filter(isdeleted=False)
+    # months = transactions.bookedDate('transaction_datetime', 'month')  # Assuming 'transaction_datetime' is the correct field name
     # Convert the months to a list of strings
-    labelsmonth = [month.strftime('%B %Y') for month in months]
+
+# Extracting months and years from bookDate field
+    months_years = transactions.annotate(
+        month=ExtractMonth('bookDate'),
+        year=ExtractYear('bookDate')
+    ).values('month', 'year').distinct().order_by('year', 'month')
+
+    # Convert the months and years to a list of strings
+    labelsmonth = [f"{month['month']} {month['year']}" for month in months_years]
 
     if start_date and end_date:
-        revenue_trans = revenue_trans.filter(transaction_datetime__date__range=[start_date, end_date])
+        bookings = bookings.filter(date__range=(start_date, end_date))
 
     if facility_filter:
-        revenue_trans = revenue_trans.filter(facility=facility_filter)
+        revenue_trans = revenue_trans.filter(venue__id=facility_filter)
+
+    for facility in facilities:
+    # total_revenue = revenue_trans.aggregate(Sum('total'))['total__sum'] or 0.0
+        total_revenue_points = Booking.objects.aggregate(total_points=Sum('points'))['total_points'] or 0.0
+        facility.facility_revenue_points = total_revenue_points
+
+        total_revenue_coins = Booking.objects.aggregate(total_coins=Sum('coins'))['total_coins'] or 0.0
+        facility.facility_revenue_coins = total_revenue_coins
+
+        total_revenue = total_revenue_points+total_revenue_coins
+
+        # total_hours_all = revenue_trans.all().aggregate(Sum('duration_booking'))['duration_booking__sum'] or 0.0
+        total_hours_all = revenue_trans.aggregate(total_duration=Sum('duration'))['total_duration'] or 0.0
+        facility.total_hours = total_hours_all
+
+        # total_reservation = revenue_trans.all().count()
+        total_reservation = revenue_trans.all().count()
+        facility.num_reservations = total_reservation
+
+        number_facility = facilityt.all().count()
+
+        # total_charge_payments = revenue_trans.aggregate(Sum('charge_payment'))['charge_payment__sum'] or 0.0
 
 
-    total_revenue = revenue_trans.aggregate(Sum('total'))['total__sum'] or 0.0
-    total_hours_all = revenue_trans.all().aggregate(Sum('duration_booking'))['duration_booking__sum'] or 0.0
-    total_reservation = revenue_trans.all().count()
-    number_facility = facilityt.all().count()
-    total_charge_payments = revenue_trans.aggregate(Sum('charge_payment'))['charge_payment__sum'] or 0.0
-    # Initialize dictionaries to store calculated values
-    facility_stats = {}
+            # facility_revenue_points = Booking.objects.filter(venue_id=facility.id).aggregate(total_points=Sum('points'))['total_points'] or 0
+            # facility.facility_revenue_points = facility_revenue_points
+
+        # total_revenue_coins = Booking.objects.filter(venue_id=facility.id).aggregate(total_coins=Sum('coins'))['total_coins'] or 0.0
+        # facility.facility_revenue_coins = total_revenue_coins
+        # Initialize dictionaries to store calculated values
+        facility_stats = {}
 
 
     if facility_filter:
         selected_facility = Facility.objects.filter(id=facility_filter,isdeleted=0).first()
         if selected_facility:
             # Count the number of reservations for the selected facility
-            num_reservations = revenue_trans.filter(facility=selected_facility).count()
+            num_reservations = revenue_trans.filter(venue_id=selected_facility).count()
 
             # Calculate the total hours for the selected facility
-            total_hours = revenue_trans.filter(facility=selected_facility).aggregate(Sum('duration_booking'))['duration_booking__sum'] or 0.0
+            total_hours = revenue_trans.filter(venue_id=selected_facility).aggregate(total_duration=Sum('duration'))['total_duration'] or 0.0
 
             # Calculate the facility revenue for the selected facility
-            facility_revenue = revenue_trans.filter(facility=selected_facility).aggregate(Sum('total'))['total__sum'] or 0.0
+            facility_revenue_points = revenue_trans.filter(venue_id=selected_facility).aggregate(total_points=Sum('points'))['total_points'] or 0.0
+            facility_revenue_coins = revenue_trans.filter(venue_id=selected_facility).aggregate(total_coins=Sum('coins'))['total_coins'] or 0.0
 
+            facility_revenue = facility_revenue_points+facility_revenue_coins
             facility_stats[selected_facility.facilityname] = {
                 'facility': selected_facility,
                 'num_reservations': num_reservations,
                 'total_hours': total_hours,
                 'facility_revenue': facility_revenue,
+                'facility_revenue_points':facility_revenue_points,
             }
     else:
         # If no facility is selected, calculate statistics for all facilities
         for facility in facilityt:
-            num_reservations = revenue_trans.filter(facility=facility).count()
-            total_hours = revenue_trans.filter(facility=facility).aggregate(Sum('duration_booking'))['duration_booking__sum'] or 0.0
-            facility_revenue = revenue_trans.filter(facility=facility).aggregate(Sum('total'))['total__sum'] or 0.0
+            num_reservations = revenue_trans.filter(venue_id=facility).count()
+            total_hours = revenue_trans.filter(venue_id=facility).aggregate(total_duration=Sum('duration'))['total_duration'] or 0.0
+            facility_revenue_points = revenue_trans.filter(venue_id=facility).aggregate(total_points=Sum('points'))['total_points'] or 0
+            facility_revenue_coins = revenue_trans.filter(venue_id=facility).aggregate(total_coins=Sum('coins'))['total_coins'] or 0
+            facility_revenue = facility_revenue_points+facility_revenue_coins
             facility_stats[facility.facilityname] = {
                 'facility': facility,
                 'num_reservations': num_reservations,
                 'total_hours': total_hours,
                 'facility_revenue': facility_revenue,
+                'facility_revenue_coins':facility_revenue_coins,
+                'facility_revenue_points':facility_revenue_points,
             }
     # Convert Decimal values to floats before serializing
     labels = [facility_name for facility_name, stats in facility_stats.items()]
     # label = [facility_name for facility_name, stats in facility_stats.items()]
     data_values = [float(stats['facility_revenue']) for facility_name, stats in facility_stats.items()]
+    data_values_coins = [float(stats['facility_revenue_points']) for facility_name, stats in facility_stats.items()]
+    data_values_points = [float(stats['facility_revenue_coins']) for facility_name, stats in facility_stats.items()]
+
     background_colors = [
         'rgba(255, 0, 0, 0.2)',  # Red with 20% transparency
         'rgba(0, 0, 255, 0.2)',  # Blue with 20% transparency
@@ -1534,6 +1779,8 @@ def revenue_dashboard(request):
     background_colors_json = json.dumps(background_colors)
     border_colors_json = json.dumps(border_colors)
     data_values_json = json.dumps(data_values)
+    data_values_coins_json = json.dumps(data_values_coins)
+    data_values_points_json = json.dumps(data_values_points)
     
 
     chart_type = 'bar'  # Default chart type
@@ -1545,6 +1792,8 @@ def revenue_dashboard(request):
             'labels': labels_json,
             'labelsmonth': labelsmonth_json,
             'data_values': data_values_json,
+            'data_values_points': data_values_points_json,
+            'data_values_coins': data_values_coins_json,
             'background_colors': background_colors_json,
             'border_colors': border_colors_json,
             'chart_type': chart_type,
@@ -1553,9 +1802,12 @@ def revenue_dashboard(request):
             'total_hours_all':total_hours_all,
             'total_reservation':total_reservation,
             'number_facility':number_facility,
-            'total_charge_payments':total_charge_payments,
+            # 'total_charge_payments':total_charge_payments,
             'labels': labels,
-            'firstname':firstname
+            'firstname':firstname,
+            'total_revenue_points': total_revenue_points,
+            'total_revenue_coins': total_revenue_coins,
+
 
         })
 
@@ -1564,53 +1816,103 @@ def revenue_dashboard(request):
 @user_passes_test(is_superuser)
 def revenue_report(request):
     firstname = request.session.get('firstname')
-    facilityt = Facility.objects.all().order_by('isdeleted')
-    facility_filter = request.GET.get('facility')
-    revenue_trans = Transaction.objects.all().order_by('-id')
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
+    facility_id = request.GET.get('facility')
+
+    bookings = Booking.objects.all()
+    facilities = Facility.objects.filter(isdeleted=False)
+
 
     if start_date and end_date:
-        revenue_trans = revenue_trans.filter(transaction_datetime__date__range=[start_date, end_date])
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        bookings = bookings.filter(date__range=(start_date, end_date))
 
-    if facility_filter:
-        revenue_trans = revenue_trans.filter(facility=facility_filter)
+    if facility_id:
+        bookings = bookings.filter(venue__id=facility_id)
+        facilities = facilities.filter(id=facility_id)
 
-    # Initialize dictionaries to store calculated values
-    facility_stats = {}
+    for facility in facilities:
+        # Count number of reservations for each facility
+        num_reservations = Booking.objects.filter(venue_id=facility.id).count()
+        facility.num_reservations = num_reservations
 
-    if facility_filter:
-        selected_facility = Facility.objects.filter(id=facility_filter).first()
-        if selected_facility:
-            # Count the number of reservations for the selected facility
-            num_reservations = revenue_trans.filter(facility=selected_facility).count()
+        total_hours = Booking.objects.filter(venue_id=facility.id).aggregate(total_duration=Sum('duration'))['total_duration'] or 0
+        facility.total_hours = total_hours
 
-            # Calculate the total hours for the selected facility
-            total_hours = revenue_trans.filter(facility=selected_facility).aggregate(Sum('duration_booking'))['duration_booking__sum'] or 0.0
+        facility_revenue_points = Booking.objects.filter(venue_id=facility.id).aggregate(total_points=Sum('points'))['total_points'] or 0
+        facility.facility_revenue_points = facility_revenue_points
 
-            # Calculate the facility revenue for the selected facility
-            facility_revenue = revenue_trans.filter(facility=selected_facility).aggregate(Sum('total'))['total__sum'] or 0.0
+        facility_revenue_coins = Booking.objects.filter(venue_id=facility.id).aggregate(total_coins=Sum('coins'))['total_coins'] or 0
+        facility.facility_revenue_coins = facility_revenue_coins
 
-            facility_stats[selected_facility.facilityname] = {
-                'facility': selected_facility,
-                'num_reservations': num_reservations,
-                'total_hours': total_hours,
-                'facility_revenue': facility_revenue,
-            }
-    else:
-        # If no facility is selected, calculate statistics for all facilities
-        for facility in facilityt:
-            num_reservations = revenue_trans.filter(facility=facility).count()
-            total_hours = revenue_trans.filter(facility=facility).aggregate(Sum('duration_booking'))['duration_booking__sum'] or 0.0
-            facility_revenue = revenue_trans.filter(facility=facility).aggregate(Sum('total'))['total__sum'] or 0.0
-            facility_stats[facility.facilityname] = {
-                'facility': facility,
-                'num_reservations': num_reservations,
-                'total_hours': total_hours,
-                'facility_revenue': facility_revenue,
-            }
+    context = {
+        'bookings': bookings,
+        'facilities': facilities,
+        'firstname':firstname
+    }
 
-    return render(request, 'revenue_report.html', {'revenue_trans': revenue_trans, 'facility_stats': facility_stats, 'facilityt': facilityt,'firstname':firstname })
+    return render(request, 'revenue_report.html', context)
+# def revenue_report(request):
+#     firstname = request.session.get('firstname')
+#     facilityt = Facility.objects.all().order_by('isdeleted')
+#     facility_filter = request.GET.get('facility')
+#     if facility_filter and facility_filter.strip():
+#         facility_filter = int(facility_filter)
+#     revenue_trans = Booking.objects.all().order_by('-id')
+#     attendance = Attendance.objects.all().order_by('-id')
+#     # date = request.GET.get('date')
+#     start_date = request.GET.get('start_date')
+#     end_date = request.GET.get('end_date')
+#     total_coins =Sum('points')
+
+#     for facility in facilityt:
+#         if revenue_trans.filter(venueId=facility.id).exists():
+#             facility_fee = facility.rateperhour
+
+#         if start_date and end_date:
+#             revenue_trans = revenue_trans.filter(date__range=[start_date, end_date])
+
+#         if facility_filter:
+#             revenue_trans = revenue_trans.filter(venueId=facility_filter)
+
+#         # Initialize dictionaries to store calculated values
+#         facility_stats = {}
+
+#         if facility_filter:
+#             selected_facility = Facility.objects.filter(id=facility_filter).first()
+#             if selected_facility:
+#                 # Count the number of reservations for the selected facility
+#                 num_reservations = revenue_trans.filter(venueId=selected_facility.id).count()
+
+#                 # Calculate the total hours for the selected facility
+#                 total_hours = revenue_trans.filter(venueId=selected_facility.id).aggregate(Sum('duration'))['duration__sum'] or 0.0
+
+#                 # Calculate the facility revenue for the selected facility
+#                 facility_revenue = revenue_trans.filter(venueId=selected_facility.id).aggregate(total_coins)or 0.0
+
+#                 facility_stats[selected_facility.facilityname] = {
+#                     'facility': selected_facility,
+#                     'num_reservations': num_reservations,
+#                     'total_hours': total_hours,
+#                     'facility_revenue': facility_revenue,
+#                 }
+#         else:
+#             # If no facility is selected, calculate statistics for all facilities
+#             for facility in facilityt:
+#                 num_reservations = revenue_trans.filter(venueId=facility.id).count()
+#                 total_hours = revenue_trans.filter(venueId=facility.id).aggregate(Sum('duration'))['duration__sum'] or 0.0
+#                 facility_revenue = revenue_trans.filter(venueId=facility.id).aggregate()or 0.0
+#                 # facility_revenue = revenue_trans.filter(venueId=facility).aggregate(Sum('total'))['total__sum'] or 0.0
+#                 facility_stats[facility.facilityname] = {
+#                     'facility': facility,
+#                     'num_reservations': num_reservations,
+#                     'total_hours': total_hours,
+#                     'facility_revenue': facility_revenue,
+#                 }
+
+#         return render(request, 'revenue_report.html', {'revenue_trans': revenue_trans, 'facility_stats': facility_stats, 'facilityt': facilityt,'firstname':firstname})
 
 
 
@@ -1698,12 +2000,14 @@ def revenue_report(request):
 @login_required
 @user_passes_test(is_superuser)
 def display_calendar(request):
+    stypes_ched = Sched_Type.objects.all()
     firstname = request.session.get('firstname')
-    event = CalendarEvent.objects.all().order_by('start')
+    event = CalendarEvent.objects.all().order_by('-created_at')
     facility_filter = request.GET.get('facility')
     request.session['facility'] = facility_filter
+    facevent = CalendarEvent.objects.all().order_by('facility_id')
     facility = Facility.objects.filter(isdeleted=0).order_by('id')
-    typesched = CalendarEvent.objects.all().order_by('type_sched')
+    typesched = CalendarEvent.objects.values('type_sched').distinct().order_by('type_sched')
     type_filter = request.GET.get('type')
     type = Sched_TypeForm(request.POST)
     calform = CalendarEventForm(request.POST)
@@ -1721,7 +2025,7 @@ def display_calendar(request):
         if calform.is_valid():
             calform.save()        # Process your POST data here
 
-    return render(request, template, {'calform': calform, 'event': event, 'facility': facility, 'typesched': typesched, 'firstname':firstname})
+    return render(request, template, {'calform': calform, 'event': event, 'facility': facility, 'typesched': typesched, 'firstname':firstname, 'stypes_ched':stypes_ched})
 
 
 @csrf_protect
@@ -1763,8 +2067,10 @@ def display_calendarview(request):
         'calform': CalendarEventForm(),
         'firstname':firstname
     }
+
     
     return render(request, 'calendarview.html', context)
+
 
 
 def get_events(request):
@@ -1786,7 +2092,7 @@ def get_events(request):
             'title': event.event_name,
             'start': start_datetime.isoformat(),
             'end': end_datetime.isoformat(),
-            'description': description_text,
+            # 'description': description_text,
         })
 
     return JsonResponse(event_data, safe=False)
@@ -2367,7 +2673,7 @@ def update_userPromoRules(request, id):
 def displayall_setting_usertype(request):
     setting_usertype = Setting_UserType.objects.all().order_by('id')   
     firstname = request.session.get('firstname') 
-
+    usertype = User_Type.objects.all()
     if request.method == 'POST':
         forms = RulesUserTypeForm(request.POST)
         if forms.is_valid():
@@ -2388,7 +2694,7 @@ def displayall_setting_usertype(request):
         # Set the initial value of the 'facility' field in the form
         forms = RulesUserTypeForm() 
 
-    return render(request, 'usertype_table.html', {'setting_usertype': setting_usertype, 'forms':forms, 'firstname':firstname})
+    return render(request, 'usertype_table.html', {'setting_usertype': setting_usertype, 'forms':forms, 'firstname':firstname, 'usertype':usertype})
 
 @login_required
 @user_passes_test(is_superuser)

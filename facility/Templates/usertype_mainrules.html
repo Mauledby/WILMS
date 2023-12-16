@@ -59,7 +59,7 @@
     
 <!-- ----------------------------------------------User RULES----------------------------------------------------------- -->
 
-<div class="label-page" style="padding: 10px;">USER <a style="margin-left: 83%; font-size: larger;" href="{% url 'facility:umainback' %}"><</a></div>
+<div class="label-page" style="padding: 10px;">USER<a style="margin-left: 65vw; margin-top: 0rem; font-size: larger;" href="{% url 'facility:umainback' %}"><img style="height: 40%;" src="{% static 'media/arrow.png' %}" alt="Another Profile Picture"></a></div> 
     <div class="table">
       {% csrf_token %}
       <div class="margin">
@@ -111,7 +111,7 @@
           </button>
 
           <div class="vline"></div>
-          <div class="menurules" style="margin-left: 54%;">
+          <div class="menurules" style="border: 1px solid #DCDCDC;">
             <button class="mrules" style="background-color: #ffcc01;"><a href="{% url 'facility:userRules' suser.id %}" style="color: #FFFFFF; ">Main Rules</a></button>
             <button class="srules"#ffcc01><a href="{% url 'facility:userSubRules' suser.id %}">Sub Rules</a></button>
             <button class="prules"><a href="{% url 'facility:userPromoRules' suser.id %}">Promo Rules</a></button>
@@ -120,31 +120,32 @@
           <div id="overflowTest" style="margin-left: 33rem; height: 400px; ">
           {% for u in addedmainrules %}
           <button type="submit" class="btnaddrules" style="margin-left: 50%; position: relative; top: 3rem; z-index: 999;"><a href="{% url 'facility:setumstatus' u.id %}">Add</a></button>
-          <button class="btneditrules"style="margin-left: 2%; position: relative; top: 3rem; z-index: 999;"><a href="{% url 'facility:updateumainrules' u.id %}">Edit</a></button>
+          <!-- <button class="btneditrules"style="margin-left: 2%; position: relative; top: 3rem; z-index: 999;"><a href="{% url 'facility:updateumainrules' u.id %}">Edit</a></button> -->
           <button class="btndelrules" style="margin-left: 2%; position: relative; top: 3rem; z-index: 999;" data-bs-toggle="modal" data-bs-target="#warning-{{ u.id}}" data-usertype-mainrule-title="{{ u.title }}"  data-usertype-mainrules-id="{{ u.id }}">Delete</button> 
             <div class="cardrule" style="padding:10px; background:#ffcc000d; margin-bottom: 1rem; box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.25); ">
               
               <h3 class="titletxt">{{ u.title }}</h3><br>
               <div class="hline"></div>
               
-              <section style="margin:10px; font-size: 14px;  height: 400px;">
+              <div id="overflowTest" style=" padding-top: 0rem;  margin-left: 50%; height: 51vh; ">
               <ul style="width: fit-content; ">
-                <!-- </li>
                 <li>Number of Computers: {{ f.num_pc }}</li>
                 
-                <li>Number of Attendies: {{ f.num_attendies }}</li> -->
+                <li>Number of Attendies: {{ f.num_attendies }}</li>
                 <li>Description: {{ u.description }}</li>
-                <!-- <li>Rate: {{ f.rate }}</li> -->
+                <li>Rate: {{ f.rate }}</li>
               </ul>
-              <br>
+              
               <div class="hline" style="margin-top: 2.8rem; border-bottom: none;"></div>
             </section>
             </div>
+            {% empty %}
+            <h3 style="opacity: 0.3;">No Available Rules</h3>
             {% endfor %}
           </div>
         <!-- </form> -->
     </div>
-<button data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-left: 26em; background-color: #ffcc01; color: #000000;"  type="button" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Main Rules</button>
+    <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"  type="button" class="btnrules" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Rules</button>
     <!-- <button type="submit" class="add-fac" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Facility</button> -->
 
   </div>
