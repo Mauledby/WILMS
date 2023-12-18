@@ -15,7 +15,6 @@
               <option value = "{{ forms.user_type }} ">
             </datalist> -->
             <select name="user_type" id="inputGroupSelect01">
-              <option name="user_type" type="submit" value="">All</option>
               {% for u in usertype %}
               <option name="user_type" type="submit"  value ="{{u.pk}}">{{u.user_type}}</option>
               {% endfor %}

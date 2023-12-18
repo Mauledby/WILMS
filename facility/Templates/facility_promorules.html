@@ -51,14 +51,18 @@ input[type=datetime-local]{
           {{pform.title}}
           <label class="modalpopup">Description</label><br>
           <textarea placeholder="Input Description" name="description" aria-valuetext='{{pform.description}}'></textarea>
-          <label class="modalpopup">New Rate</label><br>
+          <label class="modalpopup">New Rate per Facility</label><br>
           {{pform.new_rate}}
+          <label class="modalpopup">New Rate per Attendie</label><br>
+          {{pform.person_new_rate}}
           <label class="modalpopup">Start Date</label><br>
           {{pform.start_date}}
           <label class="modalpopup">End Date</label><br>
           {{pform.end_date}}
-          <label class="modalpopup">Capacity</label><br>
-          {{pform.capacity}}
+          <label class="modalpopup">Number of Attendie/s</label><br>
+          {{pform.num_attendies}}
+          <label class="modalpopup">Number of PC/s</label><br>
+          {{pform.num_pc}}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -139,14 +143,17 @@ input[type=datetime-local]{
               <div class="hline"></div>
               
               <section style="margin:10px; font-size: 14px;  height: 400px;">
-              <ul style="width: fit-content; ">
+                <ul style="width: fit-content; height: 100px; overflow-y: auto;">
                 <!-- <li>Points: {{ f.points }}</li>
                 <li>Number of Computers: {{ f.num_pc }}</li>
                 
                 <li> -->
-                <li>Start Date: {{ f.start_date }}</li>
-                <li>Description: {{ f.description }}</li>
-                <li>Rate: {{ f.new_rate }}</li>
+                <li>Start: {{ f.start_date }}</li>
+                <li>Expiration: {{ f.end_date }}</li>
+                <li>Attendie: {{ f.num_attendies }}</li>
+                <li>Facility rate: {{ f.new_rate }}</li>
+                <li>Attendie rate: {{ f.person_new_rate }}</li>
+                <li>Number of PC: {{ f.num_pc }}</li>
                 
               </ul>
 
