@@ -133,22 +133,22 @@ class AdminReservedDashboardController(LoginRequiredMixin, View):
             booking.status = 'Booked'
             booking.save()
             
-            timer = Timer(user_id=booking.user_id, minutes=60, seconds=0)
+            timer = Timer(user_id=booking.user, minutes=60, seconds=0)
             timer.save()
             
-            log = AdminReportLogsModel(referenceid=booking.referenceNo, userid=booking.user_id, starttime=booking.startTime, endtime="", status='Booked')
+            log = AdminReportLogsModel(referenceid=booking.referenceNo, userid=booking.user, starttime=booking.startTime, endtime="", status='Booked')
             log.save()
         
         else:
             booking.delete()
             
-            usertimer = Timer.objects.get(pk=str(booking.user_id))
+            usertimer = Timer.objects.get(pk=str(booking.user))
             usertimer.delete()
             
             assignedarea = AssignedArea.objects.all().filter(reference_number=booking.referenceNo)
             assignedarea.delete()
             
-            log = AdminReportLogsModel(referenceid=booking.referenceNo, userid=booking.user_id, starttime=booking.startTime, endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
+            log = AdminReportLogsModel(referenceid=booking.referenceNo, userid=booking.user, starttime=booking.startTime, endtime=str(datetime.now().strftime("%d/%m/%Y, %H:%M")), status='Logged Out')
             log.save()
     
     def get(self, request):
@@ -182,14 +182,15 @@ class AdminReportLogsController(LoginRequiredMixin,View):
 
             for log in logs:
                 writer.writerow([log.logid, log.referenceid, log.userid, log.starttime, log.status])
-
-            cursor = connection.cursor()
-            cursor.execute("DELETE FROM wiladmin_AdminReportLogsModel")
-
+  
             return response
     
     def getAllReportLogs(self):
         logs = AdminReportLogsModel.objects.all().order_by('-logid')
+        return logs
+    
+    def getTodayReportLogs(self):
+        logs = AdminReportLogsModel.objects.filter(starttime__contains=str(datetime.now().strftime("%d/%m/%Y")))
         return logs
     
     def get(self, request):
@@ -197,40 +198,73 @@ class AdminReportLogsController(LoginRequiredMixin,View):
         return render(request, "wiladmin/logs.html", {'logs': logs})
     
     def post(self, request):
-        return self.exportlogs(request)
+        
+        if 'export_button' in request.POST:
+            messages.success(request, "Report Logs has been exported successfully")
+            return self.exportlogs(request)
         
 class BookGuestController(LoginRequiredMixin, View):
     
     login_url = 'adminlogin'
-    
-    def CreateNewBooking(self):
-        referenceid = 'GUEST'
-        userid = '18-0107-262'
-        schedule = str(datetime.now().strftime("%d/%m/%Y, %H:%M"))
-        status = 'Booked'
-        booking = WalkinBookingModel(referenceid = referenceid, user_id = userid, schedule = schedule, status = status)
-        booking.save()
-    
+
     def get(self, request):
-        return render(request, 'wiladmin/bookguest.html',{})
+        form = BookGuest()
+        context = {}
+        context['form'] = form    
+        return render(request, 'wiladmin/bookguest.html',context)
     
     def post(self, request):
+        countA1 = AssignedArea.objects.filter(area_id='A1').count()
+        countA2 = AssignedArea.objects.filter(area_id='A2').count()
+        countA3 = AssignedArea.objects.filter(area_id='A3').count()
+        countA4 = AssignedArea.objects.filter(area_id='A4').count()
+        countA5 = AssignedArea.objects.filter(area_id='A5').count()
+        countA6 = AssignedArea.objects.filter(area_id='A6').count()
+        countA7 = AssignedArea.objects.filter(area_id='A7').count()
+        countA8 = AssignedArea.objects.filter(area_id='A8').count()
+        countA9 = AssignedArea.objects.filter(area_id='A9').count()
         form = BookGuest(request.POST)
         
         if form.is_valid():
-            referenceid = 'A'+str(random.randint(3, 9))+'GUEST'.upper()+str(random.randint(1, 68))
             userid = request.POST.get('userid')
+            areaid = form.data.get('area')
+            referenceid = str(areaid)+'GUEST'.upper()+str(random.randint(1, 68))
             start_time = timezone.now()
             end_time = None
             status = 'Booked'
-            booking = WalkinBookingModel(referenceid = referenceid, user_id = userid, start_time = start_time, end_time = end_time, status = status)
-            booking.save()
             
-            reference = AssignedArea(reference_number=referenceid, area_id=referenceid[:2])
-            reference.save()
+            if areaid=='A1' and countA1 >= 1:
+                messages.error(request, "Area A1 is Full")
+            elif areaid=='A2' and countA2 >= 1:
+                messages.error(request, "Area A2 is Full")
+            elif areaid=='A3' and countA3 >= 6:
+                messages.error(request, "Area A3 is Full")
+            elif areaid=='A4' and countA4 >= 6:
+                messages.error(request, "Area A4 is Full")
+            elif areaid=='A5' and countA5 >= 6:
+                messages.error(request, "Area A5 is Full")
+            elif areaid=='A6' and countA6 >= 6:
+                messages.error(request, "Area A6 is Full")
+            elif areaid=='A7' and countA7 >= 24:
+                messages.error(request, "Area A7 is Full")
+            elif areaid=='A8' and countA8 >= 6:
+                messages.error(request, "Area A8 is Full")
+            elif areaid=='A9' and countA9 >= 6:
+                messages.error(request, "Area A9 is Full")
+            else:
+                
+                booking = WalkinBookingModel(referenceid = referenceid, user_id = userid, start_time = start_time, end_time = end_time, status = status)
+                booking.save()
+                messages.success(request, "GUEST "+userid+" has been booked to "+referenceid[:2]) 
+                
+                reference = AssignedArea(reference_number=referenceid, area_id=referenceid[:2])
+                reference.save()
+                
+                log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
+                log.save()
             
-            log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
-            log.save()
+        else:
+            messages.error(request, "You have an invalid input")
 
         return redirect('bookguest')
     
