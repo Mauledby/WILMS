@@ -189,9 +189,9 @@ class AdminReportLogsController(LoginRequiredMixin,View):
         logs = AdminReportLogsModel.objects.all().order_by('-logid')
         return logs
     
-    def getTodayReportLogs(self):
-        logs = AdminReportLogsModel.objects.filter(starttime__contains=str(datetime.now().strftime("%d/%m/%Y")))
-        return logs
+    def getTodayReportLogs(self, request):
+        logs = AdminReportLogsModel.objects.all().order_by('-logid')[:30]
+        return render(request, "wiladmin/logs.html", {'logs': logs})
     
     def get(self, request):
         logs = self.getAllReportLogs
@@ -232,6 +232,7 @@ class BookGuestController(LoginRequiredMixin, View):
             start_time = timezone.now()
             end_time = None
             status = 'Booked'
+            log_start_time = str(start_time.strftime("%d/%m/%Y, %I:%M %p"))
             
             if areaid=='A1' and countA1 >= 1:
                 messages.error(request, "Area A1 is Full")
@@ -260,7 +261,7 @@ class BookGuestController(LoginRequiredMixin, View):
                 reference = AssignedArea(reference_number=referenceid, area_id=referenceid[:2])
                 reference.save()
                 
-                log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=booking.start_time, endtime="", status='Booked')
+                log = AdminReportLogsModel(referenceid=booking.referenceid, userid=booking.user_id, starttime=log_start_time, endtime="", status='Booked')
                 log.save()
             
         else:

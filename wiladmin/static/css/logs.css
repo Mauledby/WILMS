@@ -100,3 +100,29 @@ caption {
   position: absolute;
   top: -5%;
 }
+
+.viewall {
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+
+.viewall:active {
+  font-size: larger;
+}
+
+.viewall:hover {
+  font-weight: bolder;
+}
+
+.today {
+  margin-bottom: 10px;
+  position:relative;
+}
+
+.today:active {
+  font-size: larger;
+}
+
+.today:hover {
+  font-weight: bolder;
+}

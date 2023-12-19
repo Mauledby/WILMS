@@ -23,6 +23,7 @@ urlpatterns = [
     path('admindashboard', views.AdminDashboardController.as_view(), name='admindashboard'),
     path('updatedashboard', views.AdminDashboardController.update_dashboard, name='updatedashboard'),
     path('reportlogs', views.AdminReportLogsController.as_view(), name='reportlogs'),
+    path('todayreportlogs', views.AdminReportLogsController.getTodayReportLogs, name='todaylogs'),
     path('walkindashboard', views.AdminWalkinDashboardController.as_view(), name='walkindashboard'),
     path('reserveddashboard', views.AdminReservedDashboardController.as_view(), name='reserveddashboard'),
     path('updatebooking/<int:bookingid>', views.AdminWalkinDashboardController.as_view(), name='updatebooking'),
