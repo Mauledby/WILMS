@@ -41,8 +41,10 @@
           {{mform.num_attendies}}
           <label class="modalpopup">Description</label><br>
           <textarea placeholder="Input Description" name="description" aria-valuetext='{{mform.description}}'></textarea>
-          <label class="modalpopup">Rate</label><br>
+          <label class="modalpopup">Facility Rate</label><br>
           {{mform.rate}}
+          <label class="modalpopup">Attendie Rate</label><br>
+          {{mform.person_rate}}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -128,7 +130,8 @@
                 
                 <li>Number of Attendies: {{ f.num_attendies }}</li>
                 <li>Description: {{ f.description }}</li>
-                <li>Rate: {{ f.rate }}</li>
+                <li>Facility Rate: {{ f.rate }}</li>
+                <li>Attendie Rate: {{ f.person_rate }}</li>
               </ul>
               <div class="hline" style="margin-top: 2.8rem; border-bottom: none;"></div>
             </section>

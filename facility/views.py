@@ -1,5 +1,7 @@
 import datetime
+from django.utils import timezone
 import io
+import time
 from django.db.models.functions import ExtractMonth, ExtractYear
 from django.db.models import F, Value, CharField
 from django.shortcuts import render
@@ -9,7 +11,7 @@ from django.shortcuts import render
 import plotly.express as px
 from plotly.offline import plot
 import plotly.graph_objs as go
-from .forms import ChartTypeForm, RulesUserTypeForm, UserForm, UserTypeForm
+from .forms import ChartTypeForm, RulesUserTypeForm, UserTypeForm, UserForm
 import json
 from matplotlib import pyplot as plt
 from reportlab.pdfgen import canvas
@@ -44,7 +46,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Setting_Facility, User_Type
+from .models import Setting_Facility, User_Type, User
 from api.models import Booking, Attendance
 
 
@@ -348,10 +350,12 @@ def display_facility(request):
         # Retrieving form data from POST request
         set_fac = Setting_Facility.objects.all()
         upform = FacilityUpdateForm(request.POST)
-        mform = FacilityForm(request.POST)
+        facilityform = FacilityForm(request.POST)        
         f_id = request.POST.get('id')
         nfacility = request.POST.get('facilityname')
+        narea_id = request.POST.get('area_id')
         nrateperhour = request.POST.get('rateperhour')
+        nperson_rateperhour = request.POST.get('person_rateperhour')
         ncapacity = request.POST.get('capacity')
         firstname = request.session.get('firstname') 
         count = Facility.objects.filter(isdeleted=0).count()
@@ -375,9 +379,9 @@ def display_facility(request):
                         messages.warning(request, message)
                         return redirect('facility:facility')
                     else:
-                        new_facility = mform.save()
+                        new_facility = facilityform.save()
                         Setting_Facility.objects.create(facility=new_facility)
-                        mform.save()
+                        facilityform.save()
                         message = "Facility added successfully"
                         messages.success(request, message)
                         return redirect('facility:facility')
@@ -389,7 +393,9 @@ def display_facility(request):
                 # Updating an existing facility
                 facility = get_object_or_404(Facility, id=f_id)
                 facility.facilityname = nfacility
+                facility.area_id = narea_id
                 facility.rateperhour = nrateperhour
+                facility.person_rateperhour = nperson_rateperhour
                 facility.capacity = ncapacity
                 facility.save()
                 message = "Facility updated successfully"
@@ -407,11 +413,11 @@ def display_facility(request):
         # Retrieving all facilities that are not deleted and ordering them by ID
         facility = Facility.objects.filter(isdeleted=0).order_by('id')
         upform = FacilityUpdateForm()
-        mform = FacilityForm()
+        facilityform = FacilityForm()
         firstname = request.session.get('firstname')  # Retrieving 'firstname' from session
 
     # Rendering the 'facility.html' template with the retrieved data
-    return render(request, 'facility.html', {'facility': facility, 'upform': upform, 'mform': mform, 'firstname': firstname})
+    return render(request, 'facility.html', {'facility': facility, 'upform': upform, 'facilityform': facilityform, 'firstname': firstname})
 
 
 
@@ -913,6 +919,7 @@ def facilitymainrules_set(request, id):
     num_attendies = request.POST.get('num_attendies',mainrules.num_attendies)
     description = request.POST.get('description', mainrules.description)
     rate = request.POST.get('rate', mainrules.rate)
+    person_rate = request.POST.get('person_rate', mainrules.person_rate)
     status = 0
     
     # new_Facility = Facility_MainRules_set(facility=newfacility, title=title, description=description, rate=rate, status=status)
@@ -938,7 +945,7 @@ def facilitymainrules_set(request, id):
                 message = f"You have to remove the existing rule first to add new rule"
                 messages.warning(request, message)
             else:
-                new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
+                new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, person_rate=person_rate, status=status)
                 new_Facility.save()
 
 
@@ -946,21 +953,21 @@ def facilitymainrules_set(request, id):
     # elif Facility_MainRules_set.objects.filter(facility=facility).exists():
     #     if Facility_MainRules_set.objects.filter(status=0).exists():
     #         if not Facility_MainRules_set.objects.filter(title=title).exists():
-    #             new_Facility = Facility_MainRules_set(facility=facility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
+    #             new_Facility = Facility_MainRules_set(facility=facility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, person_rate=person_rate, status=status)
     #             new_Facility.save()
     else:
         # Facility doesn't exist, check if title exists
         if Facility_MainRules_set.objects.filter(title=title).exists():
             # f" already exists"
-            new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
+            new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, person_rate=person_rate, status=status)
             new_Facility.save()
 
         elif Facility_MainRules_set.objects.filter(status=0).exists():
-            new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
+            new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, person_rate=person_rate, status=status)
             new_Facility.save()
         else:
             # Neither facility nor title exist
-            new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, status=status)
+            new_Facility = Facility_MainRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description,  rate=rate, person_rate=person_rate, status=status)
             new_Facility.save()
 
     if faci_id is not None:
@@ -971,63 +978,78 @@ def facilitymainrules_set(request, id):
         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
         return HttpResponseRedirect(reverse('facility_mainrules.html'))
 
-@csrf_protect
-@login_required
-@user_passes_test(is_superuser)
-def is_setfacilitymainrules_status(request):
-    faci_id = request.session.get('faci_id')
-    facility = request.session.get('facility')
+# @csrf_protect
+# @login_required
+# @user_passes_test(is_superuser)
+# def is_setfacilitymainrules_status(request):
+#     faci_id = request.session.get('faci_id')
+#     facility = request.session.get('facility')
+#     current_date = datetime.now().date()
+#     facility_promo_rules_set = Facility_PromoRules_set.objects.filter(facility=facility).first()
 
-    facility_list = Facility_MainRules_set.objects.filter(facility=facility)
-    # Retrieve all rule sets
-    mainrule_list = Facility_MainRules_set.objects.filter(facility=facility)
-    subrule_list = Facility_SubRules_set.objects.filter(facility=facility)
-    promorule_list = Facility_PromoRules_set.objects.filter(facility=facility)
+#     facility_list = Facility_MainRules_set.objects.filter(facility=facility)
+#     # Retrieve all rule sets
+#     mainrule_list = Facility_MainRules_set.objects.filter(facility=facility)
+#     subrule_list = Facility_SubRules_set.objects.filter(facility=facility)
+#     promorule_list = Facility_PromoRules_set.objects.filter(facility=facility)
 
-    # Filter rule sets by facility
-    mainrules_list = Facility_MainRules_set.objects.filter(facility=facility)
-    subrules_list = Facility_SubRules_set.objects.filter(facility=facility)
-    promorules_list = Facility_PromoRules_set.objects.filter(facility=facility)
+#     # Filter rule sets by facility
+#     mainrules_list = Facility_MainRules_set.objects.filter(facility=facility)
+#     subrules_list = Facility_SubRules_set.objects.filter(facility=facility)
+#     promorules_list = Facility_PromoRules_set.objects.filter(facility=facility)
 
-    setting_list = Setting_Facility.objects.filter(facility=facility)
+#     setting_list = Setting_Facility.objects.filter(facility=facility)
 
 
 
-    # Check if subrule_list is not empty
-    if mainrule_list.exists():
-            mainrule = request.POST.get('mainrule', mainrule_list.first().id)
-    else:
-        mainrule = None 
+#     # Check if subrule_list is not empty
+#     if mainrule_list.exists():
+#             mainrule = request.POST.get('mainrule', mainrule_list.first().id)
+#     else:
+#         mainrule = None 
 
-    if subrule_list.exists():
-        subrule = request.POST.get('subrule', subrule_list.first().id)
-    else:
-        subrule = None 
+#     if subrule_list.exists():
+#         subrule = request.POST.get('subrule', subrule_list.first().id)
+#     else:
+#         subrule = None 
 
-    if promorule_list.exists():
-        promorule = request.POST.get('promorule', promorule_list.first().id)
-    else:
-        promorule = None  # or set to an appropriate default value
+#     if promorule_list.exists():
+#         promorule = request.POST.get('promorule', promorule_list.first().id)
+#     else:
+#         promorule = None  # or set to an appropriate default value
 
-    # Update the status for all matching instances
+#     # Update the status for all matching instances
     
-    mainrules_list.update(status=1)
-    subrules_list.update(status=1)
-    promorules_list.update(status=1)
+#     mainrules_list.update(status=1)
+#     subrules_list.update(status=1)
+#     promorules_list.update(status=1)
 
-    # Update the settings in a single call
-    setting_list.update(mainrules=mainrule, subrules=subrule, promorules=promorule)
+#     # Update the settings in a single call
+#     setting_list.update(mainrules=mainrule, subrules=subrule, promorules=promorule)
 
-    # mainrules.save()
-    message = f"Rules successfully set."
+#     # mainrules.save()
+#     message = f"Rules successfully set."
+#     messages.success(request, message)
+    
+#     if facility_promo_rules_set and current_date > facility_promo_rules_set.end_date:
+#         # Your code logic here if the current date is past the end date
+#         # This block will execute if there are promo rules for the facility
+#         # and the current date is greater than the end date of those rules
+#         message = f"Current date is past the end date of Facility Promo Rules."
+#         messages.success(request, message)
+#         print("Current date is past the end date of Facility Promo Rules.")
+#     else:
+#         # Your code logic here if the current date is not past the end date
+#         # or if there are no promo rules for the facility
+#         message = f"Current date is on or before the end date of Facility Promo Rules, or no rules found."
+#         messages.success(request, message)
+#         print("Current date is on or before the end date of Facility Promo Rules, or no rules found.")
 
-    messages.success(request, message)
-
-    if faci_id is not None:
-        return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
-    else:
-        # Handle the case when faci_id is None, e.g., by redirecting to a default URL
-        return HttpResponseRedirect(reverse('facility_mainrules.html'))
+#     if faci_id is not None:
+#         return HttpResponseRedirect(reverse('facility:facilityRules', args=[faci_id]))
+#     else:
+#         # Handle the case when faci_id is None, e.g., by redirecting to a default URL
+#         return HttpResponseRedirect(reverse('facility_mainrules.html'))
 
 @csrf_protect
 @login_required
@@ -1035,7 +1057,7 @@ def is_setfacilitymainrules_status(request):
 def is_setfacilitymainrules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
-
+    current_date = timezone.now()
     # facilities = get_object_or_404(Facility, facilityname=facility)
     main_rules = Facility_MainRules_set.objects.filter(facility=facility).first()
     promo_rules = Facility_PromoRules_set.objects.filter(facility=facility).first()
@@ -1054,12 +1076,20 @@ def is_setfacilitymainrules_status(request):
 
     
 
-    
+    facility_promo_rules_set = Facility_PromoRules_set.objects.filter(facility=facility).first()
+
+    if facility_promo_rules_set and current_date > facility_promo_rules_set.end_date:
+        message = "Current date is past the end date of Facility Promo Rules."
+        messages.success(request, message)
+        # print("Current date is on or before the end date of Facility Promo Rules, or no rules found.")
+
     # Check if subrule_list is not empty
     if mainrule_list.exists():
             mainrule = request.POST.get('mainrule', mainrule_list.first().id)
             new_rate = main_rules.rate
+            person_rate = main_rules.person_rate
             facility_list.rateperhour = new_rate
+            facility_list.person_rateperhour = person_rate
             facility_list.save()
     else:
         mainrule = None 
@@ -1071,9 +1101,21 @@ def is_setfacilitymainrules_status(request):
 
     if promorule_list.exists():
         promorule = request.POST.get('promorule', promorule_list.first().id)
-        new_rate = promo_rules.new_rate
-        facility_list.rateperhour = new_rate
-        facility_list.save()
+        
+        end_date = promo_rules.end_date
+
+        if current_date < end_date:
+            facility_list.rateperhour = main_rules.rate
+            facility_list.person_rateperhour = main_rules.person_rate
+            facility_list.save()
+            message = "Current date is past the end date of Facility Promo Rules**********************."
+            messages.success(request, message)
+        else:
+            new_rate = promo_rules.new_rate
+            person_new_rate = promo_rules.person_new_rate
+            facility_list.rateperhour = new_rate
+            facility_list.person_rateperhour = person_new_rate
+            facility_list.save()
     else:
         promorule = None  # or set to an appropriate default value
 
@@ -1384,7 +1426,7 @@ def display_facility_promorules(request, id):
 def is_setfacilitypromorules_status(request):
     faci_id = request.session.get('faci_id')
     facility = request.session.get('facility')
-
+    
     # facilities = get_object_or_404(Facility, facilityname=facility)
     main_rules = Facility_MainRules_set.objects.filter(facility=facility).first()
     promo_rules = Facility_PromoRules_set.objects.filter(facility=facility).first()
@@ -1404,12 +1446,22 @@ def is_setfacilitypromorules_status(request):
     
 
     
+    # # Check if subrule_list is not empty
+    # facility_promo_rules_set = Facility_PromoRules_set.objects.filter(facility=facility).first()
+
+    # if facility_promo_rules_set and current_date > facility_promo_rules_set.end_date:
+    #     message = "Current date is past the end date of Facility Promo Rules."
+    #     messages.success(request, message)
+        # print("Current date is on or before the end date of Facility Promo Rules, or no rules found.")
+
     # Check if subrule_list is not empty
     if mainrule_list.exists():
             mainrule = request.POST.get('mainrule', mainrule_list.first().id)
             new_rate = main_rules.rate
+            person_rate = main_rules.person_rate
             facility_list.rateperhour = new_rate
-            facility_list.save()    
+            facility_list.person_rateperhour = person_rate
+            facility_list.save()
     else:
         mainrule = None 
 
@@ -1420,11 +1472,26 @@ def is_setfacilitypromorules_status(request):
 
     if promorule_list.exists():
         promorule = request.POST.get('promorule', promorule_list.first().id)
-        new_rate = promo_rules.new_rate
-        facility_list.rateperhour = new_rate
-        facility_list.save()
+        
+        end_date = promo_rules.end_date
+        current_date = datetime.now()
+
+        current_date_aware = timezone.make_aware(current_date, timezone=timezone.utc)
+
+        if current_date_aware < end_date:
+            facility_list.rateperhour = main_rules.rate
+            facility_list.person_rateperhour = main_rules.person_rate
+            facility_list.save()
+            message = "Current date is past the end date of Facility Promo Rules**********************."
+            messages.success(request, message)
+        else:
+            new_rate = promo_rules.new_rate
+            person_new_rate = promo_rules.person_new_rate
+            facility_list.rateperhour = new_rate
+            facility_list.person_rateperhour = person_new_rate
+            facility_list.save()
     else:
-        promorule = None  # or set to an appropriate default value
+        promorule = None  # or set to an appropriate default value# or set to an appropriate default value
 
     # Update the status for all matching instances
 
@@ -1458,10 +1525,18 @@ def facilitypromorules_set(request, id):
     title = request.POST.get('title',promorules.title)
     description = request.POST.get('description', promorules.description)
     new_rate = request.POST.get('new_rate',promorules.new_rate)
+    person_new_rate = request.POST.get('person_new_rate',promorules.person_new_rate)
     start_date = request.POST.get('start_date',promorules.start_date)
     end_date = request.POST.get('end_date',promorules.end_date)
-    capacity = request.POST.get('capacity',promorules.capacity)
+    num_attendies = request.POST.get('num_attendies',promorules.num_attendies)
+    num_pc = request.POST.get('num_pc',promorules.num_pc)
     status = 0
+    promo_rules = Facility_PromoRules_set.objects.all()
+
+
+    # for promo_rule in promo_rules:
+    #     promo_rule.delete_if_expired()
+
     # new_Facility = Facility_SubRules_set(facility=newfacility, title=title, points=points, num_pc=num_pc, num_attendies=num_attendies, description=description, rate=rate, status=status)
     if Facility_PromoRules_set.objects.filter(facility=newfacility).exists():
         rules_count = Facility_PromoRules_set.objects.filter(facility=facility, status=0).count()
@@ -1484,24 +1559,25 @@ def facilitypromorules_set(request, id):
             elif not rules_count > 1:
                 message = f"You have to remove the existing rule first to add new rule"
                 messages.warning(request, message)
-            else:
-                new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, start_date=start_date, end_date=end_date, capacity=capacity, status=status)
+            else:              
+                new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, person_new_rate=person_new_rate, start_date=start_date, end_date=end_date, num_attendies=num_attendies, status=status, num_pc=num_pc)
                 new_Facility.save()
+
 
     
     else:
         # Facility doesn't exist, check if title exists
         if Facility_PromoRules_set.objects.filter(title=title).exists():
-            new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, start_date=start_date, end_date=end_date, capacity=capacity, status=status)
+            new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, person_new_rate=person_new_rate, start_date=start_date, end_date=end_date, num_attendies=num_attendies, status=status, num_pc=num_pc)
             new_Facility.save()
 
         elif Facility_PromoRules_set.objects.filter(status=0).exists():
-            new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, start_date=start_date, end_date=end_date, capacity=capacity, status=status)
+            new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, person_new_rate=person_new_rate, start_date=start_date, end_date=end_date, num_attendies=num_attendies, status=status, num_pc=num_pc)
             new_Facility.save() 
             
         else:
             # Neither facility nor title exist
-            new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, start_date=start_date, end_date=end_date, capacity=capacity, status=status)
+            new_Facility = Facility_PromoRules_set(facility=newfacility, title=title, description=description, new_rate=new_rate, person_new_rate=person_new_rate, start_date=start_date, end_date=end_date, num_attendies=num_attendies, status=status, num_pc=num_pc)
             new_Facility.save()
 
     if faci_id is not None:
@@ -2671,6 +2747,7 @@ def update_userPromoRules(request, id):
 @login_required
 @user_passes_test(is_superuser)
 def displayall_setting_usertype(request):
+    # usertype = User.objects.all
     setting_usertype = Setting_UserType.objects.all().order_by('id')   
     firstname = request.session.get('firstname') 
     usertype = User_Type.objects.all()

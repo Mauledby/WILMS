@@ -5,75 +5,97 @@ from .models import CalendarEvent, Facility, Facility_MainRules, Facility_MainRu
 
 class FacilityForm(ModelForm):
     facilityname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Facility Name'}))
-    rateperhour = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Enter rate per hour'}))
+    area_id = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Area ID'}))
+    rateperhour = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Facility rate/hour'}))
+    person_rateperhour = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Attendees rate/hour'}))
     capacity = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Enter Capacity'}))
 
     class Meta:
         model = Facility
-        fields = ['facilityname', 'rateperhour', 'capacity']
+        fields = ['facilityname', 'area_id', 'rateperhour', 'person_rateperhour', 'capacity']
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-    def clean(self):
-        cleaned_data = super().clean()
-        facilityname = cleaned_data.get('facilityname')
-        rateperhour = cleaned_data.get('rateperhour')
-        capacity = cleaned_data.get('capacity')
 
-        if rateperhour is not None and rateperhour < 10:
-            self.add_error('rateperhour', 'Rate per hour should not be below 10.')
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     facilityname = cleaned_data.get('facilityname')
+    #     area_id = cleaned_data.get('area_id')
+    #     rateperhour = cleaned_data.get('rateperhour')
+    #     person_rateperhour = cleaned_data.get('person_rateperhour')
+    #     capacity = cleaned_data.get('capacity')
 
-        if capacity is not None and capacity > 30:
-            self.add_error('capacity', 'Capacity should not exceed 30.')
+    #     if rateperhour is not None and rateperhour < 10:
+    #         self.add_error('rateperhour', 'Rate per hour should not be below 10.')
         
-        if Facility.objects.filter(facilityname=facilityname).exclude(pk=self.instance.pk).exists():
-            self.add_error('facilityname', 'Facility with this name already exists.')
+    #     if person_rateperhour is not None and person_rateperhour < 10:
+    #         self.add_error('person_rateperhour', 'Rate per hour should not be below 10.')
+
+    #     if capacity is not None and capacity > 30:
+    #         self.add_error('capacity', 'Capacity should not exceed 30.')
+        
+    #     if Facility.objects.filter(facilityname=facilityname).exclude(pk=self.instance.pk).exists():
+    #         self.add_error('facilityname', 'Facility with this name already exists.')
+
+    #     if Facility.objects.filter(area_id=area_id).exclude(pk=self.instance.pk).exists():
+    #         self.add_error('area_id', 'area_id with this id already exists.')
 
 
-        return cleaned_data
+    #     return cleaned_data
 
-    def __str__(self):
-        return self.cleaned_data['facilityname'] + " ( " + str(self.cleaned_data['rateperhour']) + ") " + " (" + str(self.cleaned_data['capacity']) + ") "
+    # def __str__(self):
+    #     return self.cleaned_data['facilityname'] + str(self.cleaned_data['area_id']) + ") " + " ( " + str(self.cleaned_data['rateperhour']) + ")" + " (" + str(self.cleaned_data['person_rateperhour']) + ") "  + " (" + str(self.cleaned_data['capacity']) + ") " 
 
 class FacilityUpdateForm(ModelForm):
     facilityname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Facility Name'}))
-    rateperhour = forms.FloatField(widget=forms.TextInput(attrs={'placeholder':'Enter rate per hour'}))
-    capacity = forms.IntegerField(widget=forms.TextInput(attrs={'placeholder':'Enter Capacity'}))
+    area_id = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Area ID'}))
+    rateperhour = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Facility rate/hour'}))
+    person_rateperhour = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Attendies rate/hour'}))
+    capacity = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Enter Capacity'}))
 
     class Meta:
         model = Facility
-        fields = ['facilityname', 'rateperhour', 'capacity']
+        fields = ['facilityname', 'area_id', 'rateperhour', 'person_rateperhour', 'capacity']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        facilityname = cleaned_data.get('facilityname')
-        rateperhour = cleaned_data.get('rateperhour')
-        capacity = cleaned_data.get('capacity')
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     facilityname = cleaned_data.get('facilityname')
+    #     area_id = cleaned_data.get('area_id')
+    #     rateperhour = cleaned_data.get('rateperhour')
+    #     person_rateperhour = cleaned_data.get('person_rateperhour')
+    #     capacity = cleaned_data.get('capacity')
 
-        if rateperhour is not None and rateperhour < 10:
-            self.add_error('rateperhour', 'Rate per hour should not be below 10.')
-
-        if capacity is not None and capacity > 30:
-            self.add_error('capacity', 'Capacity should not exceed 30.')
+    #     if rateperhour is not None and rateperhour < 10:
+    #         self.add_error('rateperhour', 'Rate per hour should not be below 10.')
         
-        if Facility.objects.filter(facilityname=facilityname).exclude(pk=self.instance.pk).exists():
-            self.add_error('facilityname', 'Facility with this name already exists.')
+    #     if person_rateperhour is not None and person_rateperhour < 10:
+    #         self.add_error('person_rateperhour', 'Rate per hour should not be below 10.')
+
+    #     if capacity is not None and capacity > 30:
+    #         self.add_error('capacity', 'Capacity should not exceed 30.')
+        
+    #     if Facility.objects.filter(facilityname=facilityname).exclude(pk=self.instance.pk).exists():
+    #         self.add_error('facilityname', 'Facility with this name already exists.')
+
+    #     if Facility.objects.filter(area_id=area_id).exclude(pk=self.instance.pk).exists():
+    #         self.add_error('area_id', 'area_id with this id already exists.')
 
 
-        return cleaned_data
+    #     return cleaned_data
 
-    # def __str__(self):
-    #     return self.cleaned_data['facilityname'] + " ( " + str(self.cleaned_data['rateperhour']) + ") " + " (" + str(self.cleaned_data['capacity']) + ") "
+    # # def __str__(self):
+    # #     return self.cleaned_data['facilityname'] + " ( " + str(self.cleaned_data['rateperhour']) + ") " + " (" + str(self.cleaned_data['capacity']) + ") "
 
 
-    def __init__(self, *args, **kwargs):
-        super(FacilityUpdateForm, self).__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super(FacilityUpdateForm, self).__init__(*args, **kwargs)
 
-        # Set placeholders for the form fields
-        self.fields['facilityname'].widget.attrs['placeholder'] = 'Rate Per Hour'
-        self.fields['rateperhour'].widget.attrs['placeholder'] = 'Rate Per Hour'
-        self.fields['capacity'].widget.attrs['placeholder'] = 'Capacity'        
+    #     # Set placeholders for the form fields
+    #     self.fields['facilityname'].widget.attrs['placeholder'] = 'Rate Per Hour'
+    #     self.fields['rateperhour'].widget.attrs['placeholder'] = 'Rate Per Hour'
+    #     self.fields['capacity'].widget.attrs['placeholder'] = 'Capacity'        
 
 
 class UserTypeForm(ModelForm):
@@ -133,18 +155,6 @@ class EditFacilityForm(ModelForm):
         model = Setting_Facility
         fields = ['facility','mainrules','promorules','subrules']
 
-class FacilityForm(ModelForm):
-    facilityname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Facility Name'}))
-    rateperhour = forms.FloatField(widget=forms.TextInput(attrs={'placeholder':'Enter rate per hour'}))
-    capacity = forms.IntegerField(widget=forms.TextInput(attrs={'placeholder':'Enter Capacity'}))
-
-    class Meta:
-        model = Facility
-        fields = ['facilityname','rateperhour','capacity']
-
-    def __str__(self):
-        return self.facilityname+ " (" +self.rateperhour +") "+" (" +self.capacity +") "
-
 class FacilityTable(ModelForm):
     facilityname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter Facility Name'}))
     rateperhour = forms.FloatField(widget=forms.TextInput(attrs={'placeholder':'Enter rate per hour'}))
@@ -174,11 +184,12 @@ class FacilityMainRulesForm(ModelForm):
     num_pc = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Number of PC Facility can book'}))
     num_attendies = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Number of person can attend'}))
     description = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Description'}))
-    rate = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Rate per person'}))
+    rate = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Rate per facility'}))
+    person_rate = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Rate per person'}))
     # status = forms.BooleanField()
     class Meta:
         model = Facility_MainRules
-        fields = ['title','points','num_pc','num_attendies','description','rate']
+        fields = ['title','points','num_pc','num_attendies','description','rate', 'person_rate']
         exclude = ['status','facility']  
 
         def __init__(self, *args, **kwargs):
@@ -273,14 +284,16 @@ class FacilitySubRulesSetForm(ModelForm):
 class FacilityPromoRulesForm(ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Add Title'}))
     description = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Description'}))
-    new_rate = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Enter new rate'}))
+    new_rate = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Enter new rate per facility'}))
+    person_new_rate = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Enter new rate per attendie'}))
     start_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
     end_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
-    capacity = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Enter Capacity'}))
- 
+    num_attendies = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Enter Number of attendies'}))
+    num_pc = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Enter Number of pc'}))
+
     class Meta:
         model = Facility_PromoRules  # Use '=' instead of ':'
-        fields = ['title', 'description','new_rate','start_date', 'end_date', 'capacity']
+        fields = ['title', 'description','person_new_rate', 'new_rate','start_date', 'end_date', 'num_attendies', 'num_pc']
         exclude = ['status', 'facility']
 
         def __init__(self, *args, **kwargs):
@@ -292,15 +305,16 @@ class FacilityPromoRulesSetForm(ModelForm):
     facility = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Add Title'}))
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Add Title'}))
     description = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Description'}))
-    new_rate = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Enter new rate'}))
+    new_rate = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Enter new rate per facility'}))
+    person_new_rate = forms.FloatField(widget=forms.NumberInput(attrs={'placeholder':'Enter new rate per attendie'}))
     start_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
     end_date = forms.DateTimeField(widget=forms.TextInput(attrs={'type': 'datetime-local'}))
-    capacity = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Enter Capacity'}))
+    num_attendies = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder':'Enter Number of attendies'}))
     status = forms.BooleanField()
 
     class Meta:
         model = Facility_PromoRules_set
-        fields = ['facility','title','description','new_rate','start_date', 'end_date', 'capacity','status']
+        fields = ['facility','title','description', 'person_new_rate','new_rate','start_date', 'end_date','status']
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)

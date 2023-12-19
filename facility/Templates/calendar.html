@@ -112,7 +112,6 @@ button.cardevent:hover{
              </button>
             <br>
             <select name="type_sched" id="inputGroupSelect01">
-              <option name="type_sched" type="submit" value="">All</option>
               {% for s in stypes_ched %}
               <option name="type_sched" type="submit"  value ="{{s.type_sched}}">{{s.type_sched}}</option>
               {% endfor %}
@@ -127,7 +126,7 @@ button.cardevent:hover{
             <input required type="time"placeholder="00:00 am/pm" name="end" value='{{calform.end}}'><br>
             <label class="modalpopup">Facility</label><br>
             <select name="facility" id="inputGroupSelect01">
-              <option value="">All</option>
+              
               {% for f in facility %}
                   <option value="{{ f.id }}">{{ f.facilityname }}</option>
               {% endfor %}

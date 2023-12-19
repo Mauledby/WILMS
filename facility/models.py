@@ -1,12 +1,16 @@
 from django.db import models
 from django.utils import timezone
 from django.db.models import F, ExpressionWrapper, DurationField
-
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 # Create your models here.
 class Facility(models.Model):
     facilityname = models.CharField(max_length=250, null=False, unique="facility_name")
+    area_id = models.CharField(max_length=250, null=False)
     rateperhour = models.FloatField()
     capacity = models.IntegerField()
+    person_rateperhour = models.FloatField()
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
     modified_at = models.DateTimeField(default=timezone.now, null=False)
     isdeleted = models.BooleanField(default=0)
@@ -18,8 +22,20 @@ class Facility(models.Model):
     
     def __str__(self):
         return self.facilityname
+
+class Facility_type(models.Model):
+    facility_type=models.CharField(max_length=250, null=False, unique="facility_type")
+    created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
+    modified_at = models.DateTimeField(default=timezone.now, null=False)
+    isdeleted = models.BooleanField(default=0)
+
+    def save(self, *args, **kwargs):
+            # Update the modified_at timestamp whenever the object is saved
+        self.modified_at = timezone.now()
+        super().save(*args, **kwargs)
     
-    
+    def __str__(self):
+        return self.facility_type
     
 
 class Facility_MainRules(models.Model):
@@ -30,6 +46,7 @@ class Facility_MainRules(models.Model):
     num_attendies = models.IntegerField(blank=False)
     description = models.CharField(max_length=255,null=False)
     rate = models.FloatField()
+    person_rate = models.FloatField(default=None)
     status = models.BooleanField(default=0)
 
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
@@ -51,6 +68,7 @@ class Facility_MainRules_set(models.Model):
     num_attendies = models.IntegerField(blank=False, default=0)
     description = models.CharField(max_length=255,null=False, default="")
     rate = models.IntegerField(blank=False, default=0)
+    person_rate = models.FloatField(default=None)
     status = models.BooleanField(default=0)
 
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
@@ -98,16 +116,18 @@ class Facility_SubRules_set(models.Model):
     def __str__(self):
         return self.title 
 
-
 class Facility_PromoRules(models.Model):
     facility = models.CharField(max_length=100, null=True, default=None)
     title = models.CharField(max_length=100,null=False)
     description = models.CharField(max_length=100,null=False)
     status = models.BooleanField(default=0)
-    new_rate = models.FloatField(blank=False, default=0.00)
+    new_rate = models.FloatField(default=None)
+    person_new_rate = models.FloatField(default=None)
+    num_pc = models.IntegerField(default=None)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    capacity = models.IntegerField(default=0)
+    # capacity = models.IntegerField( default=None)
+    num_attendies = models.IntegerField(default=None)
 
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
     modified_at = models.DateTimeField(default=timezone.now, null=False)
@@ -119,16 +139,19 @@ class Facility_PromoRules(models.Model):
 
     def __str__(self):
         return self.title    
-
+    
 class Facility_PromoRules_set(models.Model):
     facility = models.CharField(max_length=100, null=True, default=None)
     title = models.CharField(max_length=100,null=False)
     description = models.CharField(max_length=100,null=False)
     status = models.BooleanField(default=0)
-    new_rate = models.FloatField(blank=False, default=0.00)
+    person_new_rate = models.FloatField(default=None)
+    new_rate = models.FloatField(default=None)
+    num_pc = models.IntegerField(default=None)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    capacity = models.IntegerField(default=0)
+    # capacity = models.IntegerField( default=None)
+    num_attendies = models.IntegerField(default=None)
 
     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
     modified_at = models.DateTimeField(default=timezone.now, null=False)
@@ -139,10 +162,61 @@ class Facility_PromoRules_set(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.title 
+        return self.title
+
+    def is_expired(self):
+        return self.end_date < timezone.now()
+
+@receiver(post_save, sender=Facility_PromoRules_set)
+def delete_expired_facility(sender, instance, **kwargs):
+    
+    if instance.is_expired():
+        instance.delete()
+# class Facility_PromoRules(models.Model):
+#     facility = models.CharField(max_length=100, null=True, default=None)
+#     title = models.CharField(max_length=100,null=False)
+#     description = models.CharField(max_length=100,null=False)
+#     status = models.BooleanField(default=0)
+#     new_rate = models.FloatField(blank=False, default=0.00)
+#     start_date = models.DateTimeField()
+#     end_date = models.DateTimeField()
+#     capacity = models.IntegerField(default=0)
+
+#     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
+#     modified_at = models.DateTimeField(default=timezone.now, null=False)
+
+#     def save(self, *args, **kwargs):
+#         # Update the modified_at timestamp whenever the object is saved
+#         self.modified_at = timezone.now()
+#         super().save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.title    
+
+# class Facility_PromoRules_set(models.Model):
+#     facility = models.CharField(max_length=100, null=True, default=None)
+#     title = models.CharField(max_length=100,null=False)
+#     description = models.CharField(max_length=100,null=False)
+#     status = models.BooleanField(default=0)
+#     new_rate = models.FloatField(blank=False, default=0.00)
+#     start_date = models.DateTimeField()
+#     end_date = models.DateTimeField()
+#     capacity = models.IntegerField(default=0)
+
+#     created_at = models.DateTimeField(default=timezone.now, editable=False, null=False)
+#     modified_at = models.DateTimeField(default=timezone.now, null=False)
+
+#     def save(self, *args, **kwargs):
+#         # Update the modified_at timestamp whenever the object is saved
+#         self.modified_at = timezone.now()
+#         super().save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.title 
 
 class Setting_Facility(models.Model):
     facility = models.ForeignKey(Facility, null=True, on_delete=models.CASCADE)
+    facility_type = models.ForeignKey(Facility_type, null=True, on_delete=models.CASCADE)
     mainrules = models.ForeignKey(Facility_MainRules_set, null=True, on_delete=models.CASCADE)
     promorules = models.ForeignKey(Facility_PromoRules_set, null=True, on_delete=models.CASCADE)
     subrules = models.ForeignKey(Facility_SubRules_set, null=True, on_delete=models.CASCADE)
