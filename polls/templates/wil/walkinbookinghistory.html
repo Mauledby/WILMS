@@ -1,0 +1,77 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending</title>
+    <link rel="stylesheet" href="{% static 'css/userdashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/WILLOGO.png' %}">
+</head>
+<body style="background-color: #FECC00;"> 
+    <div class="content">
+        <div class="header">
+            <div >
+                <a href="/polls/wiluser/userprofile">
+                    <img src="{% static 'images/profile.png' %}" alt="Profile Icon" class="profile-icon" style="width: 32px; height: 32px; margin-right:60px">
+                </a>
+                 <img src="{% static 'images/WILLOGO.png' %}" alt="WIL LOGO" class="logo" style="margin-right:100px; border: 2px solid #000000;">
+            </div>
+            <h1 style="text-align: center; font-weight: bold;">WALK-IN HISTORY</h1>
+            <div class="area-container" style="background-color:#ffffff; border: 1px solid #ffffff; height:450px; overflow: auto; scrollbar-width: none; -ms-overflow-style: none;">
+                <style>
+                    .area-container::-webkit-scrollbar {
+                        display: none;
+                    }
+                </style>
+                <div style="text-align: center;">
+                    <input type="text" id="searchInput" placeholder="Search Reference ID" style="margin-bottom: 10px; text-align: center;">
+                </div>
+                
+                <table class="log-table" style="font-size:12px; border-collapse: collapse; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="border: 2px solid #000000;">Reference ID</th>
+                            <th style="border: 2px solid #000000;">Start Time</th>
+                            <th style="border: 2px solid #000000;">End Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td style="border: 2px solid #000000;">{{ log.referenceid }}</td>
+                            <td style="border: 2px solid #000000;">{{ log.starttime }}</td>
+                            <td style="border: 2px solid #000000;">{{ log.endtime }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" style="border: 2px solid #000000;">No logs available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <br>
+            
+        </div>
+        
+    
+</body>
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const filter = this.value.toUpperCase();
+        const table = document.querySelector('.log-table');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const referenceID = rows[i].getElementsByTagName('td')[0].textContent.toUpperCase();
+            if (referenceID.indexOf(filter) > -1) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    });
+</script>
+</html>

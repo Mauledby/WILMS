@@ -1,10 +1,11 @@
+import logging
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from polls.user_login_controller import UserLoginController
 from .assigned_area_controller import AssignedAreaController
 from polls.models import AssignedArea
 from polls.time_monitoring import TimeMonitoringController
-from wiladmin.models import WalkinBookingModel
+from wiladmin.models import AdminReportLogsModel, WalkinBookingModel
 from .facility_map_controller import FacilityMapController
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -46,35 +47,39 @@ def show_message_view(request):
 
 @login_required(redirect_field_name="polls:userlogin")
 def map(request):
-
     user = request.user.id
     userreserve = ResBooking.objects.filter(user_id=user).count()
-    bookings = WalkinBookingModel.objects.all().count()
-    userbooks = WalkinBookingModel.objects.filter(user_id=user).count()
+    bookings = WalkinBookingModel.objects.filter(user_id=user).count()
+    userbooks = WalkinBookingModel.objects.filter(user_id=user)
     area_bookings = AssignedArea.objects.values('area_id').annotate(booked_count=models.Count('area_id'))
-    
+
     areas = []
     for area_id in ["A3", "A4", "A5", "A6", "A8", "A9", "A7"]:
-            if area_id == "A7":
-                total_count = 24 
-            else:
-                total_count = 6
-            area_data = next((item for item in area_bookings if item['area_id'] == area_id), {'booked_count': 0})
-            areas.append({'area_id': area_id, 'booked_count': area_data['booked_count'], 'total_count': total_count})
+        if area_id == "A7":
+            total_count = 24 
+        else:
+            total_count = 6
+        area_data = next((item for item in area_bookings if item['area_id'] == area_id), {'booked_count': 0})
+        areas.append({'area_id': area_id, 'booked_count': area_data['booked_count'], 'total_count': total_count})
 
-    
-    if bookings != 0 and userbooks != 0:
+    if bookings != 0 and userbooks.exists():
+        
         userbooking = WalkinBookingModel.objects.get(user_id=user)
-        if userbooking.status=="Booked":
+        if userbooking.status == "Pending":
+            context = {
+             'reference_id': userbooking.referenceid,
+         }
+            return render(request, "wil/activewalkinbooking.html", context)
+        elif userbooking.status == "Booked":
             return redirect('polls:timer')
         else:
             return render(request, 'wil/map.html', {'areas': areas})
     elif bookings != 0 and userreserve != 0:
         userreservebooking = ResBooking.objects.get(user=user)
-        if userreservebooking.status=="Booked":   
+        if userreservebooking.status == "Booked":
             return redirect('polls:timer')
         else:
-            return render(request,'wil/map.html', {'areas': areas})
+            return render(request, 'wil/map.html', {'areas': areas})
     else:
         return render(request, 'wil/map.html', {'areas': areas})
 
@@ -177,7 +182,7 @@ def get_timer_data(request):
     timers = Timer.objects.all().count()
     
     if timers == 0:
-        return redirect(user_dashboard)
+        return redirect('polls:userdashboard')
     else:
         usertimer = Timer.objects.get(user_id=request.user.id)
     
@@ -282,6 +287,18 @@ def get_calendar_data(request):
         })
 
     return JsonResponse(events, safe=False)
+
+@login_required(redirect_field_name="polls:userlogin")
+def activewalkinbooking(request):
+    
+    return render(request, "wil/activewalkinbooking.html")
+
+
+@login_required(redirect_field_name="polls:userlogin")
+def walkin_booking_history(request):
+    user_id_to_search = request.user.id  
+    logs = AdminReportLogsModel.objects.filter(userid=user_id_to_search).order_by('-starttime')
+    return render(request, "wil/walkinbookinghistory.html", {'logs': logs})
 
 
 

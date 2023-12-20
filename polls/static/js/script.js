@@ -59,23 +59,6 @@ function showReferenceNumber(areaId, referenceNumber) {
     showMessage('WALK-IN REFERENCE #: ' + referenceText);
 }
 
-function handleYesButtonClick() {
-    var referenceContainer = document.getElementById('referenceContainer');
-    var referenceNumber = generateReferenceNumber(selectedAreaId);
-    var areaId = referenceNumber.substring(0, 2);
-
-    if (selectedAreaId === areaId) {
-        var buttonContainer = document.getElementById('buttonContainer');
-        buttonContainer.style.display = 'none';
-        var yesButton = document.querySelector('#popupMessage .popup-button:nth-child(1)');
-        var noButton = document.querySelector('#popupMessage .popup-button:nth-child(2)');
-        yesButton.style.display = 'none';
-        noButton.style.display = 'none';
-        referenceContainer.style.display = 'block';
-        referenceContainer.textContent = referenceNumber;
-        showMessage('WALK-IN REFERENCE #: ' + referenceNumber);
-    }
-}
 
 function generateReferenceNumber(areaId) {
     var xhr = new XMLHttpRequest();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seating Map</title>
+    <title>Pending</title>
     <link rel="stylesheet" href="{% static 'css/userdashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'images/WILLOGO.png' %}">
@@ -18,31 +18,10 @@
                  <img src="{% static 'images/WILLOGO.png' %}" alt="WIL LOGO" class="logo" style="margin-right:100px; border: 2px solid #000000;">
             </div>
             <div class="area-container" style = " background-color:#000000; border: 1px solid #ffffff; height:230px">
-                <div class="button-overlay">
-                    <div class="mobile-buttons">
-                        <h2 style="color: #ffffff">SELECT AN AREA</h2>
-                    </div>
+                <div class="mobile-buttons">
                     
-                    <div class="image-container">
-                        <img src="{% static 'images/area.png' %}" alt="area" class="image-fit">
-                        
-                        
-                        {% for area in areas %}
-                        <button class="area-button seat {% if area.area_id == 'A3' %}areaA3-button
-                        {% elif area.area_id == 'A4' %}areaA4-button
-                        {% elif area.area_id == 'A5' %}areaA5-button
-                        {% elif area.area_id == 'A6' %}areaA6-button
-                        {% elif area.area_id == 'A8' %}areaA8-button
-                        {% elif area.area_id == 'A9' %}areaA9-button
-                        {% elif area.area_id == 'A7' %}areaA7-button
-                        {% endif %}" data-areaid="{{ area.area_id }}" data-availability="{{ area.booked_count }}" data-total="{{ area.total_count }}">{{ area.booked_count }}/{{ area.total_count }}</button>
-                    {% endfor %}
-
-
-
-                    </div>
-                    
-                    
+                <p>You already have a pending booking. Please proceed to the front desk and present your walk-in reference number below.</p>
+                Reference Number:&nbsp<font color="red">{{ reference_id }}</font>
                     
                 </div>
             </div>
@@ -65,33 +44,9 @@
                 </div>
             </div>
         </div>
-        <div class="popup-message" id="popupMessage">
-            <div class="message-content">
-                <h3 id="popupText"></h3>
-                <div class="button-container" id="buttonContainer">
-                    <button class="popup-button" onclick="handleYesButtonClick()">YES</button>
-                    <button class="popup-button" onclick="hideMessage()">NO</button>
-                </div>
-                <div class="reference-container" id="referenceContainer" style="display: none;"></div>
-            </div>
-        </div>
-    </div>
     
    
-    
-    <script src="{% static 'js/map.js' %}"></script>
 
-   
     
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-

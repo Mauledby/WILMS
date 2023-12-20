@@ -27,19 +27,24 @@
                         </div>
                         <div class="">
                             <div>
-                                <img src="{% static 'images/profile.png' %}" alt="Profile Icon" class="profile-icon" style="width: 50px; height: 50px; margin-right: 20px; margin-top: -17px">
-                                {{user.email}}
-                            </img>
-                            
+                                <img src="{% static 'images/profile.png' %}" alt="Profile Icon" class="profile-icon" style="width: 50px; height: 50px; margin-right: 20px; margin-top: -200px;" >
+                                <span style="color: black; font-size:15px">{{ user.email }}</span>
+                                </img>
                             
                             </div>
                         </div>
                     </div>
                 </div>
                 <br>
-                <a href="aboutus"> <button type="submit" class="button">ABOUT US</button></a><br>
-                <a href="/polls/wiluser/userlogout">
-                    <button type="submit" class="button">LOG OUT</button>
+                <br>
+                <a href="{% url 'polls:walkinbookinghistory' %}"  >
+                    <button type="submit" class="button">WALK-IN HISTORY</button>
+
+                    </a>
+                <br>
+               
+                <a href="/wallet/">
+                    <button type="submit" class="button">RETURN TO MENU</button>
                 </a>
                 
                

@@ -1,4 +1,5 @@
-from datetime import datetime, timezone
+from datetime import datetime
+from django.utils import timezone
 import random
 from django.db import connection
 from django.http import JsonResponse

@@ -25,6 +25,7 @@
             }
         
             showMessage('ARE YOU SURE YOU WANT TO BOOK THIS AREA?', buttonElement);
+            
         }
         
         
@@ -128,6 +129,7 @@
             referenceContainer.textContent = referenceText;
             referenceContainer.style.display = 'block';
             showMessage('WALK-IN REFERENCE #: ' + referenceText);
+            
         }
         
         function handleYesButtonClick() {
@@ -143,10 +145,12 @@
                 yesButton.style.display = 'none';
                 noButton.style.display = 'none';
                 referenceContainer.style.display = 'block';
-                referenceContainer.textContent = referenceNumber;
-                showMessage('WALK-IN REFERENCE #: ' + referenceNumber);
+                referenceContainer.textContent = 'WALK-IN REFERENCE #' + referenceNumber;
+                showMessage('WALK-IN REFERENCE #' + referenceNumber);
             }
         }
+        
+        
         
         function generateReferenceNumber(areaId) {
             var xhr = new XMLHttpRequest();
