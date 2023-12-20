@@ -146,7 +146,9 @@
                 noButton.style.display = 'none';
                 referenceContainer.style.display = 'block';
                 referenceContainer.textContent = 'WALK-IN REFERENCE #' + referenceNumber;
-                showMessage('WALK-IN REFERENCE #' + referenceNumber);
+                showMessage('WALK-IN REFERENCE # :' + referenceNumber + '<br>To confirm your walk-in booking, kindly provide the reference number mentioned above to the front desk.');
+
+                
             }
         }
         

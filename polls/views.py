@@ -298,7 +298,9 @@ def activewalkinbooking(request):
 def walkin_booking_history(request):
     user_id_to_search = request.user.id  
     logs = AdminReportLogsModel.objects.filter(userid=user_id_to_search).order_by('-starttime')
-    return render(request, "wil/walkinbookinghistory.html", {'logs': logs})
+    
+    num_bookings = logs.count()
+    return render(request, "wil/walkinbookinghistory.html", {'logs': logs, 'num_bookings': num_bookings})
 
 
 
